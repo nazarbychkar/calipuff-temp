@@ -227,7 +227,7 @@ export async function POST(req: NextRequest) {
     }
 
     const { invoiceId, pageUrl } = invoiceData;
-    
+    console.log(invoiceData)
     console.log("[POST /api/orders] Extracted from invoice data:", {
       invoiceId,
       pageUrl,

@@ -310,7 +310,7 @@ export default function OrdersTable() {
                         onChange={(e) =>
                           handleStatusChange(order.id, e.target.value)
                         }
-                        className="border px-2 py-1 rounded text-sm bg-white"
+                        className={`border px-2 py-1 rounded text-sm  ${order.status == "unpaid" ? "bg-red-300" : "bg-white"}`}
                       >
                         {options.map((option) => (
                           <option key={option.value} value={option.value}>
