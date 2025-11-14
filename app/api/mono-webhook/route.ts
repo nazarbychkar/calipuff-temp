@@ -21,11 +21,13 @@ export async function POST(req: NextRequest) {
     // Only process successful payments
     if (status !== "success") {
       console.log("❌ Payment not successful, status:", status);
+      await sqlUpdatePaymentStatus(invoiceId, "unpaid");
       return NextResponse.json({ success: true });
     }
 
     // Update order status to "paid"
-    await sqlUpdatePaymentStatus(invoiceId, "paid");
+    console.log("чому ні?!")
+    await sqlUpdatePaymentStatus(invoiceId, "pending");
 
     // Get order details for Telegram notification
     const order = await sqlGetOrderByInvoiceId(invoiceId);

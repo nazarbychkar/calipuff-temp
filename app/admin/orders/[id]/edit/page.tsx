@@ -14,6 +14,7 @@ export default function EditOrderPage() {
   const router = useRouter();
 
   const options = [
+    { value: "unpaid", label: "Неоплачено" },
     { value: "pending", label: "Очікується" },
     { value: "delivering", label: "Доставляємо" },
     { value: "complete", label: "Завершено" },
@@ -210,9 +211,7 @@ export default function EditOrderPage() {
                     <th className="px-4 py-3 text-left font-semibold">
                       Розмір
                     </th>
-                    <th className="px-4 py-3 text-left font-semibold">
-                      Колір
-                    </th>
+                    <th className="px-4 py-3 text-left font-semibold">Колір</th>
                     <th className="px-4 py-3 text-left font-semibold">
                       Кількість
                     </th>

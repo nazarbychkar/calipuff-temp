@@ -245,7 +245,7 @@ export async function POST(req: NextRequest) {
       comment,
       payment_type,
       invoice_id: invoiceId,
-      payment_status: "pending", // замовлення створено, але ще не оплачено
+      status: "unpaid", // замовлення створено, але ще не оплачено
       items: normalizedItems.map(
         ({ product_id, size, quantity, price, color }) => ({
           product_id,

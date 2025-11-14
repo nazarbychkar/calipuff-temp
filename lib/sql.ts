@@ -578,7 +578,7 @@ type OrderInput = {
   comment?: string;
   payment_type: "prepay" | "full";
   invoice_id: string;
-  payment_status: "pending" | "paid" | "canceled";
+  status: "unpaid" | "pending" | "paid" | "canceled";
   items: {
     product_id: number;
     size: string;
@@ -597,13 +597,13 @@ export async function sqlPostOrder(order: OrderInput) {
     INSERT INTO orders (
       customer_name, phone_number, email,
       delivery_method, city, post_office,
-      comment, payment_type, invoice_id, payment_status
+      comment, payment_type, invoice_id, status
     )
     VALUES (
       ${order.customer_name}, ${order.phone_number}, ${order.email || null},
       ${order.delivery_method}, ${order.city}, ${order.post_office},
       ${order.comment || null}, ${order.payment_type}, ${order.invoice_id}, ${
-    order.payment_status
+    order.status
   }
     )
     RETURNING id;
@@ -727,7 +727,7 @@ export async function sqlUpdatePaymentStatus(
 ) {
   await sql`
     UPDATE orders
-    SET payment_status = ${status}
+    SET status = ${status}
     WHERE invoice_id = ${invoiceId};
   `;
 }
@@ -745,7 +745,7 @@ export async function sqlGetOrderByInvoiceId(invoiceId: string) {
       o.post_office,
       o.comment,
       o.payment_type,
-      o.payment_status,
+      o.status,
       o.created_at,
       COALESCE(
         JSON_AGG(

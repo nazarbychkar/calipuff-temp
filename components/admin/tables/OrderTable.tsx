@@ -29,6 +29,7 @@ interface Order {
 }
 
 const options = [
+  { value: "unpaid", label: "Неоплачено" },
   { value: "pending", label: "Очікується" },
   { value: "delivering", label: "Доставляємо" },
   { value: "complete", label: "Завершено" },
@@ -42,16 +43,17 @@ export default function OrdersTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const ordersPerPage = 10;
 
-  const totalPages = useMemo(() => 
-    Math.ceil(orders.length / ordersPerPage), 
+  const totalPages = useMemo(
+    () => Math.ceil(orders.length / ordersPerPage),
     [orders.length]
   );
 
-  const paginatedOrders = useMemo(() => 
-    orders.slice(
-      (currentPage - 1) * ordersPerPage,
-      currentPage * ordersPerPage
-    ),
+  const paginatedOrders = useMemo(
+    () =>
+      orders.slice(
+        (currentPage - 1) * ordersPerPage,
+        currentPage * ordersPerPage
+      ),
     [orders, currentPage, ordersPerPage]
   );
 
@@ -77,14 +79,17 @@ export default function OrdersTable() {
         method: "DELETE",
       });
       if (!res.ok) throw new Error("Failed to delete order");
-      
+
       // Оновлюємо стан
       const updatedOrders = orders.filter((o) => o.id !== orderId);
       setOrders(updatedOrders);
-      
+
       // Оновлюємо кеш
       localStorage.setItem(ORDERS_CACHE_KEY, JSON.stringify(updatedOrders));
-      localStorage.setItem(ORDERS_CACHE_EXPIRY_KEY, (Date.now() + CACHE_DURATION).toString());
+      localStorage.setItem(
+        ORDERS_CACHE_EXPIRY_KEY,
+        (Date.now() + CACHE_DURATION).toString()
+      );
     } catch (error) {
       console.error("Error deleting order:", error);
     }
@@ -111,12 +116,15 @@ export default function OrdersTable() {
         const res = await fetch("/api/orders");
         if (!res.ok) throw new Error("Failed to fetch orders");
         const data = await res.json();
-        
+
         setOrders(data);
-        
+
         // Зберігаємо в кеш
         localStorage.setItem(ORDERS_CACHE_KEY, JSON.stringify(data));
-        localStorage.setItem(ORDERS_CACHE_EXPIRY_KEY, (now + CACHE_DURATION).toString());
+        localStorage.setItem(
+          ORDERS_CACHE_EXPIRY_KEY,
+          (now + CACHE_DURATION).toString()
+        );
       } catch (error) {
         console.error("Error fetching orders:", error);
       } finally {
@@ -136,16 +144,19 @@ export default function OrdersTable() {
         body: JSON.stringify({ status: newStatus }),
       });
       if (!res.ok) throw new Error("Failed to update status");
-      
+
       // Оновлюємо стан
       const updatedOrders = orders.map((order) =>
         order.id === orderId ? { ...order, status: newStatus } : order
       );
       setOrders(updatedOrders);
-      
+
       // Оновлюємо кеш
       localStorage.setItem(ORDERS_CACHE_KEY, JSON.stringify(updatedOrders));
-      localStorage.setItem(ORDERS_CACHE_EXPIRY_KEY, (Date.now() + CACHE_DURATION).toString());
+      localStorage.setItem(
+        ORDERS_CACHE_EXPIRY_KEY,
+        (Date.now() + CACHE_DURATION).toString()
+      );
     } catch (error) {
       console.error("Error updating status:", error);
     }
@@ -296,7 +307,9 @@ export default function OrdersTable() {
                     <TableCell className="px-5 py-4 text-sm text-gray-600 dark:text-gray-400">
                       <select
                         value={order.status}
-                        onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                        onChange={(e) =>
+                          handleStatusChange(order.id, e.target.value)
+                        }
                         className="border px-2 py-1 rounded text-sm bg-white"
                       >
                         {options.map((option) => (

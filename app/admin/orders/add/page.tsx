@@ -7,6 +7,7 @@ import Input from "@/components/admin/form/input/InputField";
 import React, { useState } from "react";
 
 const statusOptions = [
+  { value: "unpaid", label: "Неоплачено" },
   { value: "pending", text: "Очікується" },
   { value: "delivering", text: "Доставляється" },
   { value: "fulfilled", text: "Виконано" },
@@ -19,7 +20,7 @@ export default function CreateOrderForm() {
   const [deliveryMethod, setDeliveryMethod] = useState("");
   const [city, setCity] = useState("");
   const [postOffice, setPostOffice] = useState("");
-  const [status, setStatus] = useState("pending");
+  const [status, setStatus] = useState("unpaid");
 
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
@@ -55,7 +56,7 @@ export default function CreateOrderForm() {
       setDeliveryMethod("");
       setCity("");
       setPostOffice("");
-      setStatus("pending");
+      setStatus("unpaid");
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
