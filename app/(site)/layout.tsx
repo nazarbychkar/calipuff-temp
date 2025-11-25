@@ -11,6 +11,7 @@ import { registerServiceWorker } from "@/lib/registerSW";
 import { ErrorBoundary } from "@/components/shared/ErrorBoundary";
 import { WebVitals } from "@/components/shared/WebVitals";
 import MainContent from "@/components/shared/MainContent";
+import { BRAND } from "@/lib/brand";
 
 const inter = Inter({
   subsets: ["latin", "cyrillic"],
@@ -22,20 +23,18 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "CHARS — Український Бренд Чоловічого Одягу | Стиль Без Компромісів",
-  description:
-    "CHARS — український бренд чоловічого одягу, заснований у 2023 році. Ми створюємо стильний одяг для різних чоловіків без компромісів. Класика, кежуал та спорт.",
+  title: `${BRAND.name} — Каліфорнійська затяжка 🌴 | Легальні вейпи`,
+  description: BRAND.shortDescription,
   keywords:
-    "CHARS, український бренд одягу, чоловічий одяг, стильний одяг, смарт-кежуал, кежуал-класик, українська мода, одяг для чоловіків, київ",
+    "CALIPUFF, легальні вейпи, COA сертифікація, український бренд, каліфорнійський стиль, cartridge, liquids, wave lab",
   icons: {
-    icon: "/images/light-theme/chars-logo-header-light.png",
-    shortcut: "/images/light-theme/chars-logo-header-light.png",
-    apple: "/images/light-theme/chars-logo-header-light.png",
+    icon: "/images/light-theme/calipuff-logo-header-light.svg",
+    shortcut: "/images/light-theme/calipuff-logo-header-light.svg",
+    apple: "/images/light-theme/calipuff-logo-header-light.svg",
   },
   openGraph: {
-    title: "CHARS — Український Бренд Чоловічого Одягу",
-    description:
-      "Стильний чоловічий одяг без компромісів. Класика, кежуал та спорт.",
+    title: `${BRAND.name} — Каліфорнійська затяжка`,
+    description: BRAND.description,
     type: "website",
     locale: "uk_UA",
   },
@@ -58,15 +57,15 @@ export default function RootLayout({
         <meta name="format-detection" content="telephone=no" />
         
         {/* Favicon and App Icons */}
-        <link rel="icon" type="image/png" href="/images/light-theme/chars-logo-header-light.png" />
-        <link rel="shortcut icon" type="image/png" href="/images/light-theme/chars-logo-header-light.png" />
-        <link rel="apple-touch-icon" href="/images/light-theme/chars-logo-header-light.png" />
+        <link rel="icon" type="image/svg+xml" href="/images/light-theme/calipuff-logo-header-light.svg" />
+        <link rel="shortcut icon" type="image/svg+xml" href="/images/light-theme/calipuff-logo-header-light.svg" />
+        <link rel="apple-touch-icon" href="/images/light-theme/calipuff-logo-header-light.svg" />
         <link rel="manifest" href="/site.webmanifest" />
-        <meta name="theme-color" content="#000000" />
-        <meta name="msapplication-TileColor" content="#000000" />
+        <meta name="theme-color" content={BRAND.palette.sunset} />
+        <meta name="msapplication-TileColor" content={BRAND.palette.sunset} />
         
         {/* Preload critical resources */}
-        <link rel="preload" href="/images/light-theme/chars-logo-header-light.png" as="image" />
+        <link rel="preload" href="/images/light-theme/calipuff-logo-header-light.svg" as="image" />
         {/* Conditional preload: image for mobile, video for desktop */}
         <link rel="preload" href="/images/Знімок екрана 2025-10-17 о 22.25.53.png" as="image" media="(max-width: 767px)" />
         <link rel="preload" href="/images/IMG_5831.webm" as="video" type="video/webm" media="(min-width: 768px)" />
@@ -94,7 +93,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         
         {/* Apple touch icon */}
-        <link rel="apple-touch-icon" href="/images/light-theme/chars-logo-header-light.png" />
+        <link rel="apple-touch-icon" href="/images/light-theme/calipuff-logo-header-light.svg" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         

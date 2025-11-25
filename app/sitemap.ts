@@ -1,9 +1,9 @@
 import { MetadataRoute } from 'next'
-import { sqlGetAllProducts } from '@/lib/sql'
+import { prisma } from '@/lib/sql'
 
 async function getProducts() {
   try {
-    const products = await sqlGetAllProducts();
+    const products = await prisma.product.findMany();
     return products;
   } catch (error) {
     console.error("Error fetching products for sitemap:", error);

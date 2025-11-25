@@ -1,5 +1,5 @@
-import { sqlGetLimitedEditionProducts } from "@/lib/sql";
 import { NextResponse } from "next/server";
+import { sqlGetLimitedEditionProducts } from "@/lib/sql";
 
 export async function GET() {
   try {
@@ -9,7 +9,8 @@ export async function GET() {
         "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
       },
     });
-  } catch {
+  } catch (error) {
+    console.error("[GET /api/products/limited-edition]", error);
     return NextResponse.json(
       { error: "Failed to fetch limited edition products" },
       { status: 500 }
@@ -17,6 +18,5 @@ export async function GET() {
   }
 }
 
-// Enable revalidation every 5 minutes
 export const revalidate = 300;
 

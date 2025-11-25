@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useAppContext } from "@/lib/GeneralProvider";
 import { useBasket } from "@/lib/BasketProvider";
+import { BRAND } from "@/lib/brand";
 import SidebarBasket from "./SidebarBasket";
 import SidebarSearch from "./SidebarSearch";
 import SidebarMenu from "./SidebarMenu";
@@ -20,6 +21,9 @@ interface Subcategory {
   id: number;
   name: string;
 }
+
+const LIGHT_LOGO = "/images/light-theme/calipuff-logo-header-light.svg";
+const DARK_LOGO = "/images/dark-theme/calipuff-logo-header-dark.svg";
 
 export default function Header() {
   const {
@@ -169,12 +173,8 @@ export default function Header() {
               <Image
                 height="57"
                 width="200"
-                alt="logo"
-                src={
-                  isDark
-                    ? "/images/dark-theme/chars-logo-header-dark.png"
-                    : "/images/light-theme/chars-logo-header-light.png"
-                }
+                alt={`${BRAND.name} logo`}
+                src={isDark ? DARK_LOGO : LIGHT_LOGO}
               />
             </Link>
 
@@ -414,12 +414,8 @@ export default function Header() {
             <Image
               height="28"
               width="100"
-              alt="logo"
-              src={
-                isDark
-                  ? "/images/dark-theme/chars-logo-header-dark.png"
-                  : "/images/light-theme/chars-logo-header-light.png"
-              }
+            alt={`${BRAND.name} logo`}
+            src={isDark ? DARK_LOGO : LIGHT_LOGO}
             />
           </Link>
 
@@ -465,7 +461,7 @@ export default function Header() {
         isOpen={isSidebarOpen}
         setIsOpen={setIsSidebarOpen}
       />
-
+      
       <SidebarBasket
         isDark={isDark}
         isOpen={isBasketOpen}

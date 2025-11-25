@@ -153,7 +153,7 @@ export default function LoginPage() {
 
         {/* Footer */}
         <p className="mt-6 text-center text-sm text-gray-400">
-          © {new Date().getFullYear()} Chars Admin Panel
+          © {new Date().getFullYear()} CALIPUFF Admin Panel
         </p>
       </div>
     </div>

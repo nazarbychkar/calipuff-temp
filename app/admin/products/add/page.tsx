@@ -11,17 +11,6 @@ import TextArea from "@/components/admin/form/input/TextArea";
 import ToggleSwitch from "@/components/admin/form/ToggleSwitch";
 import Image from "next/image";
 
-const seasonOptions = ["Весна", "Літо", "Осінь", "Зима"];
-
-const multiOptions = [
-  { value: "ONESIZE", text: "ONESIZE", selected: false },
-  { value: "XL", text: "XL", selected: false },
-  { value: "L", text: "L", selected: false },
-  { value: "M", text: "M", selected: false },
-  { value: "S", text: "S", selected: false },
-  { value: "XS", text: "XS", selected: false },
-];
-
 interface Category {
   id: number;
   name: string;
@@ -34,8 +23,6 @@ export default function FormElements() {
   const [oldPrice, setOldPrice] = useState("");
   const [discountPercentage, setDiscountPercentage] = useState("");
   const [priority, setPriority] = useState("0");
-  const [sizes, setSizes] = useState<string[]>([]);
-  // const [images, setImages] = useState<File[]>([]);
 
   const [topSale, setTopSale] = useState(false);
   const [limitedEdition, setLimitedEdition] = useState(false);
@@ -50,13 +37,15 @@ export default function FormElements() {
 
   const [categoryId, setCategoryId] = useState<number | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [season, setSeason] = useState<string[]>([]);
   const [subcategoryId, setSubcategoryId] = useState<number | null>(null);
   const [subcategories, setSubcategories] = useState<Category[]>([]);
 
-  const [fabricComposition, setFabricComposition] = useState("");
-  const [hasLining, setHasLining] = useState(false);
-  const [liningDescription, setLiningDescription] = useState("");
+  // CBD-specific fields
+  const [cbdContentMg, setCbdContentMg] = useState("0");
+  const [thcContentMg, setThcContentMg] = useState("");
+  const [potency, setPotency] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [stock, setStock] = useState("0");
 
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
@@ -184,16 +173,17 @@ export default function FormElements() {
           priority: Number(priority || 0),
           color,
           colors,
-          sizes,
           top_sale: topSale,
           limited_edition: limitedEdition,
-          season: season.length === 0 ? null : season,
           category_id: categoryId,
           subcategory_id: subcategoryId,
           media: uploadedMedia,
-          fabric_composition: fabricComposition,
-          has_lining: hasLining,
-          lining_description: liningDescription,
+          // CBD-specific fields
+          cbdContentMg: Number(cbdContentMg || 0),
+          thcContentMg: thcContentMg ? Number(thcContentMg) : null,
+          potency: potency || null,
+          imageUrl: imageUrl || null,
+          stock: Number(stock || 0),
         }),
       });
 
@@ -211,17 +201,18 @@ export default function FormElements() {
       setPriority("0");
       setColor("");
       setColors([]);
-      setSizes([]);
       setMediaFiles([]);
       setTopSale(false);
       setLimitedEdition(false);
-      setSeason([]);
       setCategoryId(null);
-      setFabricComposition("");
-      setHasLining(false);
-      setLiningDescription("");
       setSubcategoryId(null);
       setSubcategories([]);
+      // Reset CBD fields
+      setCbdContentMg("0");
+      setThcContentMg("");
+      setPotency("");
+      setImageUrl("");
+      setStock("0");
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Помилка при створенні товару"
@@ -293,15 +284,6 @@ export default function FormElements() {
                   />
                 </div>
                 <div>
-                  <MultiSelect
-                    label="Розміри"
-                    options={multiOptions}
-                    defaultSelected={sizes}
-                    onChange={setSizes}
-                    zIndex={51}
-                  />
-                </div>
-                <div>
                   <Label>Категорія</Label>
                   <select
                     value={categoryId ?? ""}
@@ -334,17 +316,54 @@ export default function FormElements() {
                   </div>
                 )}
 
-                <div>
-                  <MultiSelect
-                    label="Сезон"
-                    options={seasonOptions.map((s) => ({
-                      value: s,
-                      text: s,
-                      selected: season.includes(s),
-                    }))}
-                    defaultSelected={season}
-                    onChange={setSeason}
-                  />
+                {/* CBD-specific fields */}
+                <div className="border rounded-lg p-4 space-y-4 bg-gray-50 dark:bg-gray-800/50">
+                  <h3 className="text-lg font-semibold mb-4">CBD Параметри</h3>
+                  <div>
+                    <Label>CBD вміст (мг)</Label>
+                    <Input
+                      type="number"
+                      value={cbdContentMg}
+                      onChange={(e) => setCbdContentMg(e.target.value)}
+                      placeholder="0"
+                    />
+                  </div>
+                  <div>
+                    <Label>THC вміст (мг) - опціонально</Label>
+                    <Input
+                      type="number"
+                      value={thcContentMg}
+                      onChange={(e) => setThcContentMg(e.target.value)}
+                      placeholder="0"
+                    />
+                  </div>
+                  <div>
+                    <Label>Потенція</Label>
+                    <Input
+                      type="text"
+                      value={potency}
+                      onChange={(e) => setPotency(e.target.value)}
+                      placeholder="Наприклад: 500mg, 1000mg"
+                    />
+                  </div>
+                  <div>
+                    <Label>URL зображення (опціонально)</Label>
+                    <Input
+                      type="text"
+                      value={imageUrl}
+                      onChange={(e) => setImageUrl(e.target.value)}
+                      placeholder="https://example.com/image.jpg"
+                    />
+                  </div>
+                  <div>
+                    <Label>Сток (кількість)</Label>
+                    <Input
+                      type="number"
+                      value={stock}
+                      onChange={(e) => setStock(e.target.value)}
+                      placeholder="0"
+                    />
+                  </div>
                 </div>
 
                 <div className="space-y-2">
@@ -423,39 +442,6 @@ export default function FormElements() {
                     </button>
                   </div>
                 </div>
-
-                {/* Блок: Склад тканини і Підкладка */}
-                <div className="border rounded-lg p-4 space-y-4 bg-gray-50 dark:bg-gray-800/50">
-                  <div>
-                    <Label>Склад тканини</Label>
-                    <TextArea
-                      value={fabricComposition}
-                      onChange={setFabricComposition}
-                      rows={3}
-                      placeholder="Наприклад: 80% бавовна, 20% поліестер"
-                    />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <Label className="mb-0">Підкладка?</Label>
-                    <ToggleSwitch
-                      enabled={hasLining}
-                      setEnabled={setHasLining}
-                      label="Has Lining"
-                    />
-                  </div>
-                </div>
-                {/* Lining description input */}
-                {hasLining && (
-                  <div>
-                    <Label>Опис підкладки</Label>
-                    <TextArea
-                      value={liningDescription}
-                      onChange={setLiningDescription}
-                      rows={2}
-                      placeholder="Опис підкладки товару"
-                    />
-                  </div>
-                )}
 
                 <div className="flex items-center justify-between pt-2">
                   <Label className="mb-0">Топ продаж?</Label>

@@ -1,5 +1,5 @@
 {
-  "name": "chars",
+  "name": "calipuff",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -17,9 +17,11 @@
     "check-vitals": "echo 'Run lighthouse audit after deployment'"
   },
   "dependencies": {
+    "@prisma/client": "^6.19.0",
     "@react-jvectormap/core": "^1.0.4",
     "@react-jvectormap/world": "^1.1.2",
     "apexcharts": "^5.3.5",
+    "dotenv": "^17.2.3",
     "flatpickr": "^4.6.13",
     "next": "15.5.3",
     "pg": "^8.16.3",
@@ -46,6 +48,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.5.3",
     "file-loader": "^6.2.0",
+    "prisma": "^6.19.0",
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
     "typescript": "^5",

@@ -1,30 +1,17 @@
-// app/api/products/route.ts
-
 import { NextResponse } from "next/server";
-import { sqlGetAllProducts, sqlPostProduct } from "@/lib/sql";
+import { prisma } from "@/lib/sql"; // Make sure to import Prisma client
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import crypto from "crypto";
 
 // Helper function to determine file type
 function getFileType(mimeType: string, filename: string): "photo" | "video" {
-  // Check MIME type first
   if (mimeType.startsWith("video/")) {
     return "video";
   }
 
-  // Fallback: check file extension if MIME type is generic or unknown
   const ext = filename.split(".").pop()?.toLowerCase();
-  const videoExtensions = [
-    "mp4",
-    "webm",
-    "ogg",
-    "mov",
-    "avi",
-    "mkv",
-    "flv",
-    "wmv",
-  ];
+  const videoExtensions = ["mp4", "webm", "ogg", "mov", "avi", "mkv", "flv", "wmv"];
 
   if (ext && videoExtensions.includes(ext)) {
     return "video";
@@ -33,47 +20,6 @@ function getFileType(mimeType: string, filename: string): "photo" | "video" {
   return "photo";
 }
 
-// =========================
-// GET /api/products
-// =========================
-export async function GET(request: Request) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const limit = searchParams.get("limit");
-    const offset = searchParams.get("offset");
-
-    let products = await sqlGetAllProducts();
-    console.log("api", products[0])
-
-    // Mobile pagination for better performance
-    if (limit) {
-      const limitNum = parseInt(limit);
-      const offsetNum = parseInt(offset || "0");
-      products = products.slice(offsetNum, offsetNum + limitNum);
-    }
-
-    return NextResponse.json(products, {
-      headers: {
-        "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
-        // "Content-Encoding": "gzip", // Enable compression
-        "Content-Type": "application/json",
-      },
-    });
-  } catch (error) {
-    console.error("[GET /products]", error);
-    return NextResponse.json(
-      { error: "Failed to fetch products" },
-      { status: 500 }
-    );
-  }
-}
-
-// Enable revalidation every 5 minutes
-export const revalidate = 300;
-
-// =========================
-// POST /api/products
-// =========================
 export async function POST(req: Request) {
   try {
     const contentType = req.headers.get("content-type") || "";
@@ -88,52 +34,80 @@ export async function POST(req: Request) {
         old_price,
         discount_percentage,
         priority = 0,
-        sizes = [],
         media = [],
         colors = [],
         top_sale = false,
-        limited_ition, // backward compat typo handling (ignored)
+        limited_ition,
         limited_edition = false,
-        season = [],
         color,
         category_id = null,
         subcategory_id = null,
-        fabric_composition = "",
-        has_lining = false,
-        lining_description = "",
+        // CBD-specific fields
+        cbdContentMg = 0,
+        thcContentMg,
+        potency,
+        imageUrl,
+        stock = 0,
       } = body || {};
 
-      if (!name || typeof price !== "number") {
+      const numericPrice = Number(price);
+      if (!name || !Number.isFinite(numericPrice)) {
         return NextResponse.json(
-          { error: "Missing required fields: name, price" },
+          { error: "Missing or invalid required fields: name, price" },
           { status: 400 }
         );
       }
 
-      const product = await sqlPostProduct({
-        name,
-        description,
-        price,
-        old_price,
-        discount_percentage,
-        priority,
-        sizes: Array.isArray(sizes)
-          ? (sizes as (string | { size: string; stock?: number | string })[]).map((s) =>
-              typeof s === "string" ? { size: s, stock: 0 } : { size: s.size, stock: Number(s.stock ?? 0) }
-            )
-          : [],
-        media,
-        top_sale,
-        limited_edition:
-          typeof limited_ition === "boolean" ? limited_ition : limited_edition,
-        season,
-        color,
-        category_id,
-        subcategory_id,
-        fabric_composition,
-        has_lining,
-        lining_description,
-        colors,
+      const categoryId = category_id ? Number(category_id) : null;
+      if (!categoryId) {
+        return NextResponse.json(
+          { error: "Category is required" },
+          { status: 400 }
+        );
+      }
+
+      const normalizedColors = Array.isArray(colors)
+        ? colors.map((c: string | { label: string; hex?: string | null }) =>
+            typeof c === "string"
+              ? { label: c, hex: null }
+              : { label: c.label, hex: c.hex ?? null }
+          )
+        : [];
+
+      const product = await prisma.product.create({
+        data: {
+          name,
+          description,
+          price: numericPrice,
+          old_price: old_price ? Number(old_price) : null,
+          discount_percentage: discount_percentage
+            ? Number(discount_percentage)
+            : null,
+          priority: Number(priority || 0),
+          top_sale,
+          limited_edition:
+            typeof limited_ition === "boolean" ? limited_ition : limited_edition,
+          color,
+          category_id: categoryId,
+          subcategory_id: subcategory_id ? Number(subcategory_id) : null,
+          // CBD-specific fields
+          cbdContentMg: Number(cbdContentMg || 0),
+          thcContentMg: thcContentMg ? Number(thcContentMg) : null,
+          potency: potency || null,
+          imageUrl: imageUrl || null,
+          stock: Number(stock || 0),
+          media: {
+            create: Array.isArray(media)
+              ? media.map((m: { type: string; url: string }) => ({
+                  type: m.type,
+                  url: m.url,
+                }))
+              : [],
+          },
+          colors: {
+            create: normalizedColors,
+          },
+        },
       });
 
       return NextResponse.json(product, { status: 201 });
@@ -141,37 +115,24 @@ export async function POST(req: Request) {
 
     // Multipart form fallback
     const formData = await req.formData();
-
     const name = formData.get("name") as string;
     const price = Number(formData.get("price"));
-    const oldPrice = formData.get("old_price")
-      ? Number(formData.get("old_price"))
-      : null;
-    const discountPercentage = formData.get("discount_percentage")
-      ? Number(formData.get("discount_percentage"))
-      : null;
-    const priority = formData.get("priority")
-      ? Number(formData.get("priority"))
-      : 0;
+    const oldPrice = formData.get("old_price") ? Number(formData.get("old_price")) : null;
+    const discountPercentage = formData.get("discount_percentage") ? Number(formData.get("discount_percentage")) : null;
+    const priority = formData.get("priority") ? Number(formData.get("priority")) : 0;
     const description = formData.get("description") as string;
-    const sizesRaw = formData.get("sizes") as string;
     const images = formData.getAll("images") as File[];
     const topSale = formData.get("top_sale") === "true";
     const limitedEdition = formData.get("limited_edition") === "true";
     const color = formData.get("color")?.toString();
-    const seasonsRaw = formData.get("seasons") as string | null;
-    const season = seasonsRaw ? seasonsRaw.split(",").map((s) => s.trim()) : [];
-    const categoryId = formData.get("category_id")
-      ? Number(formData.get("category_id"))
-      : null;
-    const subcategoryId = formData.get("subcategory_id")
-      ? Number(formData.get("subcategory_id"))
-      : null;
-    const fabricComposition =
-      formData.get("fabric_composition")?.toString() || "";
-    const hasLining = formData.get("has_lining") === "true";
-    const liningDescription =
-      formData.get("lining_description")?.toString() || "";
+    const categoryId = formData.get("category_id") ? Number(formData.get("category_id")) : null;
+    const subcategoryId = formData.get("subcategory_id") ? Number(formData.get("subcategory_id")) : null;
+    // CBD-specific fields
+    const cbdContentMg = formData.get("cbdContentMg") ? Number(formData.get("cbdContentMg")) : 0;
+    const thcContentMg = formData.get("thcContentMg") ? Number(formData.get("thcContentMg")) : null;
+    const potency = formData.get("potency")?.toString() || null;
+    const imageUrl = formData.get("imageUrl")?.toString() || null;
+    const stock = formData.get("stock") ? Number(formData.get("stock")) : 0;
 
     if (!name || !price) {
       return NextResponse.json(
@@ -180,11 +141,20 @@ export async function POST(req: Request) {
       );
     }
 
+    if (!categoryId) {
+      return NextResponse.json(
+        { error: "Category is required" },
+        { status: 400 }
+      );
+    }
+
+    // Create the directory to store images
     const uploadDir = path.join(process.cwd(), "product-images");
     await mkdir(uploadDir, { recursive: true });
 
     const savedMedia: { type: "photo" | "video"; url: string }[] = [];
 
+    // Save the uploaded media (images/videos)
     for (const image of images) {
       const arrayBuffer = await image.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
@@ -196,38 +166,36 @@ export async function POST(req: Request) {
       await writeFile(filePath, buffer);
 
       const fileType = getFileType(image.type, image.name);
-      console.log(
-        `📁 Product file: ${image.name}, MIME: ${image.type}, Type: ${fileType}, URL: ${uniqueName}`
-      );
-
       savedMedia.push({ type: fileType, url: uniqueName });
     }
 
-    console.log("📦 Product media to save:", savedMedia);
-
-    const parsedSizes = JSON.parse(sizesRaw); // ["S", "M", "L"]
-
-    const product = await sqlPostProduct({
-      name,
-      description,
-      price,
-      old_price: oldPrice,
-      discount_percentage: discountPercentage,
-      priority,
-      top_sale: topSale,
-      limited_edition: limitedEdition,
-      season,
-      color,
-      category_id: categoryId,
-      subcategory_id: subcategoryId,
-      fabric_composition: fabricComposition,
-      has_lining: hasLining,
-      lining_description: liningDescription,
-      sizes: parsedSizes.map((size: string) => ({
-        size,
-        stock: 5,
-      })),
-      media: savedMedia,
+    // Prisma insertion
+    const product = await prisma.product.create({
+      data: {
+        name,
+        description,
+        price,
+        old_price: oldPrice,
+        discount_percentage: discountPercentage,
+        priority,
+        top_sale: topSale,
+        limited_edition: limitedEdition,
+        color,
+        category_id: categoryId,
+        subcategory_id: subcategoryId,
+        // CBD-specific fields
+        cbdContentMg,
+        thcContentMg,
+        potency,
+        imageUrl,
+        stock,
+        media: {
+          create: savedMedia.map((media) => ({
+            type: media.type,
+            url: media.url,
+          })),
+        },
+      },
     });
 
     return NextResponse.json(product, { status: 201 });

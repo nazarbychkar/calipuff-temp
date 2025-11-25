@@ -1,21 +1,20 @@
-// Mobile-optimized service worker for CHARS e-commerce
-const CACHE_NAME = 'chars-mobile-v3';
-const STATIC_CACHE = 'chars-static-v3';
-const DYNAMIC_CACHE = 'chars-dynamic-v3';
-const IMAGE_CACHE = 'chars-images-v3';
-const MOBILE_CACHE = 'chars-mobile-v3';
+// Mobile-optimized service worker for CALIPUFF e-commerce
+const CACHE_NAME = 'calipuff-mobile-v1';
+const STATIC_CACHE = 'calipuff-static-v1';
+const DYNAMIC_CACHE = 'calipuff-dynamic-v1';
+const IMAGE_CACHE = 'calipuff-images-v1';
+const MOBILE_CACHE = 'calipuff-mobile-v1';
 
 // Critical resources to cache immediately
 const STATIC_ASSETS = [
   '/',
   '/catalog',
-  '/images/light-theme/chars-logo-header-light.png',
-  '/images/Знімок екрана 2025-10-17 о 22.25.53.png', // Mobile hero image
-  '/images/dark-theme/chars-logo-header-dark.png',
+  '/images/light-theme/calipuff-logo-header-light.svg',
+  '/images/dark-theme/calipuff-logo-header-dark.svg',
   '/images/location-icon.svg',
   '/images/email-icon.svg',
   '/images/instagram-icon.svg',
-  '/images/facebook-icon.svg'
+  '/images/telegram-icon.svg'
   // Video only cached on desktop, Why Choose Us images load on scroll
 ];
 

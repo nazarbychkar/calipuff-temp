@@ -1,15 +1,19 @@
 import { NextResponse } from "next/server";
 import { readdir, unlink } from "fs/promises";
 import path from "path";
-import { sql } from "@/lib/sql"; // adjust to your actual path
+import { prisma } from "@/lib/sql";
 
 export async function POST() {
   try {
     const mediaDir = path.join(process.cwd(), "product-images");
     const files = await readdir(mediaDir);
 
-    const usedMedia = await sql`SELECT url FROM product_media;`;
-    const usedFiles = new Set(usedMedia.map((m) => path.basename(m.url)));
+    const usedMedia = await prisma.productMedia.findMany({
+      select: { url: true },
+    });
+    const usedFiles = new Set(
+      usedMedia.map((m) => path.basename(m.url ?? ""))
+    );
 
     const deletedFiles: string[] = [];
 

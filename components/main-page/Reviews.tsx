@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { useAppContext } from "@/lib/GeneralProvider";
+import { BRAND } from "@/lib/brand";
 
 export default function Reviews() {
   const { isDark } = useAppContext();
@@ -22,16 +23,15 @@ export default function Reviews() {
           наших клієнтів
         </div>
 
-        <div className="text-base lg:text-2xl font-normal font-['Arial'] leading-relaxed">
-          Більше відгуків дивіться у<br />
-          нашому{" "}
+        <div className="text-base lg:text-2xl font-normal font-['Poppins'] leading-relaxed">
+          Більше історій з Wave Lab шукайте у{" "}
           <Link
-            href="https://www.instagram.com/chars_ua_brand/"
+            href={BRAND.socials.instagram}
             className="underline italic hover:text-blue-600 transition-colors"
           >
             Instagram
           </Link>{" "}
-          профілі
+          та Telegram-спільноті {BRAND.name}.
         </div>
       </div>
     </section>

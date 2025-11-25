@@ -10,7 +10,14 @@ interface Product {
 
 async function getTopSaleProducts(): Promise<Product[]> {
   try {
-    return await sqlGetTopSaleProducts();
+    const products = await sqlGetTopSaleProducts();
+
+    return products.map((product: any) => ({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      first_media: product.media?.[0] ?? null,
+    }));
   } catch (error) {
     console.error("Error fetching top sale products:", error);
     return [];
@@ -19,7 +26,7 @@ async function getTopSaleProducts(): Promise<Product[]> {
 
 export default async function TopSaleServer() {
   const products = await getTopSaleProducts();
-  
+
   return <TopSaleClient products={products} />;
 }
 

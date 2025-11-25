@@ -12,7 +12,7 @@ interface Product {
   discount_percentage?: number;
   media?: { url: string; type: string }[];
   first_media?: { url: string; type: string } | null;
-  sizes?: { size: string; stock: string }[];
+  sizes?: { size: string; stock: number }[];
   color?: string;
   colors?: { label: string; hex?: string | null }[];
   top_sale?: boolean;

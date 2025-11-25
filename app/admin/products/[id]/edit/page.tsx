@@ -12,22 +12,6 @@ import TextArea from "@/components/admin/form/input/TextArea";
 import DropzoneComponent from "@/components/admin/form/form-elements/DropZone";
 import ToggleSwitch from "@/components/admin/form/ToggleSwitch";
 
-const multiOptions = [
-  { value: "ONESIZE", text: "ONESIZE", selected: false },
-  { value: "XL", text: "XL", selected: false },
-  { value: "L", text: "L", selected: false },
-  { value: "M", text: "M", selected: false },
-  { value: "S", text: "S", selected: false },
-  { value: "XS", text: "XS", selected: false },
-];
-
-const seasonOptions = [
-  { value: "Літо", text: "Літо", selected: false },
-  { value: "Весна", text: "Весна", selected: false },
-  { value: "Зима", text: "Зима", selected: false },
-  { value: "Осінь", text: "Осінь", selected: false },
-];
-
 type MediaFile = {
   id?: number; // for existing ones
   file?: File; // for new uploads
@@ -48,17 +32,18 @@ export default function EditProductPage() {
     oldPrice: "",
     discountPercentage: "",
     priority: "0",
-    sizes: [] as string[],
     media: [] as { type: string; url: string }[],
     topSale: false,
     limitedEdition: false,
-    season: [] as string[],
     color: "",
     categoryId: null as number | null,
     subcategoryId: null as number | null,
-    fabricComposition: "",
-    hasLining: false,
-    liningDescription: "",
+    // CBD-specific fields
+    cbdContentMg: "0",
+    thcContentMg: "",
+    potency: "",
+    imageUrl: "",
+    stock: "0",
   });
 
   const [images, setImages] = useState<File[]>([]);
@@ -80,7 +65,6 @@ export default function EditProductPage() {
   const [customColorLabel, setCustomColorLabel] = useState("");
   const [customColorHex, setCustomColorHex] = useState("#000000");
   const [colors, setColors] = useState<{ label: string; hex?: string }[]>([]);
-  const [sizeStocks, setSizeStocks] = useState<Record<string, number>>({});
 
   useEffect(() => {
     async function fetchData() {
@@ -107,27 +91,19 @@ export default function EditProductPage() {
           oldPrice: String(productData.old_price || ""),
           discountPercentage: String(productData.discount_percentage || ""),
           priority: String(productData.priority || 0),
-          sizes: productData.sizes.map((s: { size: string }) => s.size),
           media: productData.media,
           topSale: productData.top_sale,
           limitedEdition: productData.limited_edition,
-          season: productData.season,
           color: productData.color,
           categoryId: productData.category_id,
           subcategoryId: productData.subcategory_id || null,
-          fabricComposition: productData.fabric_composition || "",
-          hasLining: productData.has_lining || false,
-          liningDescription: productData.lining_description || "",
+          // CBD-specific fields
+          cbdContentMg: String(productData.cbdContentMg || 0),
+          thcContentMg: productData.thcContentMg ? String(productData.thcContentMg) : "",
+          potency: productData.potency || "",
+          imageUrl: productData.imageUrl || "",
+          stock: String(productData.stock || 0),
         });
-
-        // Initialize sizeStocks from productData.sizes
-        const initialStocks: Record<string, number> = {};
-        (productData.sizes || []).forEach(
-          (s: { size: string; stock?: number }) => {
-            initialStocks[s.size] = typeof s.stock === "number" ? s.stock : 0;
-          }
-        );
-        setSizeStocks(initialStocks);
 
         setCategoryOptions(categoryData);
         setColors(productData.colors || []);
@@ -314,18 +290,19 @@ export default function EditProductPage() {
             ? Number(formData.discountPercentage)
             : null,
           priority: Number(formData.priority),
-          sizes: formData.sizes.map((s) => ({ size: s, stock: sizeStocks[s] ?? 0 })),
           media: updatedMedia,
           top_sale: formData.topSale,
           limited_edition: formData.limitedEdition,
-          season: formData.season,
           color: formData.color,
           colors,
           category_id: formData.categoryId,
           subcategory_id: formData.subcategoryId,
-          fabric_composition: formData.fabricComposition,
-          has_lining: formData.hasLining,
-          lining_description: formData.liningDescription,
+          // CBD-specific fields
+          cbdContentMg: Number(formData.cbdContentMg || 0),
+          thcContentMg: formData.thcContentMg ? Number(formData.thcContentMg) : null,
+          potency: formData.potency || null,
+          imageUrl: formData.imageUrl || null,
+          stock: Number(formData.stock || 0),
         }),
       });
 
@@ -400,52 +377,6 @@ export default function EditProductPage() {
                 />
 
                 <Label>Розміри</Label>
-                <MultiSelect
-                  label="Розміри"
-                  options={multiOptions}
-                  defaultSelected={formData.sizes}
-                  onChange={(values: string[]) => {
-                    // Update selected sizes
-                    handleChange("sizes", values);
-                    // Ensure stocks exist for any newly added size
-                    setSizeStocks((prev) => {
-                      const next = { ...prev };
-                      values.forEach((sz: string) => {
-                        if (next[sz] === undefined) next[sz] = 0;
-                      });
-                      // Remove stocks for sizes no longer selected
-                      Object.keys(next).forEach((sz) => {
-                        if (!values.includes(sz)) delete (next as Record<string, number>)[sz];
-                      });
-                      return next;
-                    });
-                  }}
-                />
-
-                {/* Per-size stock editor */}
-                {formData.sizes?.length > 0 && (
-                  <div className="mt-3 space-y-2">
-                    <Label>Кількість по розмірах</Label>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                      {formData.sizes.map((sz) => (
-                        <div key={sz} className="flex items-center gap-2 border rounded px-2 py-1">
-                          <span className="min-w-10 text-sm font-medium">{sz}</span>
-                          <input
-                            type="number"
-                            min={0}
-                            value={sizeStocks[sz] ?? 0}
-                            onChange={(e) => {
-                              const val = Math.max(0, Number(e.target.value) || 0);
-                              setSizeStocks((prev) => ({ ...prev, [sz]: val }));
-                            }}
-                            className="w-20 border rounded px-2 py-1 text-sm dark:bg-gray-800 dark:text-white"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
                 <Label>Категорія</Label>
                 <select
                   value={formData.categoryId ?? ""}
@@ -488,13 +419,55 @@ export default function EditProductPage() {
                   </>
                 )}
 
-                <Label>Cезон</Label>
-                <MultiSelect
-                  label="Сезон"
-                  options={seasonOptions}
-                  defaultSelected={formData.season}
-                  onChange={(values) => handleChange("season", values)}
-                />
+                {/* CBD-specific fields */}
+                <div className="border rounded-lg p-4 space-y-4 bg-gray-50 dark:bg-gray-800/50">
+                  <h3 className="text-lg font-semibold mb-4">CBD Параметри</h3>
+                  <div>
+                    <Label>CBD вміст (мг)</Label>
+                    <Input
+                      type="number"
+                      value={formData.cbdContentMg}
+                      onChange={(value) => handleChange("cbdContentMg", value)}
+                      placeholder="0"
+                    />
+                  </div>
+                  <div>
+                    <Label>THC вміст (мг) - опціонально</Label>
+                    <Input
+                      type="number"
+                      value={formData.thcContentMg}
+                      onChange={(value) => handleChange("thcContentMg", value)}
+                      placeholder="0"
+                    />
+                  </div>
+                  <div>
+                    <Label>Потенція</Label>
+                    <Input
+                      type="text"
+                      value={formData.potency}
+                      onChange={(value) => handleChange("potency", value)}
+                      placeholder="Наприклад: 500mg, 1000mg"
+                    />
+                  </div>
+                  <div>
+                    <Label>URL зображення (опціонально)</Label>
+                    <Input
+                      type="text"
+                      value={formData.imageUrl}
+                      onChange={(value) => handleChange("imageUrl", value)}
+                      placeholder="https://example.com/image.jpg"
+                    />
+                  </div>
+                  <div>
+                    <Label>Сток (кількість)</Label>
+                    <Input
+                      type="number"
+                      value={formData.stock}
+                      onChange={(value) => handleChange("stock", value)}
+                      placeholder="0"
+                    />
+                  </div>
+                </div>
 
                 <div className="space-y-2">
                   <Label>Кольори</Label>
@@ -579,41 +552,6 @@ export default function EditProductPage() {
                 </div>
 
                 {/* Блок: Склад тканини і Підкладка */}
-                <div className="border rounded-lg p-4 space-y-4 bg-gray-50 dark:bg-gray-800/50 mt-4">
-                  <div>
-                    <Label>Склад тканини</Label>
-                    <TextArea
-                      value={formData.fabricComposition}
-                      onChange={(value) =>
-                        handleChange("fabricComposition", value)
-                      }
-                      rows={3}
-                      placeholder="Наприклад: 80% бавовна, 20% поліестер"
-                    />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <Label className="mb-0">Підкладка?</Label>
-                    <ToggleSwitch
-                      enabled={formData.hasLining}
-                      setEnabled={(value) => handleChange("hasLining", value)}
-                      label="Has Lining"
-                    />
-                  </div>
-                  {formData.hasLining && (
-                    <div>
-                      <Label>Опис підкладки</Label>
-                      <TextArea
-                        value={formData.liningDescription}
-                        onChange={(value) =>
-                          handleChange("liningDescription", value)
-                        }
-                        rows={2}
-                        placeholder="Опис підкладки товару"
-                      />
-                    </div>
-                  )}
-                </div>
-
                 <div className="flex items-center justify-between mt-4">
                   <Label className="mb-0">Топ продаж?</Label>
                   <ToggleSwitch

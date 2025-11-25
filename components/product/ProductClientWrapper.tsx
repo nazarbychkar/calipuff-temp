@@ -12,7 +12,7 @@ interface ProductClientWrapperProps {
     discount_percentage?: number;
     description?: string;
     media?: { url: string; type: string }[];
-    sizes?: { size: string; stock: string }[];
+    sizes?: { size: string; stock: number }[];
     colors?: { label: string; hex?: string | null }[];
     fabric_composition?: string;
     has_lining?: boolean;

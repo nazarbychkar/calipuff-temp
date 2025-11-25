@@ -3,6 +3,7 @@
 import { useAppContext } from "@/lib/GeneralProvider";
 import Link from "next/link";
 import Image from "next/image";
+import { BRAND } from "@/lib/brand";
 
 export default function SocialMedia() {
   const { isDark } = useAppContext();
@@ -34,20 +35,20 @@ export default function SocialMedia() {
         <div className="flex flex-col gap-10 m-8 lg:ml-25 lg:m-18">
           <div className="flex flex-col">
             <span className="text-stone-500 text-5xl lg:text-8xl font-normal font-['Inter']">
-              Ми ближче,{" "}
+              {BRAND.tagline}
             </span>
             <span className="text-5xl lg:text-8xl font-normal font-['Inter']">
-              ніж здається!
+              Мережа California Wave
             </span>
           </div>
 
-          <div className="border-b lg:border-0 lg:w-[465px] justify-center text-lg lg:text-3xl font-normal font-['Inter'] capitalize leading-9">
-            Лімітована колекція — для тих кому важлива унікальність.
+          <div className="border-b lg:border-0 lg:w-[465px] justify-center text-lg lg:text-3xl font-normal font-['Poppins'] leading-9">
+            Stay tuned: нові хвилі смаку презентуємо спочатку в соцмережах і Telegram-каналі партнерів.
           </div>
 
           <div className="flex justify-start gap-10 lg:justify-between items-center w-full lg:w-115">
             <Link
-              href="https://www.tiktok.com/"
+              href={BRAND.socials.tiktok}
               className={`w-60 h-12 md:w-80 md:h-16 text-center flex items-center ${
                 isDark ? "bg-stone-100 text-black" : "bg-stone-900 text-white"
               } justify-center text-base md:text-2xl font-normal font-['Inter'] uppercase leading-none tracking-tight`}
@@ -67,7 +68,7 @@ export default function SocialMedia() {
 
           <div className="flex justify-start gap-10 lg:justify-between items-center w-full lg:w-115 mt-4 md:mt-0">
             <Link
-              href="https://www.instagram.com/chars_ua_brand/"
+              href={BRAND.socials.instagram}
               className={`w-60 h-12 md:w-80 md:h-16 text-center flex items-center ${
                 isDark ? "bg-stone-100 text-black" : "bg-stone-900 text-white"
               } justify-center text-base md:text-2xl font-normal font-['Inter'] uppercase leading-none tracking-tight`}
@@ -86,6 +87,12 @@ export default function SocialMedia() {
               alt={"instagram icon"}
             />
           </div>
+          <Link
+            href={BRAND.socials.telegram}
+            className="text-base lg:text-xl underline decoration-dotted hover:opacity-80 transition-opacity"
+          >
+            Telegram-спільнота для партнерів
+          </Link>
         </div>
       </div>
     </section>

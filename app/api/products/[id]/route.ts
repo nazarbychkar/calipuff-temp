@@ -21,11 +21,11 @@ export async function GET(
 
     const product = await sqlGetProduct(id);
 
-    if (!product || product.length === 0) {
+    if (!product) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
-    return NextResponse.json(product[0]);
+    return NextResponse.json(product);
   } catch (error) {
     console.error("[GET /products/:id]", error);
     return NextResponse.json(
@@ -53,20 +53,16 @@ export async function PUT(
 
     const body = await req.json();
 
-    if (!body.name || !body.price) {
+    const priceValue = Number(body.price);
+    if (!body.name || !Number.isFinite(priceValue)) {
       return NextResponse.json(
-        { error: "Missing required fields: name, price" },
+        { error: "Missing or invalid required fields: name, price" },
         { status: 400 }
       );
     }
 
     const topSale = body.top_sale === true;
     const limitedEdition = body.limited_edition === true;
-    const season = Array.isArray(body.season)
-      ? body.season
-      : typeof body.season === "string"
-      ? [body.season]
-      : [];
     const categoryId = body.category_id ? Number(body.category_id) : null;
     const subcategoryId = body.subcategory_id
       ? Number(body.subcategory_id)
@@ -77,30 +73,38 @@ export async function PUT(
       ? Number(body.discount_percentage)
       : null;
     const priority = body.priority ? Number(body.priority) : 0;
-    const hasLining = body.has_lining === true;
-    const liningDescription = body.lining_description || ""; // Add this line to handle it
+    // CBD-specific fields
+    const cbdContentMg = body.cbdContentMg ? Number(body.cbdContentMg) : 0;
+    const thcContentMg = body.thcContentMg ? Number(body.thcContentMg) : null;
+    const potency = body.potency || null;
+    const imageUrl = body.imageUrl || null;
+    const stock = body.stock ? Number(body.stock) : 0;
+
+    if (!categoryId) {
+      return NextResponse.json(
+        { error: "Category is required" },
+        { status: 400 }
+      );
+    }
 
     await sqlPutProduct(id, {
       name: body.name,
       description: body.description,
-      price: body.price,
+      price: priceValue,
       old_price: oldPrice,
       discount_percentage: discountPercentage,
       priority,
       top_sale: topSale,
       limited_edition: limitedEdition,
-      season,
       color,
       category_id: categoryId,
       subcategory_id: subcategoryId,
-      sizes: Array.isArray(body.sizes)
-        ? body.sizes.map(
-            (s: string | { size: string; stock?: number }) =>
-              typeof s === "string"
-                ? { size: s, stock: 0 }
-                : { size: s.size, stock: Number(s.stock ?? 0) }
-          )
-        : [],
+      // CBD-specific fields
+      cbdContentMg,
+      thcContentMg,
+      potency,
+      imageUrl,
+      stock,
       media: Array.isArray(body.media) ? body.media : [],
       colors: Array.isArray(body.colors)
         ? body.colors.map((c: { label: string; hex?: string | null }) => ({
@@ -108,9 +112,6 @@ export async function PUT(
             hex: c.hex || null,
           }))
         : [],
-      has_lining: hasLining,
-      fabric_composition: body.fabric_composition,
-      lining_description: liningDescription, // Pass the lining_description here
     });
 
     return NextResponse.json({ updated: true });

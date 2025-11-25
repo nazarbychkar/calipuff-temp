@@ -1,52 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## CALIPUFF — Каліфорнійська затяжка 🌴
+
+CALIPUFF — український бренд легальних вейпів, ліквідів і картриджів без ТГК. Ми переносимо атмосферу California Wave & Sun у безпечний досвід, підтверджений європейськими COA-сертифікатами.
+
+### Брендова рамка
+- **Слоган:** Каліфорнійська затяжка 🌴  
+- **Стиль:** Wave & Sun — свобода, тепло, хвиля, сонце, відпочинок  
+- **Палітра:** `#FFA500` (sunset), `#FFD700` (dune), `#40E0D0` (tide)  
+- **Шрифти:** Montserrat + Poppins  
+- **Графіка:** хвилі, сонце, пляжні градієнти, енергія та легкість
+
+### Місія
+1. Дати українському ринку легальний формат вейпів із настроєм узбережжя Каліфорнії.  
+2. Поєднати дизайн slow living та функціональність Wave Lab у Києві.  
+3. Гарантувати 0% ТГК та прозорість через COA-сертифікати для кожної партії.
+
+---
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Відкрийте [http://localhost:3000](http://localhost:3000) і редагуйте файли в `app/(site)` або `components/` — Hot Reload оновить сторінку автоматично.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Production
+```bash
+pnpm build
+pnpm start
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## Поточний roadmap
+- [ ] Додати сортування замовлень за статусами в адмінці.
+- [ ] Винести зберігання зображень у зовнішнє сховище, щоб уникати кешування після білду.
+- [ ] Додати сторінку з COA-сертифікатами для партнерів.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Environment
+```
+DATABASE_URL="postgres://..."
+ADMIN_USER=""
+ADMIN_PASS=""
+BOT_TOKEN=""
+CHAT_ID=""
+NEXT_PUBLIC_MONO_TOKEN=""
+NEXT_PUBLIC_NOVA_POSHTA_API_KEY=""
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-# chars
-
-TODO:
-
-- Думаю додати сортування замовлень по статусах
-- пофіксить, що на клієнті інша адреса завантаження картинок. Тут коротше білдиться сайт і нові файли ж ніяк не отримає в уже збілдженому форматі. Тому треба або перезапускать серв, або вигружати кудись.
-
-.env:
-DATABASE_URL="?"
-ADMIN_USER="?"
-ADMIN_PASS="?"
-BOT_TOKEN="?"
-CHAT_ID="?"
-NEXT_PUBLIC_MONO_TOKEN="?"
-NEXT_PUBLIC_NOVA_POSHTA_API_KEY="?"
+Цей проєкт зібраний на Next.js App Router і використовує [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) для оптимізації Montserrat / Poppins. Деплой рекомендовано виконувати на [Vercel](https://vercel.com/). Додаткову інформацію шукайте у [документації Next.js](https://nextjs.org/docs).

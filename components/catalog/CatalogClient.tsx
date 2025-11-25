@@ -14,7 +14,7 @@ interface Product {
   name: string;
   price: number;
   first_media?: { url: string; type: string } | null;
-  sizes?: { size: string; stock: string }[];
+  sizes?: { size: string; stock: number }[];
   color?: string;
   discount_percentage?: number;
 }

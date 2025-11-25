@@ -13,8 +13,8 @@ export const revalidate = 300; // ISR every 5 minutes
 // Generate static params for popular products
 export async function generateStaticParams() {
   try {
-    const { sqlGetAllProducts } = await import("@/lib/sql");
-    const products = await sqlGetAllProducts();
+    const { prisma } = await import("@/lib/sql");
+    const products = await prisma.product.findMany();
     
     // Generate static pages for all products (or limit to top N)
     return products.slice(0, 50).map((product: { id: number }) => ({

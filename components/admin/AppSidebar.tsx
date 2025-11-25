@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSidebar } from "@/lib/SidebarContext";
+import { BRAND } from "@/lib/brand";
 import {
   ChevronDownIcon,
   GridIcon,
@@ -297,23 +298,23 @@ const AppSidebar: React.FC = () => {
             <>
               <Image
                 className="dark:hidden"
-                src="/images/light-theme/chars-logo-header-light.png"
-                alt="Logo"
+                src="/images/light-theme/calipuff-logo-header-light.svg"
+                alt={`${BRAND.name} logo`}
                 width={150}
                 height={40}
               />
               <Image
                 className="hidden dark:block"
-                src="/images/dark-theme/chars-logo-header-dark.png"
-                alt="Logo"
+                src="/images/dark-theme/calipuff-logo-header-dark.svg"
+                alt={`${BRAND.name} logo`}
                 width={150}
                 height={40}
               />
             </>
           ) : (
             <Image
-              src="/images/light-theme/chars-logo-header-light.png"
-              alt="Logo"
+              src="/images/light-theme/calipuff-logo-header-light.svg"
+              alt={`${BRAND.name} logo`}
               width={32}
               height={32}
             />

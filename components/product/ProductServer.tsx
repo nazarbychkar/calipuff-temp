@@ -11,7 +11,7 @@ interface Product {
   discount_percentage?: number;
   description?: string;
   media?: { url: string; type: string }[];
-  sizes?: { size: string; stock: string }[];
+  sizes?: { size: string; stock: number }[];
   colors?: { label: string; hex?: string | null }[];
   fabric_composition?: string;
   has_lining?: boolean;
@@ -20,8 +20,7 @@ interface Product {
 
 async function getProduct(id: string): Promise<Product | null> {
   try {
-    const products = await sqlGetProduct(Number(id));
-    return products[0] || null;
+    return await sqlGetProduct(Number(id));
   } catch (error) {
     console.error("Error fetching product:", error);
     return null;

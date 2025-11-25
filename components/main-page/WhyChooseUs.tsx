@@ -1,131 +1,85 @@
 "use client";
 
 import { useAppContext } from "@/lib/GeneralProvider";
-import Image from "next/image";
-// import { useState, useEffect, useRef } from "react";
+import { BRAND } from "@/lib/brand";
 
-// TODO: somehow with this optimizations images didn't load on first load,
-// need to fix this, cause optimization is as valuable as these pictures.
+const WHY_US = [
+  {
+    title: "Легальні вейпи без ТГК",
+    text: "Кожна формула проходить сертифікацію COA в Європі, аби ви відчували лише смак і свободу.",
+    accent: BRAND.palette.sunset,
+  },
+  {
+    title: "Wave Lab у Києві",
+    text: "Тестуємо нові смаки в живому форматі — тут народжуються сонячні лімітовані серії.",
+    accent: BRAND.palette.dune,
+  },
+  {
+    title: "Тонкі смаки з Каліфорнії",
+    text: "Використовуємо мікс фруктів, трав та спецій, що нагадує океанський бриз і теплий вітер.",
+    accent: BRAND.palette.tide,
+  },
+  {
+    title: "Відповідальність перед ринком",
+    text: "Транспарентний склад, онлайн-доступ до лабораторних звітів і гаряча підтримка для партнерів.",
+    accent: "#ffffff",
+  },
+  {
+    title: "Гнучкі бізнес-моделі",
+    text: "Франшиза, pop-up бари, корпоративні подарунки — обирайте формат співпраці та масштабуйтеся.",
+    accent: "#111111",
+  },
+];
 
 export default function WhyChooseUs() {
   const { isDark } = useAppContext();
-  // const [visibleItems, setVisibleItems] = useState<Set<number>>(new Set());
-  // const observerRef = useRef<IntersectionObserver | null>(null);
-
-  const info = [
-    {
-      pic: "/images/IMG_0043.JPG",
-      top_text: "Власне виробництво",
-      bottom_text:
-        "Ми контролюємо кожен етап — від викрійки до останнього стібка.",
-    },
-    {
-      pic: "/images/IMAGE-2025-10-17_21-48-37.jpg",
-      top_text: "Пошиття під індивідуальні параметри",
-      bottom_text:
-        "Ми не створюємо 'середньостатистичний' одяг — ми створюємо твій.",
-    },
-    {
-      pic: "/images/IMG_0045.JPG",
-      top_text: "Створення образу за 24 години",
-      bottom_text:
-        "У нас немає 'довгого очікування' — є уважність до твого часу.",
-    },
-    {
-      pic: "/images/IMAGE-2025-10-17_21-48-55.jpg",
-      top_text: "Якість котру відчуваєш",
-      bottom_text:
-        "Кожен виріб проходить через руки майстра, а не лише машину.",
-    },
-    {
-      pic: "/images/IMG_0042.JPG",
-      top_text: "Локальний український бренд",
-      bottom_text:
-        "Ми підтримуємо локальне виробництво, чесну працю та створюємо речі, які говорять тихо, але точно.",
-    },
-  ];
-
-  // Intersection Observer for progressive loading
-  // useEffect(() => {
-  //   observerRef.current = new IntersectionObserver(
-  //     (entries) => {
-  //       entries.forEach((entry) => {
-  //         if (entry.isIntersecting) {
-  //           const index = parseInt(
-  //             entry.target.getAttribute("data-index") || "0"
-  //           );
-  //           setVisibleItems((prev) => new Set([...prev, index]));
-  //         }
-  //       });
-  //     },
-  //     {
-  //       rootMargin: "50px 0px", // Start loading 50px before entering viewport
-  //       threshold: 0.1,
-  //     }
-  //   );
-
-  //   return () => {
-  //     if (observerRef.current) {
-  //       observerRef.current.disconnect();
-  //     }
-  //   };
-  // }, []);
-
-  // const itemRef = (index: number) => (el: HTMLDivElement | null) => {
-  //   if (el && observerRef.current) {
-  //     el.setAttribute("data-index", index.toString());
-  //     observerRef.current.observe(el);
-  //   }
-  // };
 
   return (
     <section
-      // h-[2659px]
       className={`max-w-[1920px] mx-auto w-full relative ${
-        isDark ? "" : "bg-[#e3dfd7]"
-      } overflow-hidden`}
+        isDark ? "bg-[#050505]" : "bg-[#fef9f2]"
+      } overflow-hidden py-16`}
     >
-      <div className="flex flex-col lg:flex-row lg:justify-between items-start lg:items-center m-10">
-        <div className="text-start lg:text-center justify-center text-3xl lg:text-5xl font-normal font-['Inter'] uppercase">
-          Чому обирають нас
+      <div className="flex flex-col lg:flex-row lg:justify-between items-start lg:items-center px-6 md:px-12">
+        <div className="text-start lg:text-center text-3xl lg:text-5xl font-semibold font-['Montserrat'] uppercase">
+          Чому обирають {BRAND.name}
         </div>
-        <div className=" justify-center opacity-70 lg:text-xl font-normal font-['Inter'] capitalize leading-normal">
-          Chars — коли естетика не потребує зайвих слів.
+        <div className="opacity-80 lg:text-xl font-['Poppins'] leading-normal max-w-xl mt-6 lg:mt-0">
+          Каліфорнійська хвиля свободи, контроль якості українського виробництва та сервіс, який говорить мовою бізнесу.
         </div>
       </div>
 
-      <div className="flex flex-col p-4 sm:p-10">
-        {info.map((item, i) => (
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-10 px-6 md:px-12 mt-10">
+        {WHY_US.map((item, i) => (
           <div
-            key={i}
-            // ref={itemRef(i)}
-            className="border-y"
+            key={item.title}
+            className="border border-white/10 rounded-3xl overflow-hidden shadow-lg bg-white/80 backdrop-blur"
           >
-            <div className="flex justify-between gap-3 sm:gap-5 m-3 sm:m-5 lg:m-15">
-              <div className="flex flex-col lg:flex-row gap-3 lg:gap-15 items-center">
-                <Image
-                  className="w-full md:w-[589px] md:h-80 object-cover"
-                  src={item.pic}
-                  alt={`image-${i}`}
-                  width={589}
-                  height={320}
-                  sizes="(max-width: 420px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 70vw, 589px"
-                  quality={i < 2 ? 85 : 75} // Higher quality for first 2 images
-                  loading={i < 2 ? "eager" : "lazy"}
-                  placeholder="blur"
-                  blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+            <div
+              className="h-40 w-full relative"
+              style={{
+                background: `radial-gradient(circle at 30% 30%, ${item.accent} 0%, transparent 60%), linear-gradient(135deg, rgba(255,255,255,0.6), rgba(255,255,255,0.1))`,
+              }}
+            >
+              <svg className="absolute inset-0 w-full h-full opacity-30" preserveAspectRatio="none">
+                <path
+                  d="M0 120 Q 80 60 160 120 T 320 120"
+                  stroke="#ffffff"
+                  strokeWidth="2"
+                  fill="none"
                 />
-                <div className="w-full justify-center text-xl sm:text-3xl lg:text-5xl font-normal font-['Inter'] lowercase">
-                  {item.top_text} <br />
-                  <span className="justify-center text-sm sm:text-lg lg:text-xl font-normal font-['Inter'] capitalize">
-                    {item.bottom_text}
-                  </span>
-                </div>
-              </div>
-
-              <div className="text-center justify-center text-xl sm:text-2xl lg:text-4xl font-normal font-['Inter'] lowercase">
+              </svg>
+              <span className="absolute top-4 right-6 text-4xl font-bold text-white/80">
                 {`0${i + 1}`}
+              </span>
+            </div>
+            <div className="p-6 lg:p-8 space-y-4">
+              <div className="text-xl lg:text-2xl font-semibold font-['Montserrat']">
+                {item.title}
               </div>
+              <p className="text-base lg:text-xl font-['Poppins'] text-stone-600">
+                {item.text}
+              </p>
             </div>
           </div>
         ))}
@@ -133,3 +87,4 @@ export default function WhyChooseUs() {
     </section>
   );
 }
+

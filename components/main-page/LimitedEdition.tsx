@@ -7,6 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getProductImageSrc } from "@/lib/getFirstProductImage";
 import { useProducts } from "@/lib/useProducts";
+import { BRAND } from "@/lib/brand";
 
 // Define a fallback (template) product
 const templateProduct = {
@@ -43,11 +44,11 @@ const products = useMemo(() => {
     <section className="max-w-[1920px] w-full mx-auto relative m-10">
       <div className="flex flex-col m-10 gap-10">
         <div className="flex flex-col gap-4 md:gap-0 md:flex-row justify-between border-b-2 py-10">
-          <div className="text-left justify-center text-5xl font-normal font-['Inter'] uppercase">
-            Лімітована колекція від CHARS
+          <div className="text-left justify-center text-5xl font-normal font-['Montserrat'] uppercase">
+            Лімітована хвиля {BRAND.name}
           </div>
-          <div className="justify-center opacity-70 text-xl font-normal font-['Inter'] capitalize leading-normal">
-            Лімітована колекція — для тих кому важлива унікальність.
+          <div className="justify-center opacity-80 text-xl font-normal font-['Poppins'] leading-normal max-w-2xl">
+            Каліфорнійські смаки, що виходять невеликими серіями: насичені солодкі хвилі вдень та освіжаючі вечірні бризи.
           </div>
         </div>
 

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { sqlGetCategory, sqlPutCategory, sqlDeleteCategory } from "@/lib/sql";
+import { prisma } from "@/lib/sql";
 
 // ========================
 // GET /api/categories/:id
@@ -14,15 +14,15 @@ export async function GET(
   }
 
   try {
-    const result = await sqlGetCategory(id);
-    if (!result.length) {
+    const category = await prisma.category.findUnique({ where: { id } });
+    if (!category) {
       return NextResponse.json(
         { error: "Category not found" },
         { status: 404 }
       );
     }
 
-    return NextResponse.json(result[0]);
+    return NextResponse.json(category);
   } catch (error) {
     console.error("[GET /api/categories/:id]", error);
     return NextResponse.json(
@@ -39,12 +39,15 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const id = Number((await params).id);
-  if (isNaN(id)) {
-    return NextResponse.json({ error: "Invalid category ID" }, { status: 400 });
-  }
-
   try {
+    const id = Number((await params).id);
+    if (isNaN(id)) {
+      return NextResponse.json(
+        { error: "Invalid category ID" },
+        { status: 400 }
+      );
+    }
+
     const body = await req.json();
     const { name, priority } = body;
 
@@ -54,20 +57,17 @@ export async function PUT(
         { status: 400 }
       );
     }
-    // Optional: Validate priority is a number (integer >= 0)
-    if (
-      priority !== undefined &&
-      (typeof priority !== "number" || priority < 0)
-    ) {
-      return NextResponse.json(
-        { error: "Priority must be a non-negative number" },
-        { status: 400 }
-      );
-    }
 
-    // Default priority to 0 if undefined
-    const updated = await sqlPutCategory(id, name, priority ?? 0);
-    return NextResponse.json(updated);
+    // Update the category in the database
+    const updatedCategory = await prisma.category.update({
+      where: { id },
+      data: {
+        name,
+        priority,
+      },
+    });
+
+    return NextResponse.json(updatedCategory);
   } catch (error) {
     console.error("[PUT /api/categories/:id]", error);
     return NextResponse.json(
@@ -77,21 +77,25 @@ export async function PUT(
   }
 }
 
-// ========================
-// DELETE /api/categories/:id
-// ========================
 export async function DELETE(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const id = Number((await params).id);
-  if (isNaN(id)) {
-    return NextResponse.json({ error: "Invalid category ID" }, { status: 400 });
-  }
-
   try {
-    await sqlDeleteCategory(id);
-    return NextResponse.json({ deleted: true });
+    const id = Number((await params).id);
+    if (isNaN(id)) {
+      return NextResponse.json(
+        { error: "Invalid category ID" },
+        { status: 400 }
+      );
+    }
+
+    // Delete the category from the database
+    await prisma.category.delete({
+      where: { id },
+    });
+
+    return NextResponse.json({ message: "Category deleted successfully" });
   } catch (error) {
     console.error("[DELETE /api/categories/:id]", error);
     return NextResponse.json(

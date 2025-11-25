@@ -4,6 +4,7 @@ import { useAppContext } from "@/lib/GeneralProvider";
 import { Montserrat } from "next/font/google";
 import Link from "next/link";
 import Image from "next/image";
+import { BRAND } from "@/lib/brand";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -20,7 +21,7 @@ export default function Footer() {
           className="leading-none tracking-widest text-[13vw] relative z-10"
           style={{ wordBreak: "keep-all" }}
         >
-          CHARS KYIV
+          {BRAND.name}
         </h1>
       </div>
 
@@ -44,11 +45,9 @@ export default function Footer() {
             <Link
               href="https://maps.app.goo.gl/jJS3JdddMq6njJvb8?g_st=it"
               target="_blank"
-              className="w-48 h-8 md:w-56 md:h-11 text-sm md:text-xl flex justify-start my-3 transition-all duration-300 hover:text-stone-500 dark:hover:text-stone-400"
+              className="w-48 h-8 md:w-72 md:h-11 text-sm md:text-xl flex justify-start my-3 transition-all duration-300 hover:text-stone-500 dark:hover:text-stone-400"
             >
-              Адреса шоуруму:
-              <br />
-              Київ, вул. Костянтинівська, 21
+              {BRAND.contact.showroom}
             </Link>
           </div>
 
@@ -67,10 +66,10 @@ export default function Footer() {
               />
             </div>
             <Link
-              href="mailto:Charsukrainianbrand@gmail.com"
-              className="w-48 h-5 items-center md:w-56 md:h-5 text-sm md:text-xl flex justify-start my-auto transition-all duration-300 hover:text-stone-500 dark:hover:text-stone-400"
+              href={`mailto:${BRAND.contact.email}`}
+              className="w-48 h-5 items-center md:w-72 md:h-5 text-sm md:text-xl flex justify-start my-auto transition-all duration-300 hover:text-stone-500 dark:hover:text-stone-400"
             >
-              Charsukrainianbrand <br /> @gmail.com
+              {BRAND.contact.email}
             </Link>
           </div>
         </div>
@@ -91,7 +90,7 @@ export default function Footer() {
               />
             </div>
             <Link
-              href="https://www.instagram.com/chars_ua_brand/"
+              href={BRAND.socials.instagram}
               target="_blank"
               className="w-28 h-8 md:w-32 md:h-11 text-sm md:text-xl flex justify-start my-auto transition-all duration-300 hover:text-stone-500 dark:hover:text-stone-400"
             >
@@ -106,19 +105,19 @@ export default function Footer() {
               }`}
             >
               <Image
-                src="/images/facebook-icon.svg"
-                alt="Facebook"
+                src="/images/telegram-icon.svg"
+                alt="Telegram"
                 width={40}
                 height={40}
                 className={`w-8 h-8 md:w-10 md:h-10 transition-all duration-300 ${isDark ? "invert" : ""}`}
               />
             </div>
             <Link
-              href="https://www.facebook.com/profile.php?id=61554965091065"
+              href={BRAND.socials.telegram}
               target="_blank"
-              className="w-28 h-5 md:w-32 md:h-5 text-sm md:text-xl flex justify-start my-auto transition-all duration-300 hover:text-stone-500 dark:hover:text-stone-400"
+              className="w-28 h-5 md:w-40 md:h-5 text-sm md:text-xl flex justify-start my-auto transition-all duration-300 hover:text-stone-500 dark:hover:text-stone-400"
             >
-              Facebook
+              Telegram
             </Link>
           </div>
         </div>
@@ -126,13 +125,13 @@ export default function Footer() {
         <div className="flex flex-col gap-10">
           <div className="space-y-4">
             <h3 className="text-lg md:text-2xl font-semibold mb-4">Графік роботи</h3>
-            <p className="text-sm md:text-lg opacity-70">Пн-Пт 13:00-19:00</p>
+            <p className="text-sm md:text-lg opacity-70">{BRAND.contact.schedule}</p>
           </div>
 
           <div className="space-y-4">
             <h3 className="text-lg md:text-2xl font-semibold mb-4">Телефон</h3>
-            <a href="tel:+380508673048" className="text-sm md:text-lg opacity-70 hover:opacity-100 transition-opacity">
-              +380 5086 730 48
+            <a href={`tel:${BRAND.contact.phone.replace(/\s+/g, "")}`} className="text-sm md:text-lg opacity-70 hover:opacity-100 transition-opacity">
+              {BRAND.contact.phone}
             </a>
           </div>
         </div>
@@ -188,14 +187,14 @@ export default function Footer() {
             <div className="flex justify-start gap-4 md:gap-6">
               <div className="w-40 h-8 md:w-56 md:h-11 flex flex-col justify-start my-auto">
                 <span className="text-lg md:text-2xl">Графік роботи:</span>
-                <span className="text-sm md:text-lg">Пн-Пт 13:00-19:00</span>
+                <span className="text-sm md:text-lg">{BRAND.contact.schedule}</span>
               </div>
             </div>
 
             <div className="flex justify-start gap-4 md:gap-6">
               <div className="w-40 h-8 md:w-56 md:h-11 flex flex-col justify-start my-auto">
                 <span className="text-lg md:text-2xl">Телефон</span>
-                <span className="text-sm md:text-lg">+380 5086 730 48</span>
+                <span className="text-sm md:text-lg">{BRAND.contact.phone}</span>
               </div>
             </div>
           </div>
@@ -267,9 +266,7 @@ export default function Footer() {
                 target="_blank"
                 className="w-48 h-8 md:w-56 md:h-11 text-sm md:text-xl flex justify-start my-3 hover:underline"
               >
-                Адреса шоуруму:
-                <br />
-                Київ, вул. Костянтинівська, 21
+                {BRAND.contact.showroom}
               </Link>
             </div>
 
@@ -288,10 +285,10 @@ export default function Footer() {
                 />
               </div>
               <Link
-                href="mailto:Charsukrainianbrand@gmail.com"
+                href={`mailto:${BRAND.contact.email}`}
                 className="w-48 h-5 md:w-56 md:h-5 text-sm md:text-xl flex justify-start my-auto hover:underline"
               >
-                Charsukrainianbrand@gmail.com
+                {BRAND.contact.email}
               </Link>
             </div>
 
@@ -310,7 +307,7 @@ export default function Footer() {
                 />
               </div>
               <Link
-                href="https://www.instagram.com/chars_ua_brand/"
+                href={BRAND.socials.instagram}
                 target="_blank"
                 className="w-28 h-8 md:w-32 md:h-11 text-sm md:text-xl flex justify-start my-auto hover:underline"
               >
@@ -333,11 +330,11 @@ export default function Footer() {
                 />
               </div>
               <Link
-                href="https://www.facebook.com/profile.php?id=61554965091065"
+                href={BRAND.socials.telegram}
                 target="_blank"
                 className="w-28 h-5 md:w-32 md:h-5 text-sm md:text-xl flex justify-start my-auto hover:underline"
               >
-                Facebook
+                Telegram
               </Link>
             </div>
           </div>
@@ -346,7 +343,7 @@ export default function Footer() {
 
       <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start mt-16 gap-6 border-t pt-8">
         <span className="text-sm md:text-lg text-center sm:text-left opacity-60">
-          Chars Kyiv © 2025 All rights reserved
+          {BRAND.name} © 2025 All rights reserved
         </span>
         <div className="flex gap-4 md:gap-6 items-center">
           <Link

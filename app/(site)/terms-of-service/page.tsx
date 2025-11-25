@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Договір публічної оферти | CHARS",
-  description: "Договір публічної оферти CHARS",
+  title: "Договір публічної оферти | CALIPUFF",
+  description: "Договір публічної оферти CALIPUFF",
 };
 
 export default function TermsOfServicePage() {
@@ -51,7 +51,7 @@ export default function TermsOfServicePage() {
                 <p className="font-semibold">Сайт</p>
                 <p className="text-sm opacity-70">
                   Веб-сайт, що розміщений в мережі Інтернет за адресою:
-                  https://chars.com, включаючи всі його веб-сторінки.
+                  https://calipuff.ua, включаючи всі його веб-сторінки.
                 </p>
               </div>
               <div className="p-5 border border-black/10 dark:border-white/10 rounded-lg space-y-2">

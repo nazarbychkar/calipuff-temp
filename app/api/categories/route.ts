@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sqlGetAllCategories, sqlPostCategory } from "@/lib/sql";
 
-// ========================
-// GET /api/categories
-// ========================
 export async function GET() {
   try {
     const categories = await sqlGetAllCategories();
@@ -17,9 +14,6 @@ export async function GET() {
   }
 }
 
-// ========================
-// POST /api/categories
-// ========================
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -33,6 +27,7 @@ export async function POST(req: NextRequest) {
     }
 
     const newCategory = await sqlPostCategory(name, priority ?? 0);
+
     return NextResponse.json(newCategory, { status: 201 });
   } catch (error) {
     console.error("[POST /api/categories]", error);
@@ -42,3 +37,4 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+

@@ -1,0 +1,145 @@
+datasource db {
+  provider = "postgresql"  // Ensure this is correct
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Category {
+  id             Int            @id @default(autoincrement())
+  name           String         @unique
+  priority       Int            @default(0)
+  created_at     DateTime       @default(now())
+  updated_at     DateTime       @updatedAt
+  products       Product[]      @relation("CategoryProducts")
+  subcategories  Subcategory[]
+  @@map("categories")
+}
+
+model Subcategory {
+  id                  Int       @id @default(autoincrement())
+  name                String
+  parent_category_id  Int
+  created_at          DateTime  @default(now())
+  updated_at          DateTime  @updatedAt
+  parent_category     Category  @relation(fields: [parent_category_id], references: [id])
+  products            Product[]
+
+  @@unique([name, parent_category_id])
+  @@map("subcategories")
+}
+
+model Product {
+  id                  Int             @id @default(autoincrement())
+  name                String
+  description         String?
+  price               Decimal         @db.Decimal(10, 2)
+  old_price           Decimal?        @db.Decimal(10, 2)
+  discount_percentage Int?
+  priority            Int             @default(0)
+  top_sale            Boolean         @default(false)
+  limited_edition     Boolean         @default(false)
+  color               String?
+  category_id         Int
+  subcategory_id      Int?
+  // CBD-specific fields
+  cbdContentMg        Int             @default(0)
+  thcContentMg        Int?
+  potency             String?
+  imageUrl            String?
+  stock               Int             @default(0)
+  created_at          DateTime        @default(now())
+  updated_at          DateTime        @updatedAt
+  category            Category        @relation("CategoryProducts", fields: [category_id], references: [id])
+  subcategory         Subcategory?    @relation(fields: [subcategory_id], references: [id])
+  media               ProductMedia[]
+  colors              ProductColor[]
+  orderItems          OrderItem[]
+  favoritedBy         User[]          @relation("UserFavorites")
+
+  @@map("products")
+}
+
+model ProductMedia {
+  id          Int      @id @default(autoincrement())
+  url         String
+  type        String
+  product_id  Int
+  created_at  DateTime @default(now())
+  product     Product  @relation(fields: [product_id], references: [id], onDelete: Cascade)
+
+  @@map("product_media")
+}
+
+model ProductColor {
+  id          Int      @id @default(autoincrement())
+  label       String
+  hex         String?
+  product_id  Int
+  created_at  DateTime @default(now())
+  product     Product  @relation(fields: [product_id], references: [id], onDelete: Cascade)
+
+  @@map("product_colors")
+}
+
+model Color {
+  id          Int      @id @default(autoincrement())
+  color       String   @unique
+  hex         String?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  @@map("colors")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  password  String
+  name      String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  orders    Order[]
+  favorites Product[] @relation("UserFavorites")
+
+  @@map("users")
+}
+
+model Order {
+  id              Int         @id @default(autoincrement())
+  userId          Int?
+  customer_name   String
+  phone_number    String
+  email           String?
+  delivery_method String
+  city            String
+  post_office     String
+  comment         String?
+  payment_type    String
+  status          String      @default("unpaid")
+  invoice_id      String?     @unique
+  items           Json        // Store order items as JSON for e-commerce flow
+  // Optional fields for future user-based orders
+  totalAmount     Decimal?    @db.Decimal(10, 2)
+  shippingAddress String?
+  paymentId       String?
+  user            User?       @relation(fields: [userId], references: [id])
+  created_at      DateTime    @default(now())
+  updated_at      DateTime    @updatedAt
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId  Int
+  productId Int
+  quantity  Int     @default(1)
+  price     Decimal @db.Decimal(10, 2)
+  subtotal  Decimal @db.Decimal(10, 2)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("order_items")
+}

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Політика конфіденційності | CHARS",
-  description: "Політика конфіденційності персональних даних CHARS",
+  title: "Політика конфіденційності | CALIPUFF",
+  description: "Політика конфіденційності персональних даних CALIPUFF",
 };
 
 export default function PrivacyPolicyPage() {
@@ -29,8 +29,8 @@ export default function PrivacyPolicyPage() {
           <section className="space-y-4">
             <p className="text-lg opacity-80">
               Ця Політика конфіденційності персональних даних (далі – Політика
-              конфіденційності) діє щодо всієї інформації, яку Інтернет-магазин
-              «CHARS», може отримати про Користувача під час використання сайту
+              конфіденційності) діє щодо всієї інформації, яку інтернет-магазин
+              «CALIPUFF» може отримати про Користувача під час використання сайту
               Інтернет-магазину, програм та продуктів Інтернет-магазину.
             </p>
           </section>

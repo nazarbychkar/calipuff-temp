@@ -9,6 +9,7 @@ import { getFirstProductImage } from "@/lib/getFirstProductImage";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import { useRouter } from "next/navigation";
+import { BRAND } from "@/lib/brand";
 import "swiper/css";
 import "swiper/css/navigation";
 
@@ -60,7 +61,7 @@ interface ProductClientProps {
     discount_percentage?: number;
     description?: string;
     media?: { url: string; type: string }[];
-    sizes?: { size: string; stock: string }[];
+    sizes?: { size: string; stock: number }[];
     colors?: { label: string; hex?: string | null }[];
     fabric_composition?: string;
     has_lining?: boolean;
@@ -553,7 +554,7 @@ export default function ProductClient({ product: initialProduct }: ProductClient
 
           {/* Telegram Manager Link */}
           <a
-            href="https://t.me/chars_ua"
+            href={BRAND.socials.telegram}
             target="_blank"
             rel="noopener noreferrer"
             className={`w-full text-center border ${
@@ -694,8 +695,8 @@ export default function ProductClient({ product: initialProduct }: ProductClient
 
                   <div className="text-center mt-10 pt-6 border-t border-gray-200">
                     <Image
-                      src="/images/light-theme/chars-logo-header-light.png"
-                      alt="CHARS Logo"
+                      src="/images/light-theme/calipuff-logo-header-light.svg"
+                      alt={`${BRAND.name} logo`}
                       width={120}
                       height={40}
                       className="mx-auto h-10 opacity-80"

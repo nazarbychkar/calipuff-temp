@@ -1,10 +1,7 @@
 import CatalogClient from "./CatalogClient";
-import { 
-  sqlGetAllProducts, 
-  sqlGetProductsByCategory, 
-  sqlGetProductsBySeason, 
-  sqlGetProductsBySubcategoryName,
-  sqlGetAllColors 
+import {
+  sqlGetProducts,
+  sqlGetAllColors,
 } from "@/lib/sql";
 
 interface Product {
@@ -12,7 +9,7 @@ interface Product {
   name: string;
   price: number;
   first_media?: { url: string; type: string } | null;
-  sizes?: { size: string; stock: string }[];
+  sizes?: { size: string; stock: number }[];
   color?: string;
 }
 
@@ -24,16 +21,18 @@ interface CatalogServerProps {
 
 async function getProducts(params: CatalogServerProps): Promise<Product[]> {
   const { category, season, subcategory } = params;
-  
+
   try {
     if (subcategory) {
-      return await sqlGetProductsBySubcategoryName(subcategory);
-    } else if (category) {
-      return await sqlGetProductsByCategory(category);
-    } else if (season) {
-      return await sqlGetProductsBySeason(season);
+      return sqlGetProducts({ subcategoryName: subcategory });
     }
-    return await sqlGetAllProducts();
+    if (category) {
+      return sqlGetProducts({ categoryName: category });
+    }
+    if (season) {
+      return sqlGetProducts({ season });
+    }
+    return sqlGetProducts();
   } catch (error) {
     console.error("Error fetching products:", error);
     return [];
@@ -51,7 +50,6 @@ async function getColors(): Promise<string[]> {
 }
 
 export default async function CatalogServer(props: CatalogServerProps) {
-  // Parallel data fetching for better performance
   const [products, colors] = await Promise.all([
     getProducts(props),
     getColors(),

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Montserrat } from "next/font/google";
+import { BRAND } from "@/lib/brand";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -17,7 +18,7 @@ export default function NotFound() {
       </div>
 
       <div className="text-center max-w-4xl mx-auto relative z-10">
-        {/* Large 404 with CHARS style */}
+        {/* Large 404 with CALIPUFF style */}
         <div className="mb-12">
           <div className={`${montserrat.className} text-[200px] md:text-[300px] font-bold leading-none tracking-widest opacity-10 dark:opacity-20`}>
             404
@@ -43,7 +44,7 @@ export default function NotFound() {
         {/* Decorative line */}
         <div className="w-32 h-1 bg-black dark:bg-white mx-auto mb-12"></div>
 
-        {/* Action buttons with CHARS style */}
+        {/* Action buttons with CALIPUFF style */}
         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
           <Link
             href="/"
@@ -107,10 +108,10 @@ export default function NotFound() {
             Якщо ви вважаєте, що це помилка, будь ласка, зв&apos;яжіться з нами
           </p>
           <Link 
-            href="mailto:Charsukrainianbrand@gmail.com"
+            href={`mailto:${BRAND.contact.email}`}
             className="text-sm opacity-50 hover:opacity-100 transition-opacity duration-300 mt-2 inline-block"
           >
-            Charsukrainianbrand@gmail.com
+            {BRAND.contact.email}
           </Link>
         </div>
       </div>

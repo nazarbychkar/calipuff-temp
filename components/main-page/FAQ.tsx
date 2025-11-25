@@ -2,6 +2,7 @@
 
 import { useAppContext } from "@/lib/GeneralProvider";
 import { useState } from "react";
+import { BRAND } from "@/lib/brand";
 
 export default function FAQ() {
   const [openAccordion, setOpenAccordion] = useState<number | null>(null);
@@ -25,10 +26,10 @@ export default function FAQ() {
             <br />
             запитуєте
           </div>
-          <div className="mt-4 text-lg lg:text-2xl font-normal font-['Arial'] leading-relaxed">
-            Зібрали найпоширеніші
+          <div className="mt-4 text-lg lg:text-2xl font-normal font-['Poppins'] leading-relaxed">
+            Зібрали відповіді про легальні вейпи,
             <br />
-            запитання наших відвідувачів
+            поставки та сертифікацію {BRAND.name}
           </div>
         </div>
 
@@ -36,23 +37,27 @@ export default function FAQ() {
           {[
             {
               number: "01",
-              title: "Оплата | CHARS KYIV",
-              content: "Штани з корегуванням параметрів",
+              title: `Оплата | ${BRAND.name}`,
+              content:
+                "Приймаємо банківські картки, рахунок-фактуру для компаній та еквайринг у шоурумі. Партнерські замовлення від 10 одиниць підтверджуємо 50% передоплатою.",
             },
             {
               number: "02",
-              title: "Доставка | CHARS KYIV",
-              content: "Штани з корегуванням параметрів",
+              title: `Доставка | ${BRAND.name}`,
+              content:
+                "Відправляємо по Україні Новою Поштою або курʼєром з Wave Lab у день підтвердження замовлення. Для HoReCa та ритейлу доступна регулярна відвантажувальна сітка.",
             },
             {
               number: "03",
-              title: "Повернення | CHARS KYIV",
-              content: "Штани з корегуванням параметрів",
+              title: `Сертифікація та безпека | ${BRAND.name}`,
+              content:
+                "Всі рідини та картриджі не містять ТГК і мають COA. Посилання на лабораторні звіти додаємо в особистому кабінеті партнера або за запитом.",
             },
             {
               number: "04",
-              title: "Відправка замовлення | CHARS KYIV",
-              content: "Штани з корегуванням параметрів",
+              title: `Відправка та оновлення смаків | ${BRAND.name}`,
+              content:
+                "Лімітовані серії виходять щомісяця. Резерв можна оформити завчасно — ми бронюємо партію та надсилаємо тест-кити для команди продажів.",
             },
           ].map((item, index) => (
             <div
@@ -80,24 +85,8 @@ export default function FAQ() {
                   openAccordion === index + 1 ? "max-h-[500px]" : "max-h-0"
                 }`}
               >
-                <div className="p-3 sm:p-5 text-base sm:text-lg lg:text-xl font-normal font-['Arial'] leading-relaxed max-w-full sm:max-w-[608px]">
+                <div className="p-3 sm:p-5 text-base sm:text-lg lg:text-xl font-normal font-['Poppins'] leading-relaxed max-w-full sm:max-w-[608px]">
                   {item.content}
-                  <br />
-                  Ми надаємо можливість легкого корегування штанів за талією та
-                  довжиною. Такі вироби виготовляються виключно за попередньою
-                  домовленістю та потребують 100% оплати перед початком роботи.
-                  <br />
-                  <br />
-                  Готові колекції
-                  <br />
-                  Для товарів з наших колекцій доступні два варіанти оплати:
-                  <br />— Передплата 300 грн (після підтвердження наявності
-                  товару)
-                  <br />— Повна оплата
-                  <br />
-                  <br />
-                  Усі деталі щодо оплати уточнюються після оформлення замовлення
-                  нашим менеджером.
                 </div>
               </div>
             </div>

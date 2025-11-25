@@ -8,6 +8,7 @@ import Image from "next/image";
 import Alert from "@/components/shared/Alert";
 import { getFirstProductImage } from "@/lib/getFirstProductImage";
 import { useProduct } from "@/lib/useProducts";
+import { BRAND } from "@/lib/brand";
 
 const SIZE_MAP: Record<string, string> = {
   "1": "XL",
@@ -279,7 +280,7 @@ export default function Product() {
 
           {/* Telegram Manager Link */}
           <a
-            href="https://t.me/chars_ua"
+            href={BRAND.socials.telegram}
             target="_blank"
             rel="noopener noreferrer"
             className={`w-full text-center border ${
@@ -430,8 +431,8 @@ export default function Product() {
 
                   <div className="text-center mt-10 pt-6 border-t border-gray-200">
                     <Image
-                      src="/images/light-theme/chars-logo-header-light.png"
-                      alt="CHARS Logo"
+                      src="/images/light-theme/calipuff-logo-header-light.svg"
+                      alt={`${BRAND.name} logo`}
                       width={120}
                       height={40}
                       className="mx-auto h-10 opacity-80"

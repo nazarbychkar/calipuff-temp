@@ -19,7 +19,7 @@ export async function GET(
 
     const order = await sqlGetOrder(id);
 
-    if (!order || Object.keys(order).length === 0) {
+    if (!order) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
 
