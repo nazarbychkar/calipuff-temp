@@ -319,7 +319,7 @@ export async function sqlGetRelatedColorsByName(name: string) {
     take: 8,
   });
 
-  return products.map((product) => ({
+  return products.map((product: { id: number; name: string; colors: { label: string; hex: string | null }[] }) => ({
     id: product.id,
     name: product.name,
     first_color: product.colors[0]

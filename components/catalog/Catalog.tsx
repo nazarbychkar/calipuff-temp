@@ -149,7 +149,7 @@ export default function Catalog() {
           "/api/colors",
           CACHE_KEYS.COLORS
         );
-        const colorNames = data.map((item) => item.color);
+        const colorNames = data.map((item: { color: string }) => item.color);
         setColors(colorNames);
       } catch (err: unknown) {
         console.error("Error fetching colors:", err);

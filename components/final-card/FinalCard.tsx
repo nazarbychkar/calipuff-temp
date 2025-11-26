@@ -50,7 +50,7 @@ export default function FinalCard() {
   // Track InitiateCheckout event for Meta Pixel when component mounts with items
   useEffect(() => {
     if (items.length > 0 && typeof window !== 'undefined' && window.fbq) {
-      const totalValue = items.reduce((total, item) => {
+      const totalValue = items.reduce((total: number, item) => {
         const itemPrice = typeof item.price === 'string' ? parseFloat(item.price) : item.price;
         const discount = item.discount_percentage 
           ? (typeof item.discount_percentage === 'string' ? parseFloat(item.discount_percentage) : item.discount_percentage)
@@ -141,7 +141,7 @@ export default function FinalCard() {
     });
 
     // Підрахунок суми до оплати (з урахуванням знижки)
-    const fullAmount = items.reduce((total, item) => {
+    const fullAmount = items.reduce((total: number, item) => {
       // Перетворюємо ціну в число
       const itemPrice = typeof item.price === 'string' ? parseFloat(item.price) : item.price;
       const discount = item.discount_percentage 
@@ -202,7 +202,7 @@ export default function FinalCard() {
 
         // Track Purchase event for Meta Pixel
         if (typeof window !== 'undefined' && window.fbq) {
-          const totalValue = items.reduce((total, item) => {
+          const totalValue = items.reduce((total: number, item) => {
             const itemPrice = typeof item.price === 'string' ? parseFloat(item.price) : item.price;
             const discount = item.discount_percentage 
               ? (typeof item.discount_percentage === 'string' ? parseFloat(item.discount_percentage) : item.discount_percentage)
@@ -216,7 +216,7 @@ export default function FinalCard() {
             content_type: 'product',
             value: totalValue,
             currency: 'UAH',
-            num_items: items.reduce((sum, item) => sum + item.quantity, 0)
+            num_items: items.reduce((sum: number, item) => sum + item.quantity, 0)
           });
         }
 
@@ -1006,7 +1006,7 @@ export default function FinalCard() {
                 <div>Всього</div>
                 <div className="font-['Helvetica'] leading-relaxed tracking-wide">
                   {items
-                    .reduce((total, item) => {
+                    .reduce((total: number, item) => {
                       const price = item.discount_percentage
                         ? item.price * (1 - item.discount_percentage / 100)
                         : item.price;

@@ -139,7 +139,7 @@ export async function POST(req: NextRequest) {
     );
 
     const fullAmount = normalizedItems.reduce(
-      (total: number, item) => total + item.price * item.quantity,
+      (total: number, item: NormalizedOrderItem) => total + item.price * item.quantity,
       0
     );
 
