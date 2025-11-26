@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "postinstall": "prisma generate",
+    "postinstall": "prisma generate && npm run install:sharp",
+    "install:sharp": "npm rebuild sharp --verbose || npm install --include=optional sharp || true",
     "dev": "next dev --turbopack",
-    "build": "prisma migrate deploy && next build --turbopack && npm run compress && npm run optimize",
+    "build": "prisma migrate deploy && npm run install:sharp && next build --turbopack && npm run compress && npm run optimize",
     "build:analyze": "ANALYZE=true npm run build",
     "build:fast": "next build --turbopack",
     "compress": "gzip -k -f .next/static/**/*.js .next/static/**/*.css || true",

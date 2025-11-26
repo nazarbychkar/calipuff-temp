@@ -31,7 +31,7 @@ const nextConfig: NextConfig = {
   // Enable static exports for better performance
   trailingSlash: false,
   // External packages for server components
-  serverExternalPackages: ["pg"],
+  serverExternalPackages: ["pg", "sharp"],
   experimental: {
     serverActions: {
       bodySizeLimit: "100mb", // for images, videos
