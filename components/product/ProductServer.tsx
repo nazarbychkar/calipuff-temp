@@ -20,9 +20,26 @@ interface Product {
 
 async function getProduct(id: string): Promise<Product | null> {
   try {
-    return await sqlGetProduct(Number(id));
+    const productId = Number(id);
+    if (isNaN(productId)) {
+      console.error("Invalid product ID:", id);
+      return null;
+    }
+    
+    const product = await sqlGetProduct(productId);
+    if (!product) {
+      console.log(`Product with ID ${id} not found`);
+    } else {
+      console.log(`Successfully fetched product ${id}: ${product.name}`);
+    }
+    return product;
   } catch (error) {
     console.error("Error fetching product:", error);
+    // Log more details in production
+    if (process.env.NODE_ENV === 'production') {
+      console.error("Product ID:", id);
+      console.error("Error details:", error instanceof Error ? error.message : String(error));
+    }
     return null;
   }
 }
@@ -35,6 +52,7 @@ export default async function ProductServer({ id }: ProductServerProps) {
   const product = await getProduct(id);
 
   if (!product) {
+    console.log(`Product ${id} not found, calling notFound()`);
     notFound();
   }
 
