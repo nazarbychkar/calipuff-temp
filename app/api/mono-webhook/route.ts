@@ -37,6 +37,19 @@ export async function POST(req: NextRequest) {
       const BOT_TOKEN = process.env.BOT_TOKEN;
       const CHAT_ID = process.env.CHAT_ID;
 
+      // Type guard for order items
+      type OrderItem = {
+        product_name: string;
+        color?: string | null;
+        size: string;
+        quantity: number;
+        price: number;
+      };
+
+      const items = Array.isArray(order.items)
+        ? (order.items as unknown as OrderItem[])
+        : [];
+
       const orderMessage = `
 🛒 <b>Нове замовлення (ОПЛАЧЕНО ✅)</b>
 
@@ -56,18 +69,9 @@ export async function POST(req: NextRequest) {
 💳 <b>Статус:</b> ОПЛАЧЕНО ✅
 
 📦 <b>Товари:</b>
-${order.items
+${items
   .map(
-    (
-      item: {
-        product_name: string;
-        color?: string | null;
-        size: string;
-        quantity: number;
-        price: number;
-      },
-      i: number
-    ) =>
+    (item: OrderItem, i: number) =>
       `${i + 1}. ${item.product_name}${
         item.color ? ` (${item.color})` : ""
       } | ${item.size} | x${item.quantity} | ${item.price} грн`

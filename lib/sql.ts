@@ -4,9 +4,16 @@ const prisma = new PrismaClient({
   log: process.env.NODE_ENV === "development" ? ["warn", "error"] : ["error"],
 });
 
-const db = prisma as any;
+const db = prisma;
 
-type ProductWithRelations = any;
+type ProductWithRelations = Prisma.ProductGetPayload<{
+  include: {
+    media: true;
+    colors: true;
+    category: true;
+    subcategory: true;
+  };
+}>;
 
 const productInclude = {
   media: true,
@@ -15,13 +22,13 @@ const productInclude = {
   subcategory: true,
 };
 
-type OrderEntity = any;
+type OrderEntity = Prisma.OrderGetPayload<Record<string, never>>;
 
 const decimalToNumber = (value: Prisma.Decimal | null) =>
   value ? Number(value) : null;
 
 function normalizeProduct(product: ProductWithRelations) {
-  const record = product as any;
+  const record = product;
 
   return {
     id: record.id,
@@ -46,12 +53,16 @@ function normalizeProduct(product: ProductWithRelations) {
     updated_at: record.updated_at,
     category: record.category,
     subcategory: record.subcategory,
-    media: (record.media ?? []).map((media: any) => ({
+    media: (record.media ?? []).map((media) => ({
       id: media.id,
       url: media.url,
       type: media.type,
     })),
-    colors: (record.colors ?? []).map((color: any) => ({
+    first_media: record.media?.[0] ? {
+      url: record.media[0].url,
+      type: record.media[0].type,
+    } : null,
+    colors: (record.colors ?? []).map((color) => ({
       id: color.id,
       label: color.label,
       hex: color.hex,
@@ -60,7 +71,7 @@ function normalizeProduct(product: ProductWithRelations) {
 }
 
 const normalizeOrder = (order: OrderEntity) => {
-  const record = order as any;
+  const record = order;
   return {
     ...record,
     items: Array.isArray(record.items) ? record.items : [],
@@ -90,18 +101,18 @@ export async function sqlGetProducts(filter: ProductFilter = {}) {
   }
 
   if (filter.limitedEdition) {
-    (where as any).limited_edition = true;
+    where.limited_edition = true;
   }
 
   if (filter.topSale) {
-    (where as any).top_sale = true;
+    where.top_sale = true;
   }
 
   const products = await db.product.findMany({
     where,
     include: productInclude,
     orderBy: [{ priority: "desc" }, { created_at: "desc" }],
-  } as any);
+  });
 
   return products.map(normalizeProduct);
 }
@@ -185,7 +196,7 @@ export async function sqlGetProduct(id: number) {
   const product = await db.product.findUnique({
     where: { id },
     include: productInclude,
-  } as any);
+  });
   return product ? normalizeProduct(product) : null;
 }
 
@@ -237,7 +248,7 @@ export async function sqlPutProduct(
   } = data;
 
   await prisma.$transaction(async (txRaw) => {
-    const tx = txRaw as any;
+    const tx = txRaw;
     await tx.product.update({
       where: { id },
       data: {
@@ -306,9 +317,9 @@ export async function sqlGetRelatedColorsByName(name: string) {
     },
     orderBy: [{ priority: "desc" }, { created_at: "desc" }],
     take: 8,
-  } as any);
+  });
 
-  return products.map((product: any) => ({
+  return products.map((product) => ({
     id: product.id,
     name: product.name,
     first_color: product.colors[0]
@@ -349,7 +360,7 @@ type CreateOrderInput = {
 export async function sqlGetAllOrders() {
   const orders = await db.order.findMany({
     orderBy: { created_at: "desc" },
-  } as any);
+  });
   return orders.map(normalizeOrder);
 }
 

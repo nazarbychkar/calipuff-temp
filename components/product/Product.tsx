@@ -10,12 +10,15 @@ import { getFirstProductImage } from "@/lib/getFirstProductImage";
 import { useProduct } from "@/lib/useProducts";
 import { BRAND } from "@/lib/brand";
 
+// Volume/Size mapping for vapes, liquids, and cartridges
 const SIZE_MAP: Record<string, string> = {
-  "1": "XL",
-  "2": "L",
-  "3": "M",
-  "4": "S",
-  "5": "XS",
+  "1": "1ml",
+  "2": "2ml",
+  "3": "5ml",
+  "4": "10ml",
+  "5": "30ml",
+  "6": "50ml",
+  "7": "100ml",
 };
 
 export default function Product() {
@@ -34,7 +37,6 @@ export default function Product() {
   const [alertType, setAlertType] = useState<
     "success" | "error" | "warning" | "info"
   >("info");
-  const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
 
   // Auto-select first color if available
@@ -45,14 +47,9 @@ export default function Product() {
   }, [product, selectedColor]);
 
   const handleAddToCart = () => {
-    if (!selectedSize) {
-      setAlertMessage("Оберіть розмір");
-      setAlertType("warning");
-      setTimeout(() => setAlertMessage(null), 3000);
-      return;
-    }
+    // Size is optional for vape products
     if (product?.colors && product.colors.length > 0 && !selectedColor) {
-      setAlertMessage("Оберіть колір");
+      setAlertMessage("Оберіть смак");
       setAlertType("warning");
       setTimeout(() => setAlertMessage(null), 3000);
       return;
@@ -68,11 +65,11 @@ export default function Product() {
       id: product.id,
       name: product.name,
       price: product.price,
-      size: selectedSize,
+      ...(selectedSize && { size: selectedSize }),
       quantity,
       imageUrl: getFirstProductImage(media),
-      color: selectedColor || undefined,
-      discount_percentage: product.discount_percentage
+      ...(selectedColor && { color: selectedColor }),
+      ...(product.discount_percentage && { discount_percentage: product.discount_percentage })
     });
     setShowToast(true);
     setTimeout(() => setShowToast(false), 3000);
@@ -85,14 +82,8 @@ export default function Product() {
   const media = product.media || [];
   const sizes = (product.sizes as { size: string; stock?: number | string }[] | undefined)
     ?.filter((s) => Number(s.stock ?? 0) > 0)
-    .map((s) => s.size) || [
-    "xs",
-    "s",
-    "m",
-    "l",
-    "xl",
-  ];
-  const outOfStock = sizes.length === 0;
+    .map((s) => s.size) || [];
+  const outOfStock = product.stock === 0 || (sizes.length > 0 && sizes.length === 0);
 
   return (
     <section className="max-w-[1920px] w-full mx-auto">
@@ -189,40 +180,43 @@ export default function Product() {
             </div>
           </div>
 
-          {/* Size Picker Title */}
-          <div className="text-base md:text-lg font-['Inter'] uppercase tracking-tight">
-            Оберіть розмір
-          </div>
-
-          {/* Size Options */}
-          {sizes.length === 0 ? (
-            <div className="inline-flex items-center gap-2 px-3 py-2 rounded border text-sm uppercase tracking-wide bg-red-50 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800 w-fit">
-              out of stock
-            </div>
-          ) : (
-          <div className="flex flex-wrap gap-2 md:gap-3">
-            {sizes.map((size) => (
-              <div
-                key={size}
-                onClick={() => setSelectedSize(size)}
-                className={`w-19 sm:w-19 md:w-22 p-2 sm:p-3 border-2 flex justify-center text-base md:text-lg font-['Inter'] uppercase cursor-pointer transition-all duration-200 ${
-                  selectedSize === size
-                    ? "border-black dark:border-white font-bold scale-105 shadow-md"
-                    : "border-gray-300 dark:border-gray-600 hover:border-gray-600 dark:hover:border-gray-400 hover:scale-105 hover:shadow-md"
-                }`}
-              >
-                {SIZE_MAP[size] || size}
+          {/* Volume/Size Picker (optional for vape products) */}
+          {sizes.length > 0 && (
+            <>
+              <div className="text-base md:text-lg font-['Inter'] uppercase tracking-tight">
+                Оберіть об&apos;єм
               </div>
-            ))}
-          </div>
+              <div className="flex flex-wrap gap-2 md:gap-3">
+                {sizes.map((size) => (
+                  <div
+                    key={size}
+                    onClick={() => setSelectedSize(size)}
+                    className={`w-19 sm:w-19 md:w-22 p-2 sm:p-3 border-2 flex justify-center text-base md:text-lg font-['Inter'] uppercase cursor-pointer transition-all duration-200 ${
+                      selectedSize === size
+                        ? "border-black dark:border-white font-bold scale-105 shadow-md"
+                        : "border-gray-300 dark:border-gray-600 hover:border-gray-600 dark:hover:border-gray-400 hover:scale-105 hover:shadow-md"
+                    }`}
+                  >
+                    {SIZE_MAP[size] || size}
+                  </div>
+                ))}
+              </div>
+            </>
           )}
 
-          {/* Color Picker */}
+          {/* Stock Status */}
+          {outOfStock && (
+            <div className="inline-flex items-center gap-2 px-3 py-2 rounded border text-sm uppercase tracking-wide bg-red-50 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800 w-fit">
+              Немає в наявності
+            </div>
+          )}
+
+          {/* Flavor/Color Picker */}
           {product.colors && product.colors.length > 0 && (
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-3">
                 <div className="text-sm md:text-base font-['Inter'] uppercase tracking-tight">
-                  Колір
+                  Смак
                 </div>
               </div>
               <div className="flex items-end gap-4">
@@ -256,7 +250,7 @@ export default function Product() {
               </div>
               {selectedColor && (
                 <div className="text-base md:text-lg font-['Inter'] text-gray-700">
-                  Колір: {selectedColor}
+                  Смак: {selectedColor}
                 </div>
               )}
             </div>
@@ -292,152 +286,33 @@ export default function Product() {
             Написати менеджеру
           </a>
 
-          {/* Size Guide Link */}
-          <div className="text-right">
-            <button
-              onClick={() => setShowSizeGuide(true)}
-              className="text-sm md:text-base text-gray-600 dark:text-gray-400 underline hover:text-black dark:hover:text-white cursor-pointer transition-all duration-200 hover:scale-105"
-            >
-              Розмірна сітка
-            </button>
-          </div>
-
-          {/* Size Guide Modal */}
-          {showSizeGuide && (
-            <div
-              className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-              onClick={() => setShowSizeGuide(false)}
-            >
-              <div
-                className="relative max-w-2xl w-full bg-white rounded-2xl shadow-2xl overflow-auto max-h-[90vh]"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <button
-                  onClick={() => setShowSizeGuide(false)}
-                  className="absolute top-6 right-6 bg-black text-white rounded-full w-10 h-10 flex items-center justify-center text-2xl font-light hover:bg-gray-800 transition-colors z-10"
-                >
-                  ×
-                </button>
-
-                <div className="p-8 md:p-12">
-                  <div className="text-center mb-10">
-                    <h2 className="text-3xl md:text-4xl font-bold text-black tracking-tight font-['Inter']">
-                      РОЗМІРНА СІТКА
-                    </h2>
-                    <div className="mt-2 text-sm text-gray-500 font-['Helvetica']">
-                      Всі вимірювання вказані в сантиметрах
-                    </div>
+          {/* CBD/THC Content Information */}
+          {(product.cbdContentMg || product.thcContentMg || product.potency) && (
+            <div className="flex flex-col gap-3 p-4 bg-white/50 rounded-lg border border-stone-200">
+              <div className="text-base md:text-lg font-semibold font-['Montserrat'] uppercase tracking-tight">
+                Склад
+              </div>
+              <div className="flex flex-col gap-2 text-sm md:text-base font-['Poppins']">
+                {product.cbdContentMg !== undefined && product.cbdContentMg > 0 && (
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold">CBD:</span>
+                    <span>{product.cbdContentMg} мг</span>
                   </div>
-
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-black border-collapse">
-                      <thead>
-                        <tr className="border-b-2 border-black">
-                          <th className="py-4 px-3 text-center text-xs md:text-sm font-bold uppercase tracking-wider font-['Inter']">
-                            Розмір
-                          </th>
-                          <th className="py-4 px-3 text-center text-xs md:text-sm font-bold uppercase tracking-wider font-['Inter']">
-                            Обхват
-                            <br />
-                            грудей
-                          </th>
-                          <th className="py-4 px-3 text-center text-xs md:text-sm font-bold uppercase tracking-wider font-['Inter']">
-                            Обхват
-                            <br />
-                            талії
-                          </th>
-                          <th className="py-4 px-3 text-center text-xs md:text-sm font-bold uppercase tracking-wider font-['Inter']">
-                            Обхват
-                            <br />
-                            бедер
-                          </th>
-                          <th className="py-4 px-3 text-center text-xs md:text-sm font-bold uppercase tracking-wider font-['Inter']">
-                            Зріст
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
-                          <td className="py-5 px-3 text-center font-bold text-lg font-['Inter']">
-                            S
-                          </td>
-                          <td className="py-5 px-3 text-center font-['Helvetica']">
-                            <div className="text-base">88-92</div>
-                          </td>
-                          <td className="py-5 px-3 text-center font-['Helvetica']">
-                            <div className="text-base">77-80</div>
-                          </td>
-                          <td className="py-5 px-3 text-center font-['Helvetica']">
-                            <div className="text-base">93-96</div>
-                          </td>
-                          <td className="py-5 px-3 text-center font-['Helvetica']">
-                            <div className="text-base">175-180</div>
-                          </td>
-                        </tr>
-                        <tr className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
-                          <td className="py-5 px-3 text-center font-bold text-lg font-['Inter']">
-                            M
-                          </td>
-                          <td className="py-5 px-3 text-center font-['Helvetica']">
-                            <div className="text-base">96-100</div>
-                          </td>
-                          <td className="py-5 px-3 text-center font-['Helvetica']">
-                            <div className="text-base">84-88</div>
-                          </td>
-                          <td className="py-5 px-3 text-center font-['Helvetica']">
-                            <div className="text-base">98-101</div>
-                          </td>
-                          <td className="py-5 px-3 text-center font-['Helvetica']">
-                            <div className="text-base">180-185</div>
-                          </td>
-                        </tr>
-                        <tr className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
-                          <td className="py-5 px-3 text-center font-bold text-lg font-['Inter']">
-                            L
-                          </td>
-                          <td className="py-5 px-3 text-center font-['Helvetica']">
-                            <div className="text-base">104-108</div>
-                          </td>
-                          <td className="py-5 px-3 text-center font-['Helvetica']">
-                            <div className="text-base">92-97</div>
-                          </td>
-                          <td className="py-5 px-3 text-center font-['Helvetica']">
-                            <div className="text-base">103-106</div>
-                          </td>
-                          <td className="py-5 px-3 text-center font-['Helvetica']">
-                            <div className="text-base">180-190</div>
-                          </td>
-                        </tr>
-                        <tr className="hover:bg-gray-50 transition-colors">
-                          <td className="py-5 px-3 text-center font-bold text-lg font-['Inter']">
-                            XL
-                          </td>
-                          <td className="py-5 px-3 text-center font-['Helvetica']">
-                            <div className="text-base">112-116</div>
-                          </td>
-                          <td className="py-5 px-3 text-center font-['Helvetica']">
-                            <div className="text-base">100-104</div>
-                          </td>
-                          <td className="py-5 px-3 text-center font-['Helvetica']">
-                            <div className="text-base">108-111</div>
-                          </td>
-                          <td className="py-5 px-3 text-center font-['Helvetica']">
-                            <div className="text-base">190+</div>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                )}
+                {product.thcContentMg !== null && product.thcContentMg !== undefined && (
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold">ТГК:</span>
+                    <span>{product.thcContentMg} мг</span>
                   </div>
-
-                  <div className="text-center mt-10 pt-6 border-t border-gray-200">
-                    <Image
-                      src="/images/light-theme/calipuff-logo-header-light.svg"
-                      alt={`${BRAND.name} logo`}
-                      width={120}
-                      height={40}
-                      className="mx-auto h-10 opacity-80"
-                    />
+                )}
+                {product.potency && (
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold">Потенційність:</span>
+                    <span>{product.potency}</span>
                   </div>
+                )}
+                <div className="mt-2 text-xs md:text-sm text-stone-600 italic">
+                  * Всі продукти мають COA сертифікацію
                 </div>
               </div>
             </div>
@@ -468,17 +343,10 @@ export default function Product() {
             </div>
           </div>
 
-          {product.fabric_composition && (
-            <div className="opacity-90">
-              <h3>Cклад тканини: </h3>
-              <span>{product.fabric_composition}</span>
-            </div>
-          )}
-
-          {product.has_lining && (
-            <div className="opacity-90">
-              <h3>Підкладка: </h3>
-              <span>{product.lining_description}</span>
+          {/* Stock Information */}
+          {product.stock !== undefined && product.stock > 0 && (
+            <div className="text-sm md:text-base font-['Poppins'] text-stone-600">
+              В наявності: {product.stock} шт.
             </div>
           )}
         </div>

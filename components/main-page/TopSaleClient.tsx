@@ -25,7 +25,7 @@ function VideoWithAutoplay({ src, className }: { src: string; className?: string
       const playVideo = async () => {
         try {
           await video.play();
-        } catch (error) {
+        } catch {
           // Retry after delay for mobile
           setTimeout(async () => {
             try {
@@ -82,18 +82,21 @@ export default function TopSaleClient({ products }: TopSaleClientProps) {
   const limitedProducts = products.slice(0, 4);
 
   return (
-    <section className="max-w-[1920px] mx-auto w-full mb-35 relative overflow-hidden flex flex-col gap-10">
-      <div className="border-b-2 pb-10 flex flex-col lg:flex-row justify-between mt-20 mx-10 lg:items-center">
-        <div className="lg:text-center justify-center text-2xl lg:text-5xl font-normal font-['Inter'] uppercase">
-          Топ продажів | CALIPUFF
+    <section className="max-w-[1920px] mx-auto w-full mb-12 relative overflow-hidden flex flex-col gap-10 pb-24 md:pb-32 lg:pb-40">
+      <div className="pb-10 flex flex-col lg:flex-row justify-between items-center mt-20 px-6 sm:px-10 relative">
+        <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#FFA500] via-[#FFD700] to-[#40E0D0]"></div>
+        <div className="text-2xl lg:text-5xl font-semibold font-['Montserrat'] uppercase tracking-wide flex items-center gap-3">
+          <span>Топ продажів</span>
+          <span className="bg-gradient-to-b from-[#FFA500] via-[#FFD700] to-[#40E0D0] bg-clip-text text-transparent text-3xl lg:text-6xl leading-none">|</span>
+          <span className="text-black">CALIPUFF</span>
         </div>
-        <div className="text-left opacity-70 text-base lg:text-xl font-normal font-['Inter'] capitalize leading-normal">
+        <div className="text-left lg:text-right opacity-70 text-base lg:text-xl font-normal font-['Poppins'] capitalize leading-normal mt-4 lg:mt-0">
           Улюблені смаки хвилі та сонця.
         </div>
       </div>
 
       {/* Desktop layout */}
-      <div className="hidden sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8 lg:gap-10 px-6">
+      <div className="hidden sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8 lg:gap-10 px-6 sm:px-10">
         {limitedProducts.map((product, index) => (
           <Link
             href={`/product/${product.id}`}
@@ -125,9 +128,9 @@ export default function TopSaleClient({ products }: TopSaleClientProps) {
               )}
             </div>
 
-            <div className="text-center text-base sm:text-lg md:text-xl font-normal font-['Inter'] capitalize leading-normal">
+            <div className="text-center text-base sm:text-lg md:text-xl font-normal font-['Poppins'] capitalize leading-normal">
               {product.name} <br />
-              {product.price.toLocaleString()} ₴
+              <span className="font-semibold text-[#FFA500]">{product.price.toLocaleString()} ₴</span>
             </div>
           </Link>
         ))}
@@ -172,14 +175,26 @@ export default function TopSaleClient({ products }: TopSaleClientProps) {
                     />
                   )}
                 </div>
-                <div className="justify-center text-lg font-normal font-['Inter'] capitalize leading-normal text-center">
+                <div className="justify-center text-lg font-normal font-['Poppins'] capitalize leading-normal text-center">
                   {product.name} <br />
-                  {product.price.toLocaleString()} ₴
+                  <span className="font-semibold text-[#FFA500]">{product.price.toLocaleString()} ₴</span>
                 </div>
               </Link>
             </SwiperSlide>
           ))}
         </Swiper>
+      </div>
+      
+      {/* Smooth transition gradient to AboutUs section - positioned at bottom */}
+      <div className="absolute left-1/2 -translate-x-1/2 bottom-0 w-full max-w-[1920px] h-24 md:h-32 lg:h-40 pointer-events-none z-20">
+        <div className="h-full bg-gradient-to-b from-transparent via-white/90 to-white">
+          {/* Wave transition element */}
+          <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 1200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0,200 Q300,100 600,140 T1200,140 L1200,200 L0,200 Z" fill="white" opacity="0.95" />
+            <path d="M0,200 Q250,120 500,150 T1000,150 T1200,150 L1200,200 L0,200 Z" fill="white" opacity="0.9" />
+            <path d="M0,200 Q350,110 700,145 T1200,145 L1200,200 L0,200 Z" fill="white" opacity="0.85" />
+          </svg>
+        </div>
       </div>
     </section>
   );

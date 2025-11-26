@@ -8,7 +8,6 @@ import Alert from "@/components/shared/Alert";
 import { getFirstProductImage } from "@/lib/getFirstProductImage";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
-import { useRouter } from "next/navigation";
 import { BRAND } from "@/lib/brand";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -44,28 +43,21 @@ const swiperStyles = `
 `;
 import { Swiper as SwiperType } from "swiper";
 
-const SIZE_MAP: Record<string, string> = {
-  "1": "XL",
-  "2": "L",
-  "3": "M",
-  "4": "S",
-  "5": "XS",
-};
-
 interface ProductClientProps {
   product: {
     id: number;
     name: string;
     price: number;
-    old_price?: number;
-    discount_percentage?: number;
-    description?: string;
+    old_price?: number | null;
+    discount_percentage?: number | null;
+    description?: string | null;
+    stock?: number;
     media?: { url: string; type: string }[];
-    sizes?: { size: string; stock: number }[];
     colors?: { label: string; hex?: string | null }[];
-    fabric_composition?: string;
-    has_lining?: boolean;
-    lining_description?: string;
+    // CBD-specific fields
+    cbdContentMg?: number;
+    thcContentMg?: number | null;
+    potency?: string | null;
   };
 }
 
@@ -76,8 +68,6 @@ interface RelatedProduct {
 }
 
 export default function ProductClient({ product: initialProduct }: ProductClientProps) {
-  const router = useRouter();
-  const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const quantity = 1;
   const { isDark } = useAppContext();
   const [relatedProducts, setRelatedProducts] = useState<RelatedProduct[]>([]);
@@ -96,14 +86,13 @@ export default function ProductClient({ product: initialProduct }: ProductClient
     return () => {
       document.head.removeChild(style);
     };
-  }, [swiperStyles]);
+  }, []);
 
   const [showToast, setShowToast] = useState(false);
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [alertType, setAlertType] = useState<
     "success" | "error" | "warning" | "info"
   >("info");
-  const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
 
   // Auto-select first color if available
@@ -163,7 +152,6 @@ export default function ProductClient({ product: initialProduct }: ProductClient
         // Update product state with smooth transition
         setTimeout(() => {
           setProduct(newProduct);
-          setSelectedSize(null); // Reset size selection
           
           // Auto-select first color if available
           if (newProduct.colors && newProduct.colors.length > 0) {
@@ -185,12 +173,6 @@ export default function ProductClient({ product: initialProduct }: ProductClient
   };
 
   const handleAddToCart = () => {
-    if (!selectedSize) {
-      setAlertMessage("Оберіть розмір");
-      setAlertType("warning");
-      setTimeout(() => setAlertMessage(null), 3000);
-      return;
-    }
     if (product?.colors && product.colors.length > 0 && !selectedColor) {
       setAlertMessage("Оберіть колір");
       setAlertType("warning");
@@ -214,27 +196,18 @@ export default function ProductClient({ product: initialProduct }: ProductClient
       id: product.id,
       name: product.name,
       price: product.price,
-      size: selectedSize,
       quantity,
       imageUrl: getFirstProductImage(media),
       color: selectedColor || undefined,
-      discount_percentage: product.discount_percentage,
+      discount_percentage: product.discount_percentage ?? undefined,
     });
     setShowToast(true);
     setTimeout(() => setShowToast(false), 3000);
   };
 
   const media = product.media || [];
-  const sizes = (product.sizes as { size: string; stock?: number | string }[] | undefined)
-    ?.filter((s) => Number(s.stock ?? 0) > 0)
-    .map((s) => s.size) || [
-    "xs",
-    "s",
-    "m",
-    "l",
-    "xl",
-  ];
-  const outOfStock = sizes.length === 0;
+  const stock = product.stock ?? 0;
+  const outOfStock = stock <= 0;
 
   // SWIPER
   const [swiper, setSwiper] = useState<SwiperType | null>(null);
@@ -394,7 +367,7 @@ export default function ProductClient({ product: initialProduct }: ProductClient
         <div className="flex flex-col gap-6 md:gap-10 px-4 md:px-0 w-full lg:w-1/2">
           {/* Availability */}
           <div className="text-base md:text-lg font-normal font-['Helvetica'] leading-relaxed tracking-wide">
-            В наявності
+            {outOfStock ? "Немає в наявності" : "В наявності"}
           </div>
 
           {/* Product Name */}
@@ -429,42 +402,6 @@ export default function ProductClient({ product: initialProduct }: ProductClient
               )}
             </div>
           </div>
-
-          {/* Size Picker Title */}
-          <div className="flex items-center justify-between">
-            <div className="text-base md:text-lg font-['Inter'] uppercase tracking-tight">
-              Оберіть розмір
-            </div>
-            <button
-              onClick={() => setShowSizeGuide(true)}
-              className="text-sm md:text-base text-gray-600 dark:text-gray-400 underline hover:text-black dark:hover:text-white cursor-pointer transition-all duration-200"
-            >
-              Розмірна сітка
-            </button>
-          </div>
-
-          {/* Size Options */}
-          {sizes.length === 0 ? (
-            <div className="inline-flex items-center gap-2 px-3 py-2 rounded border text-sm uppercase tracking-wide bg-red-50 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800 w-fit">
-              out of stock
-            </div>
-          ) : (
-          <div className="flex flex-wrap gap-2 md:gap-3">
-            {sizes.map((size) => (
-              <div
-                key={size}
-                onClick={() => setSelectedSize(size)}
-                className={`w-19 sm:w-19 md:w-22 p-2 sm:p-3 border-2 flex justify-center text-base md:text-lg font-['Inter'] uppercase cursor-pointer transition-all duration-200 ${
-                  selectedSize === size
-                    ? "border-black dark:border-white font-bold scale-105 shadow-md"
-                    : "border-gray-300 dark:border-gray-600 hover:border-gray-600 dark:hover:border-gray-400 hover:scale-105 hover:shadow-md"
-                }`}
-              >
-                {SIZE_MAP[size] || size}
-              </div>
-            ))}
-          </div>
-          )}
 
           {/* Color Picker */}
           {(product.colors && product.colors.length > 0) || relatedProducts.length > 0 ? (
@@ -566,147 +503,6 @@ export default function ProductClient({ product: initialProduct }: ProductClient
             Написати менеджеру
           </a>
 
-          {/* Size Guide Modal */}
-          {showSizeGuide && (
-            <div
-              className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-              onClick={() => setShowSizeGuide(false)}
-            >
-              <div
-                className="relative max-w-2xl w-full bg-white rounded-2xl shadow-2xl overflow-auto max-h-[90vh]"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <button
-                  onClick={() => setShowSizeGuide(false)}
-                  className="absolute top-6 right-6 bg-black text-white rounded-full w-10 h-10 flex items-center justify-center text-2xl font-light hover:bg-gray-800 transition-colors z-10"
-                >
-                  ×
-                </button>
-
-                <div className="p-8 md:p-12">
-                  <div className="text-center mb-10">
-                    <h2 className="text-3xl md:text-4xl font-bold text-black tracking-tight font-['Inter']">
-                      РОЗМІРНА СІТКА
-                    </h2>
-                    <div className="mt-2 text-sm text-gray-500 font-['Helvetica']">
-                      Всі вимірювання вказані в сантиметрах
-                    </div>
-                  </div>
-
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-black border-collapse">
-                      <thead>
-                        <tr className="border-b-2 border-black">
-                          <th className="py-4 px-3 text-center text-xs md:text-sm font-bold uppercase tracking-wider font-['Inter']">
-                            Розмір
-                          </th>
-                          <th className="py-4 px-3 text-center text-xs md:text-sm font-bold uppercase tracking-wider font-['Inter']">
-                            Обхват
-                            <br />
-                            грудей
-                          </th>
-                          <th className="py-4 px-3 text-center text-xs md:text-sm font-bold uppercase tracking-wider font-['Inter']">
-                            Обхват
-                            <br />
-                            талії
-                          </th>
-                          <th className="py-4 px-3 text-center text-xs md:text-sm font-bold uppercase tracking-wider font-['Inter']">
-                            Обхват
-                            <br />
-                            бедер
-                          </th>
-                          <th className="py-4 px-3 text-center text-xs md:text-sm font-bold uppercase tracking-wider font-['Inter']">
-                            Зріст
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
-                          <td className="py-5 px-3 text-center font-bold text-lg font-['Inter']">
-                            S
-                          </td>
-                          <td className="py-5 px-3 text-center font-['Helvetica']">
-                            <div className="text-base">88-92</div>
-                          </td>
-                          <td className="py-5 px-3 text-center font-['Helvetica']">
-                            <div className="text-base">77-80</div>
-                          </td>
-                          <td className="py-5 px-3 text-center font-['Helvetica']">
-                            <div className="text-base">93-96</div>
-                          </td>
-                          <td className="py-5 px-3 text-center font-['Helvetica']">
-                            <div className="text-base">175-180</div>
-                          </td>
-                        </tr>
-                        <tr className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
-                          <td className="py-5 px-3 text-center font-bold text-lg font-['Inter']">
-                            M
-                          </td>
-                          <td className="py-5 px-3 text-center font-['Helvetica']">
-                            <div className="text-base">96-100</div>
-                          </td>
-                          <td className="py-5 px-3 text-center font-['Helvetica']">
-                            <div className="text-base">84-88</div>
-                          </td>
-                          <td className="py-5 px-3 text-center font-['Helvetica']">
-                            <div className="text-base">98-101</div>
-                          </td>
-                          <td className="py-5 px-3 text-center font-['Helvetica']">
-                            <div className="text-base">180-185</div>
-                          </td>
-                        </tr>
-                        <tr className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
-                          <td className="py-5 px-3 text-center font-bold text-lg font-['Inter']">
-                            L
-                          </td>
-                          <td className="py-5 px-3 text-center font-['Helvetica']">
-                            <div className="text-base">104-108</div>
-                          </td>
-                          <td className="py-5 px-3 text-center font-['Helvetica']">
-                            <div className="text-base">92-97</div>
-                          </td>
-                          <td className="py-5 px-3 text-center font-['Helvetica']">
-                            <div className="text-base">103-106</div>
-                          </td>
-                          <td className="py-5 px-3 text-center font-['Helvetica']">
-                            <div className="text-base">180-190</div>
-                          </td>
-                        </tr>
-                        <tr className="hover:bg-gray-50 transition-colors">
-                          <td className="py-5 px-3 text-center font-bold text-lg font-['Inter']">
-                            XL
-                          </td>
-                          <td className="py-5 px-3 text-center font-['Helvetica']">
-                            <div className="text-base">112-116</div>
-                          </td>
-                          <td className="py-5 px-3 text-center font-['Helvetica']">
-                            <div className="text-base">100-104</div>
-                          </td>
-                          <td className="py-5 px-3 text-center font-['Helvetica']">
-                            <div className="text-base">108-111</div>
-                          </td>
-                          <td className="py-5 px-3 text-center font-['Helvetica']">
-                            <div className="text-base">190+</div>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-
-                  <div className="text-center mt-10 pt-6 border-t border-gray-200">
-                    <Image
-                      src="/images/light-theme/calipuff-logo-header-light.svg"
-                      alt={`${BRAND.name} logo`}
-                      width={120}
-                      height={40}
-                      className="mx-auto h-10 opacity-80"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
           {/* Toast */}
           {showToast && (
             <div className="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-black text-white px-5 py-3 rounded shadow-lg z-50">
@@ -723,28 +519,47 @@ export default function ProductClient({ product: initialProduct }: ProductClient
           />
 
           {/* Description Section */}
-          <div className="w-full md:w-[522px]">
-            <div className="mb-3 md:mb-4 text-xl md:text-2xl font-['Inter'] uppercase tracking-tight">
-              опис
-            </div>
-            <div className="text-sm md:text-lg font-['Inter'] leading-relaxed tracking-wide">
-              {product.description}
-            </div>
-          </div>
-
-          {product.fabric_composition && (
-            <div className="opacity-90">
-              <h3>Cклад тканини: </h3>
-              <span>{product.fabric_composition}</span>
+          {product.description && (
+            <div className="w-full md:w-[522px] mt-6">
+              <div className="mb-3 md:mb-4 text-xl md:text-2xl font-['Inter'] uppercase tracking-tight">
+                опис
+              </div>
+              <div className="text-sm md:text-lg font-['Inter'] leading-relaxed tracking-wide">
+                {product.description}
+              </div>
             </div>
           )}
 
-          {product.has_lining && (
-            <div className="opacity-90">
-              <h3>Підкладка: </h3>
-              <span>{product.lining_description}</span>
+          {/* CBD Parameters Section */}
+          {(product.cbdContentMg !== undefined && product.cbdContentMg > 0) || 
+           (product.thcContentMg !== null && product.thcContentMg !== undefined) || 
+           product.potency ? (
+            <div className="w-full md:w-[522px] mt-6">
+              <div className="mb-3 md:mb-4 text-xl md:text-2xl font-['Inter'] uppercase tracking-tight">
+                CBD Параметри
+              </div>
+              <div className="space-y-3 border-t border-gray-200 dark:border-gray-700 pt-4">
+                {product.cbdContentMg !== undefined && product.cbdContentMg > 0 && (
+                  <div className="flex items-center gap-3 text-sm md:text-base font-['Inter']">
+                    <span className="font-medium min-w-[100px]">CBD вміст:</span>
+                    <span className="text-gray-700 dark:text-gray-300">{product.cbdContentMg} мг</span>
+                  </div>
+                )}
+                {product.thcContentMg !== null && product.thcContentMg !== undefined && (
+                  <div className="flex items-center gap-3 text-sm md:text-base font-['Inter']">
+                    <span className="font-medium min-w-[100px]">THC вміст:</span>
+                    <span className="text-gray-700 dark:text-gray-300">{product.thcContentMg} мг</span>
+                  </div>
+                )}
+                {product.potency && (
+                  <div className="flex items-center gap-3 text-sm md:text-base font-['Inter']">
+                    <span className="font-medium min-w-[100px]">Потенція:</span>
+                    <span className="text-gray-700 dark:text-gray-300">{product.potency}</span>
+                  </div>
+                )}
+              </div>
             </div>
-          )}
+          ) : null}
         </div>
       </div>
     </section>

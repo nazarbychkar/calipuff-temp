@@ -4,7 +4,6 @@ import CatalogServer from "@/components/catalog/CatalogServer";
 interface PageProps {
   searchParams: Promise<{
     category?: string;
-    season?: string;
     subcategory?: string;
   }>;
 }
@@ -18,7 +17,6 @@ export default async function Page({ searchParams }: PageProps) {
         <Suspense fallback={<div className="text-center py-20 text-lg">Завантаження каталогу...</div>}>
             <CatalogServer 
                 category={params.category || null}
-                season={params.season || null}
                 subcategory={params.subcategory || null}
             />
         </Suspense>

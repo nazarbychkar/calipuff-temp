@@ -34,7 +34,6 @@ interface Product {
   sizes: { size: string }[];
   top_sale?: boolean;
   limited_edition?: boolean;
-  season?: string;
   category_name?: string;
   color: string;
   first_media?: { url: string; type: string } | null;
@@ -210,12 +209,6 @@ export default function ProductsTable() {
                   isHeader
                   className="px-5 py-3 text-left text-sm font-semibold text-gray-600 dark:text-gray-300"
                 >
-                  Сезон
-                </TableCell>
-                <TableCell
-                  isHeader
-                  className="px-5 py-3 text-left text-sm font-semibold text-gray-600 dark:text-gray-300"
-                >
                   Колір
                 </TableCell>
                 <TableCell
@@ -305,13 +298,6 @@ export default function ProductsTable() {
                     </TableCell>
                     <TableCell className="px-5 py-4 text-sm text-gray-600 dark:text-gray-400">
                       {product.category_name || "—"}
-                    </TableCell>
-                    <TableCell className="px-5 py-4 text-sm text-gray-600 dark:text-gray-400">
-                      {Array.isArray(product.season)
-                        ? product.season.length > 0
-                          ? product.season.join(", ")
-                          : "—"
-                        : product.season || "—"}
                     </TableCell>
                     <TableCell className="px-5 py-4 text-sm text-gray-600 dark:text-gray-400">
                       {product.color || "—"}

@@ -67,14 +67,12 @@ export default function Header() {
   const [hoveredCategoryId, setHoveredCategoryId] = useState<number | null>(
     null
   );
-  const [catalogOpen, setCatalogOpen] = useState(false);
   const [infoMenuOpen, setInfoMenuOpen] = useState(false);
   const infoTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const [pinnedCatalog, setPinnedCatalog] = useState(false);
   const hoverTimeout = useRef<NodeJS.Timeout | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
-  const [justUnpinned] = useState(false);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -84,7 +82,6 @@ export default function Header() {
         !menuRef.current.contains(e.target as Node)
       ) {
         setPinnedCatalog(false);
-        setCatalogOpen(false);
         setHoveredCategoryId(null);
       }
     };
@@ -133,16 +130,6 @@ export default function Header() {
     }
   }, [hoveredCategoryId]);
 
-  const customSeasonCategory = {
-    id: -1, // Use a negative ID or something unique to avoid conflicts
-    name: "Сезон",
-    subcategories: [
-      { id: -101, name: "Весна" },
-      { id: -102, name: "Літо" },
-      { id: -103, name: "Осінь" },
-      { id: -104, name: "Зима" },
-    ],
-  };
 
   return (
     <>
@@ -157,7 +144,6 @@ export default function Header() {
         onMouseLeave={() => {
           if (!pinnedCatalog) {
             hoverTimeout.current = setTimeout(() => {
-              setCatalogOpen(false);
               setHoveredCategoryId(null);
             }, 200); // Small delay
           }
@@ -188,7 +174,6 @@ export default function Header() {
                     if (hoverTimeout.current)
                       clearTimeout(hoverTimeout.current);
                     setHoveredCategoryId(category.id);
-                    setCatalogOpen(true);
                   }}
                   onMouseLeave={() => {
                     if (!pinnedCatalog) {
@@ -230,52 +215,6 @@ export default function Header() {
                     )}
                 </div>
               ))}
-
-              {/* Also include the "Сезон" category */}
-              <div
-                className="relative group"
-                onMouseEnter={() => {
-                  if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
-                  setHoveredCategoryId(customSeasonCategory.id);
-                  setCatalogOpen(true);
-                }}
-                onMouseLeave={() => {
-                  if (!pinnedCatalog) {
-                    hoverTimeout.current = setTimeout(() => {
-                      setHoveredCategoryId(null);
-                    }, 200);
-                  }
-                }}
-              >
-                <button
-                  className="cursor-pointer whitespace-nowrap hover:text-[#8C7461] text-base font-normal font-['Inter']"
-                  disabled
-                  onClick={() =>
-                    (window.location.href = `/catalog?category=${encodeURIComponent(
-                      customSeasonCategory.name
-                    )}`)
-                  }
-                >
-                  {customSeasonCategory.name}
-                </button>
-                {hoveredCategoryId === customSeasonCategory.id && (
-                  <div className={`absolute top-full left-0 mt-2 shadow-md rounded px-4 py-2 flex flex-col min-w-[200px] z-50 ${
-                    isMounted && isHomePage && !isScrolled ? 'bg-white/95 backdrop-blur-sm' : 'bg-white'
-                  }`}>
-                    {customSeasonCategory.subcategories.map((subcat) => (
-                      <Link
-                        key={subcat.id}
-                        href={`/catalog?season=${encodeURIComponent(
-                          subcat.name
-                        )}`}
-                        className="hover:text-[#8C7461] text-base py-1 font-normal font-['Inter'] text-black"
-                      >
-                        {subcat.name}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
               {/* Information dropdown */}
               <div
                 className="relative"

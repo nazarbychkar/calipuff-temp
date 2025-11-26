@@ -10,17 +10,16 @@ interface Product {
   price: number;
   first_media?: { url: string; type: string } | null;
   sizes?: { size: string; stock: number }[];
-  color?: string;
+  color?: string | null;
 }
 
 interface CatalogServerProps {
   category?: string | null;
-  season?: string | null;
   subcategory?: string | null;
 }
 
 async function getProducts(params: CatalogServerProps): Promise<Product[]> {
-  const { category, season, subcategory } = params;
+  const { category, subcategory } = params;
 
   try {
     if (subcategory) {
@@ -28,9 +27,6 @@ async function getProducts(params: CatalogServerProps): Promise<Product[]> {
     }
     if (category) {
       return sqlGetProducts({ categoryName: category });
-    }
-    if (season) {
-      return sqlGetProducts({ season });
     }
     return sqlGetProducts();
   } catch (error) {

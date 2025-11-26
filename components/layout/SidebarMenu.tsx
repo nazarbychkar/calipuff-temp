@@ -29,8 +29,7 @@ export default function SidebarMenu({
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // "menu" = main menu with categories, "season" = season sidebar
-  const [view, setView] = useState<"menu" | "season">("menu");
+  const [view] = useState<"menu">("menu");
   const [openCategoryId, setOpenCategoryId] = useState<number | null>(null);
 
   useEffect(() => {
@@ -67,30 +66,6 @@ export default function SidebarMenu({
     fetchCategories();
   }, []);
 
-  const season_data = [
-    {
-      name: "Осінь",
-      image: "/images/autumn2.jpg",
-    },
-    {
-      name: "Зима",
-      image: "/images/winter2.jpg",
-    },
-    {
-      name: "Весна",
-      image: "/images/spring2.jpg",
-    },
-    {
-      name: "Літо",
-      image: "/images/summer2.jpg",
-    },
-  ];
-
-  if (!isOpen) {
-    // If sidebar closed, reset view to main menu for next open
-    if (view !== "menu") setView("menu");
-  }
-
   return (
     <div className="relative z-50">
       {/* Overlay */}
@@ -99,7 +74,6 @@ export default function SidebarMenu({
           className="fixed inset-0 bg-black/40 z-30"
           onClick={() => {
             setIsOpen(false);
-            setView("menu"); // reset on close
           }}
         />
       )}
@@ -173,47 +147,7 @@ export default function SidebarMenu({
                   )}
                 </div>
               ))}
-            <button
-              className="text-start cursor-pointer hover:text-[#8C7461]"
-              onClick={() => setView("season")}
-            >
-              Сезон -{">"}
-            </button>
           </nav>
-        )}
-
-        {view === "season" && (
-          <div>
-            <div className="flex justify-between items-center p-4 text-xl sm:text-2xl md:text-3xl">
-              <h2 className="font-bold">Сезони</h2>
-              <button
-                className="text-2xl sm:text-3xl cursor-pointer hover:text-[#8C7461]"
-                onClick={() => setView("menu")}
-              >
-                ×
-              </button>
-            </div>
-
-            <div className="grid grid-cols-2 px-4 pb-6 gap-3">
-              {season_data.map((item, i) => (
-                <Link
-                  key={i}
-                  href={`/catalog?season=${item.name}`}
-                  onClick={() => setIsOpen(false)}
-                  className="h-[120px] rounded overflow-hidden relative text-white text-xl sm:text-2xl font-bold text-center flex items-center justify-center"
-                  style={{
-                    backgroundImage: `url(${item.image})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                  }}
-                >
-                  {/* Dark overlay on image */}
-                  <div className="absolute inset-0 bg-black/30" />
-                  <span className="relative z-10">{item.name}</span>{" "}
-                </Link>
-              ))}
-            </div>
-          </div>
         )}
       </div>
     </div>

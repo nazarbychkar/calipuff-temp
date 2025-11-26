@@ -1,9 +1,7 @@
 // Mobile-optimized service worker for CALIPUFF e-commerce
-const CACHE_NAME = 'calipuff-mobile-v1';
 const STATIC_CACHE = 'calipuff-static-v1';
 const DYNAMIC_CACHE = 'calipuff-dynamic-v1';
 const IMAGE_CACHE = 'calipuff-images-v1';
-const MOBILE_CACHE = 'calipuff-mobile-v1';
 
 // Critical resources to cache immediately
 const STATIC_ASSETS = [

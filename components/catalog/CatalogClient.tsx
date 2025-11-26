@@ -7,7 +7,7 @@ import { useAppContext } from "@/lib/GeneralProvider";
 import SidebarMenu from "../layout/SidebarMenu";
 import Link from "next/link";
 import Image from "next/image";
-import { getProductImageSrc, getFirstMedia } from "@/lib/getFirstProductImage";
+import { getProductImageSrc } from "@/lib/getFirstProductImage";
 
 interface Product {
   id: number;
@@ -15,7 +15,7 @@ interface Product {
   price: number;
   first_media?: { url: string; type: string } | null;
   sizes?: { size: string; stock: number }[];
-  color?: string;
+  color?: string | null;
   discount_percentage?: number;
 }
 
@@ -64,7 +64,6 @@ export default function CatalogClient({
   }, [filteredProducts, sortOrder]);
 
   const category = searchParams.get("category");
-  const season = searchParams.get("season");
   const subcategory = searchParams.get("subcategory");
 
   const [visibleCount, setVisibleCount] = useState(12);
@@ -92,8 +91,6 @@ export default function CatalogClient({
                   }`
                 : category
                 ? `Категорія ${category}`
-                : season
-                ? `Сезон ${season}`
                 : "Усі товари"}
             </span>
           </div>
@@ -134,7 +131,10 @@ export default function CatalogClient({
                   />
                 ) : (
                   <Image
-                    src={getProductImageSrc(product.first_media)}
+                    src={getProductImageSrc(
+                      product.first_media,
+                      "https://placehold.co/432x613"
+                    )}
                     alt={product.name}
                     className="object-cover transition-all duration-300 group-hover:brightness-90"
                     fill

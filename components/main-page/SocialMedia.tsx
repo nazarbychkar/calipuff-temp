@@ -12,27 +12,22 @@ export default function SocialMedia() {
     // h-[977px]
     <section
       id="contacts"
-      className="scroll-mt-30 max-w-[1920px] mx-auto w-full relative overflow-hidden lg:my-36"
+      className="scroll-mt-30 max-w-[1920px] mx-auto w-full relative overflow-hidden lg:my-20 -mt-12 md:-mt-16 lg:-mt-20 pt-12 md:pt-16 lg:pt-20 bg-white pb-24 md:pb-32 lg:pb-40"
     >
-      <div className="flex flex-col-reverse lg:flex-row justify-center">
-        <div className="flex justify-center gap-4 sm:gap-7 overflow-x-auto">
+      <div className="flex flex-col-reverse lg:flex-row justify-center items-center px-6 lg:px-12 gap-6 lg:gap-8">
+        {/* Left: Social media image */}
+        <div className="w-full lg:w-1/2 flex justify-center lg:justify-center">
           <Image
-            className="w-44 h-auto sm:w-80 sm:h-auto rounded-[24px] sm:rounded-[46.43px] max-w-full max-h-[calc(100vh-20px)]"
-            src="/images/social-media-0.png"
-            alt="image-1"
-            width={320}
-            height={480}
-          />
-          <Image
-            className="w-44 h-auto sm:w-80 sm:h-auto rounded-[24px] sm:rounded-[53.20px] max-w-full max-h-[calc(100vh-20px)]"
-            src="/images/social-media-1.png"
-            alt="image-2"
-            width={320}
-            height={480}
+            className="w-64 h-auto sm:w-80 lg:w-full max-w-md rounded-3xl max-h-[calc(100vh-20px)]"
+            src="https://placehold.co/400x600/FFA500/FFFFFF?text=Social+Media"
+            alt="social media"
+            width={400}
+            height={600}
           />
         </div>
 
-        <div className="flex flex-col gap-10 m-8 lg:ml-25 lg:m-18">
+        {/* Right: Text content */}
+        <div className="w-full lg:w-1/2 flex flex-col gap-10 m-8 lg:m-0">
           <div className="flex flex-col">
             <span className="text-stone-500 text-5xl lg:text-8xl font-normal font-['Inter']">
               {BRAND.tagline}
@@ -93,6 +88,18 @@ export default function SocialMedia() {
           >
             Telegram-спільнота для партнерів
           </Link>
+        </div>
+      </div>
+      
+      {/* Smooth transition gradient to LimitedEdition section - positioned at bottom */}
+      <div className="absolute left-1/2 -translate-x-1/2 bottom-0 w-full max-w-[1920px] h-24 md:h-32 lg:h-40 pointer-events-none z-20">
+        <div className="h-full bg-gradient-to-b from-transparent via-white/90 to-white">
+          {/* Wave transition element */}
+          <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 1200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0,200 Q300,100 600,140 T1200,140 L1200,200 L0,200 Z" fill="white" opacity="0.95" />
+            <path d="M0,200 Q250,120 500,150 T1000,150 T1200,150 L1200,200 L0,200 Z" fill="white" opacity="0.9" />
+            <path d="M0,200 Q350,110 700,145 T1200,145 L1200,200 L0,200 Z" fill="white" opacity="0.85" />
+          </svg>
         </div>
       </div>
     </section>

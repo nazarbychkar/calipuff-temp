@@ -8,15 +8,16 @@ interface ProductClientWrapperProps {
     id: number;
     name: string;
     price: number;
-    old_price?: number;
-    discount_percentage?: number;
-    description?: string;
+    old_price?: number | null;
+    discount_percentage?: number | null;
+    description?: string | null;
+    stock?: number;
     media?: { url: string; type: string }[];
-    sizes?: { size: string; stock: number }[];
     colors?: { label: string; hex?: string | null }[];
-    fabric_composition?: string;
-    has_lining?: boolean;
-    lining_description?: string;
+    // CBD-specific fields
+    cbdContentMg?: number;
+    thcContentMg?: number | null;
+    potency?: string | null;
   };
 }
 

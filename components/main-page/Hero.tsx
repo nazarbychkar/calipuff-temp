@@ -15,7 +15,7 @@ export default function Hero() {
   const { isDark, isSidebarOpen, setIsSidebarOpen } = useAppContext();
 
   return (
-    <section>
+    <section className="relative">
       <div className="max-w-[1920px] mx-auto w-full h-screen sm:h-[720px] md:h-[860px] lg:h-[980px] relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-[#FFA500] via-[#FFD700] to-[#40E0D0]" />
         <div className="absolute inset-x-0 bottom-0 h-44 md:h-60 bg-white/30 mix-blend-soft-light blur-2xl" />
@@ -80,6 +80,17 @@ export default function Hero() {
               Дивитися колекцію
             </Link>
           </div>
+        </div>
+      </div>
+      
+      {/* Smooth transition gradient to TopSale background - positioned after container */}
+      <div className="absolute left-1/2 -translate-x-1/2 bottom-0 w-full max-w-[1920px] h-40 md:h-56 lg:h-72 pointer-events-none z-20">
+        <div className="h-full bg-gradient-to-b from-transparent via-[#f3f4f6]/70 to-[#f3f4f6]">
+          {/* Wave transition element */}
+          <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 1200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0,200 Q300,100 600,140 T1200,140 L1200,200 L0,200 Z" fill="#f3f4f6" />
+            <path d="M0,200 Q250,120 500,150 T1000,150 T1200,150 L1200,200 L0,200 Z" fill="#f3f4f6" opacity="0.8" />
+          </svg>
         </div>
       </div>
 

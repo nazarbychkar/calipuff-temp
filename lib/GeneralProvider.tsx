@@ -9,8 +9,6 @@ interface ContextType {
   setIsSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isBasketOpen: boolean;
   setIsBasketOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  isSeasonOpen: boolean;
-  setIsSeasonOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isSearchOpen: boolean;
   setIsSearchOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -22,8 +20,6 @@ const AppContext = createContext<ContextType>({
   setIsSidebarOpen: () => {},
   isBasketOpen: false,
   setIsBasketOpen: () => {},
-  isSeasonOpen: false,
-  setIsSeasonOpen: () => {},
   isSearchOpen: false,
   setIsSearchOpen: () => {},
 });
@@ -34,7 +30,6 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [isDark, setIsDark] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isBasketOpen, setIsBasketOpen] = useState(false);
-  const [isSeasonOpen, setIsSeasonOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   useEffect(() => {
@@ -67,8 +62,6 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         setIsSidebarOpen,
         isBasketOpen,
         setIsBasketOpen,
-        isSeasonOpen,
-        setIsSeasonOpen,
         isSearchOpen,
         setIsSearchOpen,
       }}

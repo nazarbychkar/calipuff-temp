@@ -12,7 +12,7 @@ interface BasketItem {
   id: number;
   name: string;
   price: number;
-  size: string;
+  size?: string;
   quantity: number;
   imageUrl: string;
   color?: string;
@@ -22,8 +22,8 @@ interface BasketItem {
 interface BasketContextType {
   items: BasketItem[];
   addItem: (item: BasketItem) => void;
-  removeItem: (id: number, size: string) => void;
-  updateQuantity: (id: number, size: string, quantity: number) => void;
+  removeItem: (id: number, size?: string) => void;
+  updateQuantity: (id: number, size: string | undefined, quantity: number) => void;
   clearBasket: () => void;
 }
 
@@ -89,13 +89,13 @@ export function BasketProvider({ children }: { children: ReactNode }) {
     });
   }
 
-  function removeItem(id: number, size: string) {
+  function removeItem(id: number, size?: string) {
     setItems((prev) =>
       prev.filter((item) => item.id !== id || item.size !== size)
     );
   }
 
-  function updateQuantity(id: number, size: string, quantity: number) {
+  function updateQuantity(id: number, size: string | undefined, quantity: number) {
     setItems((prev) => {
       return prev.map((item) => {
         if (item.id === id && item.size === size) {

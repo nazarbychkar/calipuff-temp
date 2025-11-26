@@ -7,7 +7,7 @@ import { useAppContext } from "@/lib/GeneralProvider";
 import SidebarMenu from "../layout/SidebarMenu";
 import Link from "next/link";
 import Image from "next/image";
-import { getProductImageSrc, getFirstMedia } from "@/lib/getFirstProductImage";
+import { getProductImageSrc } from "@/lib/getFirstProductImage";
 import { cachedFetch, CACHE_KEYS } from "@/lib/cache";
 
 // Video component with proper mobile autoplay
@@ -26,7 +26,7 @@ function VideoWithAutoplay({ src, className }: { src: string; className?: string
       const playVideo = async () => {
         try {
           await video.play();
-        } catch (error) {
+        } catch {
           // Retry after delay for mobile
           setTimeout(async () => {
             try {
@@ -68,7 +68,7 @@ interface Product {
   price: number;
   first_media?: { url: string; type: string } | null;
   sizes?: { size: string; stock: number }[];
-  color?: string;
+  color?: string | null;
 }
 
 export default function Catalog() {
@@ -81,7 +81,6 @@ export default function Catalog() {
   const [products, setProducts] = useState<Product[]>([]);
   const [colors, setColors] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
@@ -113,14 +112,12 @@ export default function Catalog() {
 
   // Read filters from URL params
   const category = searchParams.get("category");
-  const season = searchParams.get("season");
   const subcategory = searchParams.get("subcategory");
 
   useEffect(() => {
     async function fetchProducts() {
       try {
         setLoading(true);
-        setError(null);
 
         let url = "/api/products";
         let cacheKey = CACHE_KEYS.PRODUCTS;
@@ -135,19 +132,12 @@ export default function Catalog() {
             category
           )}`;
           cacheKey = CACHE_KEYS.PRODUCTS_CATEGORY(category);
-        } else if (season) {
-          url = `/api/products/season?season=${encodeURIComponent(season)}`;
-          cacheKey = CACHE_KEYS.PRODUCTS_SEASON(season);
         }
 
         const data = await cachedFetch<Product[]>(url, cacheKey);
         setProducts(data);
       } catch (err: unknown) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError("An unknown error occurred");
-        }
+        console.error("Error fetching products:", err);
       } finally {
         setLoading(false);
       }
@@ -163,16 +153,14 @@ export default function Catalog() {
         setColors(colorNames);
       } catch (err: unknown) {
         console.error("Error fetching colors:", err);
-        setError("Failed to fetch colors");
       }
     }
 
     fetchProducts();
     fetchColors();
-  }, [category, season, subcategory]); // refetch if URL params change
+  }, [category, subcategory]); // refetch if URL params change
 
   if (loading) return <div>Loading products...</div>;
-  if (error) return <div>Error: {error}</div>;
 
   return (
     <>
@@ -193,8 +181,6 @@ export default function Catalog() {
                   }`
                 : category
                 ? `Категорія ${category}`
-                : season
-                ? `Сезон ${season}`
                 : "Усі товари"}
             </span>
           </div>

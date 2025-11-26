@@ -6,7 +6,6 @@ import { useRouter, useParams } from "next/navigation";
 import ComponentCard from "@/components/admin/ComponentCard";
 import PageBreadcrumb from "@/components/admin/PageBreadCrumb";
 import Label from "@/components/admin/form/Label";
-import MultiSelect from "@/components/admin/form/MultiSelect";
 import Input from "@/components/admin/form/input/InputField";
 import TextArea from "@/components/admin/form/input/TextArea";
 import DropzoneComponent from "@/components/admin/form/form-elements/DropZone";
@@ -85,24 +84,24 @@ export default function EditProductPage() {
         );
 
         setFormData({
-          name: productData.name,
-          description: productData.description,
-          price: String(productData.price),
+          name: productData.name || "",
+          description: productData.description || "",
+          price: String(productData.price || 0),
           oldPrice: String(productData.old_price || ""),
           discountPercentage: String(productData.discount_percentage || ""),
           priority: String(productData.priority || 0),
-          media: productData.media,
-          topSale: productData.top_sale,
-          limitedEdition: productData.limited_edition,
-          color: productData.color,
-          categoryId: productData.category_id,
+          media: productData.media || [],
+          topSale: productData.top_sale || false,
+          limitedEdition: productData.limited_edition || false,
+          color: productData.color || "",
+          categoryId: productData.category_id || null,
           subcategoryId: productData.subcategory_id || null,
           // CBD-specific fields
-          cbdContentMg: String(productData.cbdContentMg || 0),
-          thcContentMg: productData.thcContentMg ? String(productData.thcContentMg) : "",
+          cbdContentMg: String(productData.cbdContentMg ?? 0),
+          thcContentMg: productData.thcContentMg != null ? String(productData.thcContentMg) : "",
           potency: productData.potency || "",
           imageUrl: productData.imageUrl || "",
-          stock: String(productData.stock || 0),
+          stock: String(productData.stock ?? 0),
         });
 
         setCategoryOptions(categoryData);
@@ -427,7 +426,7 @@ export default function EditProductPage() {
                     <Input
                       type="number"
                       value={formData.cbdContentMg}
-                      onChange={(value) => handleChange("cbdContentMg", value)}
+                      onChange={(e) => handleChange("cbdContentMg", e.target.value)}
                       placeholder="0"
                     />
                   </div>
@@ -436,7 +435,7 @@ export default function EditProductPage() {
                     <Input
                       type="number"
                       value={formData.thcContentMg}
-                      onChange={(value) => handleChange("thcContentMg", value)}
+                      onChange={(e) => handleChange("thcContentMg", e.target.value)}
                       placeholder="0"
                     />
                   </div>
@@ -445,7 +444,7 @@ export default function EditProductPage() {
                     <Input
                       type="text"
                       value={formData.potency}
-                      onChange={(value) => handleChange("potency", value)}
+                      onChange={(e) => handleChange("potency", e.target.value)}
                       placeholder="Наприклад: 500mg, 1000mg"
                     />
                   </div>
@@ -454,7 +453,7 @@ export default function EditProductPage() {
                     <Input
                       type="text"
                       value={formData.imageUrl}
-                      onChange={(value) => handleChange("imageUrl", value)}
+                      onChange={(e) => handleChange("imageUrl", e.target.value)}
                       placeholder="https://example.com/image.jpg"
                     />
                   </div>
@@ -463,7 +462,7 @@ export default function EditProductPage() {
                     <Input
                       type="number"
                       value={formData.stock}
-                      onChange={(value) => handleChange("stock", value)}
+                      onChange={(e) => handleChange("stock", e.target.value)}
                       placeholder="0"
                     />
                   </div>
@@ -644,7 +643,7 @@ export default function EditProductPage() {
                             className="w-32 h-32 object-cover rounded"
                           />
                         ) : (
-                          <img
+                          <Image
                             src={previewUrl}
                             alt={`new-media-${i}`}
                             width={128}

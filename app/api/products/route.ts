@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/sql"; // Make sure to import Prisma client
+import { prisma, sqlGetProducts } from "@/lib/sql"; // Make sure to import Prisma client
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import crypto from "crypto";
@@ -18,6 +18,53 @@ function getFileType(mimeType: string, filename: string): "photo" | "video" {
   }
 
   return "photo";
+}
+
+export async function GET(request: Request) {
+  try {
+    const url = new URL(request.url);
+    const category = url.searchParams.get("category");
+    const subcategory = url.searchParams.get("subcategory");
+    const limitedEdition = url.searchParams.get("limited_edition") === "true";
+    const topSale = url.searchParams.get("top_sale") === "true";
+
+    const filter: {
+      categoryName?: string;
+      subcategoryName?: string;
+      limitedEdition?: boolean;
+      topSale?: boolean;
+    } = {};
+
+    if (category) {
+      filter.categoryName = category;
+    }
+
+    if (subcategory) {
+      filter.subcategoryName = subcategory;
+    }
+
+    if (limitedEdition) {
+      filter.limitedEdition = true;
+    }
+
+    if (topSale) {
+      filter.topSale = true;
+    }
+
+    const products = await sqlGetProducts(filter);
+
+    return NextResponse.json(products, {
+      headers: {
+        "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
+      },
+    });
+  } catch (error) {
+    console.error("[GET /api/products]", error);
+    return NextResponse.json(
+      { error: "Failed to fetch products" },
+      { status: 500 }
+    );
+  }
 }
 
 export async function POST(req: Request) {
@@ -207,3 +254,6 @@ export async function POST(req: Request) {
     );
   }
 }
+
+// Enable revalidation every 5 minutes
+export const revalidate = 300;

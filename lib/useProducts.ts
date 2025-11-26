@@ -17,9 +17,14 @@ interface Product {
   colors?: { label: string; hex?: string | null }[];
   top_sale?: boolean;
   limited_edition?: boolean;
-  season?: string;
   category_name?: string;
   description?: string;
+  // Vape/CBD-specific fields
+  cbdContentMg?: number;
+  thcContentMg?: number | null;
+  potency?: string | null;
+  stock?: number;
+  // Legacy clothing fields (kept for backward compatibility)
   has_lining?: boolean;
   lining_description?: string;
   fabric_composition?: string;
@@ -27,14 +32,13 @@ interface Product {
 
 interface UseProductsOptions {
   category?: string | null;
-  season?: string | null;
   subcategory?: string | null;
   topSale?: boolean;
   limitedEdition?: boolean;
 }
 
 export function useProducts(options: UseProductsOptions = {}) {
-  const { category, season, subcategory, topSale, limitedEdition } = options;
+  const { category, subcategory, topSale, limitedEdition } = options;
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -62,9 +66,6 @@ export function useProducts(options: UseProductsOptions = {}) {
         } else if (category) {
           url = `/api/products/category?category=${encodeURIComponent(category)}`;
           cacheKey = CACHE_KEYS.PRODUCTS_CATEGORY(category);
-        } else if (season) {
-          url = `/api/products/season?season=${encodeURIComponent(season)}`;
-          cacheKey = CACHE_KEYS.PRODUCTS_SEASON(season);
         }
 
         const data = await cachedFetch<Product[]>(url, cacheKey);
@@ -81,7 +82,7 @@ export function useProducts(options: UseProductsOptions = {}) {
     }
 
     fetchProducts();
-  }, [category, season, subcategory, topSale, limitedEdition]);
+  }, [category, subcategory, topSale, limitedEdition]);
 
   return { products, loading, error };
 }

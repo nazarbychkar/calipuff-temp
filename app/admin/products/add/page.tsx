@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import PageBreadcrumb from "@/components/admin/PageBreadCrumb";
 import ComponentCard from "@/components/admin/ComponentCard";
 import Label from "@/components/admin/form/Label";
-import MultiSelect from "@/components/admin/form/MultiSelect";
 import DropzoneComponent from "@/components/admin/form/form-elements/DropZone";
 import Input from "@/components/admin/form/input/InputField";
 import TextArea from "@/components/admin/form/input/TextArea";
@@ -535,7 +534,7 @@ export default function FormElements() {
                         }}
                       />
                     ) : (
-                      <img
+                      <Image
                         src={previewUrl}
                         alt={media.file.name}
                         width={200}

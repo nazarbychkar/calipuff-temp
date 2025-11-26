@@ -20,7 +20,6 @@ import "swiper/css/scrollbar";
 //   sizes: { size: string }[];
 //   top_sale?: boolean;
 //   limited_edition?: boolean;
-//   season?: string;
 //   category_name?: string;
 // }
 
@@ -273,10 +272,8 @@ export default function FinalCard() {
   const [filteredPostOffices, setFilteredPostOffices] = useState<string[]>([]); // Filtered post offices list for autocomplete
   const [cityListVisible, setCityListVisible] = useState(false);
   const [postOfficeListVisible, setPostOfficeListVisible] = useState(false);
-  const [region, setRegion] = useState(""); // For Ukrposhta - область
-  const [district, setDistrict] = useState(""); // For Ukrposhta - район
-  const [regionListVisible] = useState(false); // Controls region list visibility
-  const [districtListVisible] = useState(false); // Controls district list visibility
+  const [region] = useState(""); // For Ukrposhta - область
+  const [district] = useState(""); // For Ukrposhta - район
 
   // Example useEffect for region and district fetching for Ukrposhta
   useEffect(() => {
@@ -297,7 +294,7 @@ export default function FinalCard() {
 
   useEffect(() => {
     // Fetch available cities when delivery method changes to Nova Poshta
-    if (deliveryMethod.startsWith("nova_poshta")) {
+    if (deliveryMethod.startsWith("nova_poshta") || deliveryMethod === "ukrposhta") {
       setLoadingCities(true);
 
       fetch("https://api.novaposhta.ua/v2.0/json/", {
@@ -333,42 +330,8 @@ export default function FinalCard() {
         .finally(() => {
           setLoadingCities(false);
         });
-    } else if (deliveryMethod == "ukrposhta") {
-      setLoadingCities(true);
-
-      // Fetch cities with `fetch`
-      fetch("https://api.novaposhta.ua/v2.0/json/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          apiKey: process.env.NEXT_PUBLIC_NOVA_POSHTA_API_KEY,
-          modelName: "AddressGeneral",
-          calledMethod: "getCities",
-          methodProperties: {
-            FindByString: city, // Replace with a dynamic city string if necessary
-            limit: 20,
-          },
-        }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          const cityData = data.data || [];
-          setCities(
-            cityData.map((city: { Description: unknown }) => city.Description)
-          );
-          // console.log(data);
-        })
-        .catch(() => {
-          console.error("Error fetching cities");
-          setError("Failed to load cities.");
-        })
-        .finally(() => {
-          setLoadingCities(false);
-        });
     }
-  }, [deliveryMethod]);
+  }, [deliveryMethod, city]);
 
   useEffect(() => {
     // Filter and sort the cities based on the current input
@@ -439,7 +402,7 @@ export default function FinalCard() {
           setLoadingPostOffices(false);
         });
     }
-  }, [city]);
+  }, [city, postOffice]);
 
   useEffect(() => {
     // Filter and sort the post offices based on the current input

@@ -12,7 +12,7 @@ async function getTopSaleProducts(): Promise<Product[]> {
   try {
     const products = await sqlGetTopSaleProducts();
 
-    return products.map((product: any) => ({
+    return products.map((product) => ({
       id: product.id,
       name: product.name,
       price: product.price,
