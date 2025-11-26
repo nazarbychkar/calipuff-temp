@@ -5,7 +5,7 @@
   "scripts": {
     "postinstall": "prisma generate",
     "dev": "next dev --turbopack",
-    "build": "next build --turbopack && npm run compress && npm run optimize",
+    "build": "prisma migrate deploy && next build --turbopack && npm run compress && npm run optimize",
     "build:analyze": "ANALYZE=true npm run build",
     "build:fast": "next build --turbopack",
     "compress": "gzip -k -f .next/static/**/*.js .next/static/**/*.css || true",
@@ -15,6 +15,8 @@
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "migrate": "ts-node scripts/migrate.ts",
+    "migrate:deploy": "prisma migrate deploy",
+    "migrate:custom": "ts-node scripts/migrate.ts",
     "check-vitals": "echo 'Run lighthouse audit after deployment'"
   },
   "dependencies": {
