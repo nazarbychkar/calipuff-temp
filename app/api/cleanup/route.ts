@@ -12,7 +12,7 @@ export async function POST() {
       select: { url: true },
     });
     const usedFiles = new Set(
-      usedMedia.map((m) => path.basename(m.url ?? ""))
+      usedMedia.map((m: { url: string }) => path.basename(m.url ?? ""))
     );
 
     const deletedFiles: string[] = [];
