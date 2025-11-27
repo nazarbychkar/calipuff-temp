@@ -51,7 +51,6 @@ interface ProductClientProps {
     old_price?: number | null;
     discount_percentage?: number | null;
     description?: string | null;
-    stock?: number;
     media?: { url: string; type: string }[];
     colors?: { label: string; hex?: string | null }[];
     // CBD-specific fields
@@ -206,8 +205,6 @@ export default function ProductClient({ product: initialProduct }: ProductClient
   };
 
   const media = product.media || [];
-  const stock = product.stock ?? 0;
-  const outOfStock = stock <= 0;
 
   // SWIPER
   const [swiper, setSwiper] = useState<SwiperType | null>(null);
@@ -365,11 +362,6 @@ export default function ProductClient({ product: initialProduct }: ProductClient
 
         {/* Info Section */}
         <div className="flex flex-col gap-6 md:gap-10 px-4 md:px-0 w-full lg:w-1/2">
-          {/* Availability */}
-          <div className="text-base md:text-lg font-normal font-['Helvetica'] leading-relaxed tracking-wide">
-            {outOfStock ? "Немає в наявності" : "В наявності"}
-          </div>
-
           {/* Product Name */}
           <div className={`text-3xl md:text-5xl lg:text-6xl font-normal font-['Inter'] capitalize leading-tight transition-opacity duration-300 ${isLoading ? 'opacity-50' : 'opacity-100'}`}>
             {product.name}
@@ -475,16 +467,12 @@ export default function ProductClient({ product: initialProduct }: ProductClient
 
           {/* Add to Cart Button */}
           <div
-            onClick={outOfStock ? undefined : handleAddToCart}
+            onClick={handleAddToCart}
             className={`w-full text-center ${
               isDark
                 ? "bg-white text-black hover:bg-gray-100"
                 : "bg-black text-white hover:bg-gray-800"
-            } p-3 text-lg md:text-xl font-medium font-['Inter'] uppercase tracking-tight transition-all duration-200 ${
-              outOfStock
-                ? "opacity-50 cursor-not-allowed"
-                : "cursor-pointer hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]"
-            }`}
+            } p-3 text-lg md:text-xl font-medium font-['Inter'] uppercase tracking-tight transition-all duration-200 cursor-pointer hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]`}
           >
             в кошик
           </div>
