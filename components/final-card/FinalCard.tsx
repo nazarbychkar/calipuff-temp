@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useAppContext } from "@/lib/GeneralProvider";
 import { useBasket } from "@/lib/BasketProvider";
 import Image from "next/image";
 import Link from "next/link";
@@ -25,7 +24,6 @@ import "swiper/css/scrollbar";
 
 export default function FinalCard() {
   // GENERAL
-  const { isDark } = useAppContext();
   const { items, updateQuantity, removeItem, clearBasket } = useBasket();
 
   // CUSTOMER
@@ -511,7 +509,7 @@ export default function FinalCard() {
                       </div>
                       {item.color && (
                         <div className="text-base font-['Helvetica']">
-                          Колір: {item.color}
+                          Смак: {item.color}
                         </div>
                       )}
                       <div className="text-base  font-['Helvetica']">
@@ -589,9 +587,7 @@ export default function FinalCard() {
             {/* Back to home */}
             <Link
               href="/"
-              className={`w-80 h-16 ${
-                isDark ? "bg-stone-100 text-black" : "bg-stone-900 text-white"
-              } inline-flex justify-center items-center gap-2.5 p-2.5 rounded`}
+              className="w-80 h-16 bg-stone-900 text-white inline-flex justify-center items-center gap-2.5 p-2.5 rounded"
             >
               <span className=" text-xl font-medium font-['Inter'] tracking-tight leading-snug">
                 На головну
@@ -608,11 +604,7 @@ export default function FinalCard() {
       {items.length == 0 ? (
         <div className="py-12 px-4 sm:py-20 flex flex-col items-center gap-10 sm:gap-14 w-full max-w-2xl mx-auto">
           <Image
-            src={`${
-              isDark
-                ? "/images/dark-theme/basket.svg"
-                : "/images/light-theme/basket.svg"
-            }`}
+            src="/images/light-theme/basket.svg"
             alt="shopping basket icon"
             width={200}
             height={200}
@@ -622,11 +614,7 @@ export default function FinalCard() {
           </span>
           <Link
             href="/catalog"
-            className={`${
-              isDark
-                ? "bg-stone-100 text-stone-900"
-                : "bg-stone-900 text-stone-100"
-            } w-full sm:w-80 h-14 sm:h-16 px-6 py-3 inline-flex items-center justify-center gap-2.5 text-base sm:text-xl text-center `}
+            className="bg-stone-900 text-stone-100 w-full sm:w-80 h-14 sm:h-16 px-6 py-3 inline-flex items-center justify-center gap-2.5 text-base sm:text-xl text-center"
           >
             Продовжити покупки
           </Link>
@@ -881,9 +869,7 @@ export default function FinalCard() {
               </select>
 
               <button
-                className={`${
-                  isDark ? "bg-white text-black" : "bg-black text-white"
-                } p-4 sm:p-5 rounded mt-3 font-semibold`}
+                className="bg-black text-white p-4 sm:p-5 rounded mt-3 font-semibold"
                 type="submit"
                 disabled={loading}
               >

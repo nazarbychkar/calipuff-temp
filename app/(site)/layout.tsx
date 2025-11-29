@@ -11,6 +11,7 @@ import { registerServiceWorker } from "@/lib/registerSW";
 import { ErrorBoundary } from "@/components/shared/ErrorBoundary";
 import { WebVitals } from "@/components/shared/WebVitals";
 import MainContent from "@/components/shared/MainContent";
+import StructuredData from "@/components/shared/StructuredData";
 import { BRAND } from "@/lib/brand";
 
 const inter = Inter({
@@ -22,25 +23,96 @@ const inter = Inter({
   adjustFontFallback: true,
 });
 
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://calipuff.ua';
+
 export const metadata: Metadata = {
-  title: `${BRAND.name} — Каліфорнійська затяжка 🌴 | Легальні вейпи`,
+  metadataBase: new URL(baseUrl),
+  title: {
+    default: `${BRAND.name} — Каліфорнійська затяжка 🌴 | Легальні вейпи без ТГК`,
+    template: `%s | ${BRAND.name}`,
+  },
   description: BRAND.shortDescription,
-  keywords:
-    "CALIPUFF, легальні вейпи, COA сертифікація, український бренд, каліфорнійський стиль, cartridge, liquids, wave lab",
+  keywords: [
+    "CALIPUFF",
+    "легальні вейпи",
+    "вейпи без ТГК",
+    "CBD вейпи",
+    "COA сертифікація",
+    "європейський бренд",
+    "каліфорнійський стиль",
+    "cartridge",
+    "liquids",
+    "wave lab",
+    "вейп Україна",
+    "легальні картриджі",
+    "CBD ліквіди",
+    "вейп магазин",
+    "купити вейп",
+    "вейп онлайн",
+    "каліфорнійські вейпи",
+    "безпечні вейпи",
+    "якісні вейпи",
+    "вейп картриджі",
+    "вейп рідини",
+    "CBD картриджі",
+    "легальні вейп продукти",
+    "вейп аксесуари",
+    "каліфорнійська затяжка",
+  ],
+  authors: [{ name: BRAND.name }],
+  creator: BRAND.name,
+  publisher: BRAND.name,
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   icons: {
     icon: "/images/light-theme/calipuff-logo-header-light.svg",
     shortcut: "/images/light-theme/calipuff-logo-header-light.svg",
     apple: "/images/light-theme/calipuff-logo-header-light.svg",
   },
   openGraph: {
-    title: `${BRAND.name} — Каліфорнійська затяжка`,
-    description: BRAND.description,
     type: "website",
     locale: "uk_UA",
+    url: baseUrl,
+    siteName: BRAND.name,
+    title: `${BRAND.name} — Каліфорнійська затяжка 🌴 | Легальні вейпи без ТГК`,
+    description: BRAND.shortDescription,
+    images: [
+      {
+        url: `${baseUrl}/images/hero-bg.png`,
+        width: 1200,
+        height: 630,
+        alt: `${BRAND.name} — Каліфорнійська затяжка`,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${BRAND.name} — Каліфорнійська затяжка 🌴`,
+    description: BRAND.shortDescription,
+    images: [`${baseUrl}/images/hero-bg.png`],
+    creator: "@calipuff_ua",
+  },
+  alternates: {
+    canonical: baseUrl,
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  verification: {
+    // Додайте ваші коди верифікації
+    // google: "your-google-verification-code",
+    // yandex: "your-yandex-verification-code",
   },
 };
 
@@ -52,13 +124,44 @@ export default function RootLayout({
   return (
     <html lang="uk" className={inter.className}>
       <head>
-        <meta name="cryptomus" content="033612c8" />
+        <meta name="cryptomus" content="64290c43" />
         {/* Mobile viewport optimization */}
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes"
         />
         <meta name="format-detection" content="telephone=no" />
+        
+        {/* Additional SEO Meta Tags */}
+        <meta name="language" content="ukrainian" />
+        <meta name="geo.region" content="UA" />
+        <meta name="geo.placename" content="Київ" />
+        <meta name="geo.position" content="50.4501;30.5234" />
+        <meta name="ICBM" content="50.4501, 30.5234" />
+        <meta name="rating" content="general" />
+        <meta name="distribution" content="global" />
+        <meta name="revisit-after" content="7 days" />
+        <meta name="expires" content="never" />
+        <meta name="coverage" content="worldwide" />
+        <meta name="target" content="all" />
+        <meta name="audience" content="all" />
+        <meta httpEquiv="content-language" content="uk" />
+        <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+        <meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+        <meta name="slurp" content="index, follow" />
+        <meta name="duckduckbot" content="index, follow" />
+        
+        {/* Additional Open Graph Tags */}
+        <meta property="og:locale:alternate" content="en_US" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content={BRAND.name} />
+        
+        {/* Additional Twitter Tags */}
+        <meta name="twitter:site" content="@calipuff_ua" />
+        <meta name="twitter:domain" content="calipuff.ua" />
+        
+        {/* Schema.org additional markup */}
+        <link rel="alternate" type="application/rss+xml" title={`${BRAND.name} RSS Feed`} href={`${baseUrl}/feed.xml`} />
 
         {/* Favicon and App Icons */}
         <link
@@ -181,6 +284,10 @@ export default function RootLayout({
           />
         </noscript>
         {/* End Meta Pixel Code */}
+        
+        {/* Structured Data */}
+        <StructuredData type="organization" />
+        <StructuredData type="website" />
       </head>
       <body>
         <ErrorBoundary>

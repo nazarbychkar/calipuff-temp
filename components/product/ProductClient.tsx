@@ -1,6 +1,5 @@
 "use client";
 
-import { useAppContext } from "@/lib/GeneralProvider";
 import { useState, useEffect } from "react";
 import { useBasket } from "@/lib/BasketProvider";
 import Image from "next/image";
@@ -68,7 +67,6 @@ interface RelatedProduct {
 
 export default function ProductClient({ product: initialProduct }: ProductClientProps) {
   const quantity = 1;
-  const { isDark } = useAppContext();
   const [relatedProducts, setRelatedProducts] = useState<RelatedProduct[]>([]);
   const [product, setProduct] = useState(initialProduct);
   const [isLoading, setIsLoading] = useState(false);
@@ -173,7 +171,7 @@ export default function ProductClient({ product: initialProduct }: ProductClient
 
   const handleAddToCart = () => {
     if (product?.colors && product.colors.length > 0 && !selectedColor) {
-      setAlertMessage("Оберіть колір");
+      setAlertMessage("Оберіть смак");
       setAlertType("warning");
       setTimeout(() => setAlertMessage(null), 3000);
       return;
@@ -245,14 +243,14 @@ export default function ProductClient({ product: initialProduct }: ProductClient
 
   return (
     <section className="max-w-[1920px] w-full mx-auto">
-      <div className="flex flex-col lg:flex-row justify-around p-4 md:p-10 gap-10">
+      <div className="flex flex-col lg:flex-row justify-between p-4 md:p-8 lg:p-12 gap-8 lg:gap-16">
         <div 
           className={`relative w-full lg:w-1/2 flex justify-center transition-opacity duration-300 ${isLoading ? 'opacity-50' : 'opacity-100'}`}
           style={{ touchAction: 'pan-y pinch-zoom' }}
         >
           {isLoading && (
             <div className="absolute inset-0 flex items-center justify-center z-10">
-              <div className="w-8 h-8 border-2 border-gray-300 border-t-black dark:border-t-white rounded-full animate-spin"></div>
+              <div className="w-8 h-8 border-2 border-gray-300 border-t-black rounded-full animate-spin"></div>
             </div>
           )}
           <Swiper
@@ -305,7 +303,7 @@ export default function ProductClient({ product: initialProduct }: ProductClient
                   ) : (
                     <Image
                       src={`/api/images/${item.url}`}
-                      alt={`Product media ${i}`}
+                      alt={`${product.name} - зображення ${i + 1}`}
                       width={800}
                       height={1160}
                       priority={i === activeImageIndex}
@@ -330,10 +328,10 @@ export default function ProductClient({ product: initialProduct }: ProductClient
               <button
                 onClick={handlePrev}
                 aria-label="Previous image"
-                className="absolute left-2 top-[42.5vh] -translate-y-1/2 z-10 hidden lg:flex items-center justify-center w-8 h-8 border border-gray-300 dark:border-gray-600 rounded-full bg-white/80 dark:bg-black/80 backdrop-blur-sm hover:bg-white dark:hover:bg-black transition-all"
+                className="absolute left-2 top-[42.5vh] -translate-y-1/2 z-10 hidden lg:flex items-center justify-center w-8 h-8 border-2 border-gray-600 rounded-full bg-white backdrop-blur-sm hover:bg-gray-50 transition-all shadow-md"
               >
                 <svg 
-                  className="w-4 h-4 text-gray-700 dark:text-gray-300" 
+                  className="w-4 h-4 text-gray-900" 
                   fill="none" 
                   stroke="currentColor" 
                   viewBox="0 0 24 24"
@@ -345,10 +343,10 @@ export default function ProductClient({ product: initialProduct }: ProductClient
               <button
                 onClick={handleNext}
                 aria-label="Next image"
-                className="absolute right-2 top-[42.5vh] -translate-y-1/2 z-10 hidden lg:flex items-center justify-center w-8 h-8 border border-gray-300 dark:border-gray-600 rounded-full bg-white/80 dark:bg-black/80 backdrop-blur-sm hover:bg-white dark:hover:bg-black transition-all"
+                className="absolute right-2 top-[42.5vh] -translate-y-1/2 z-10 hidden lg:flex items-center justify-center w-8 h-8 border-2 border-gray-600 rounded-full bg-white backdrop-blur-sm hover:bg-gray-50 transition-all shadow-md"
               >
                 <svg 
-                  className="w-4 h-4 text-gray-700 dark:text-gray-300" 
+                  className="w-4 h-4 text-gray-900" 
                   fill="none" 
                   stroke="currentColor" 
                   viewBox="0 0 24 24"
@@ -361,45 +359,38 @@ export default function ProductClient({ product: initialProduct }: ProductClient
         </div>
 
         {/* Info Section */}
-        <div className="flex flex-col gap-6 md:gap-10 px-4 md:px-0 w-full lg:w-1/2">
+        <div className="flex flex-col gap-6 md:gap-8 px-4 md:px-0 w-full lg:w-1/2">
           {/* Product Name */}
-          <div className={`text-3xl md:text-5xl lg:text-6xl font-normal font-['Inter'] capitalize leading-tight transition-opacity duration-300 ${isLoading ? 'opacity-50' : 'opacity-100'}`}>
+          <div className={`text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight transition-opacity duration-300 ${isLoading ? 'opacity-50' : 'opacity-100'}`}>
             {product.name}
           </div>
 
           {/* Price */}
-          <div className="w-full flex flex-col sm:flex-row justify-start border-b p-2 sm:p-4 gap-2">
-            <div className="flex justify-start gap-8 text-2xl md:text-3xl font-['Helvetica']">
-              {product.discount_percentage ? (
-                <div className="flex items-center gap-2">
-                  {/* Discounted price */}
-                  <span className="font-medium text-red-600">
-                    {(
-                      product.price *
-                      (1 - product.discount_percentage / 100)
-                    ).toFixed(2)}
-                    ₴
-                  </span>
-
-                  {/* Original (crossed-out) price */}
-                  <span className="line-through">{product.price}₴</span>
-
-                  {/* Optional: show discount percentage */}
-                  <span className="text-green-600 text-sm">
-                    -{product.discount_percentage}%
-                  </span>
-                </div>
-              ) : (
-                <span className="font-medium">{product.price}₴</span>
-              )}
-            </div>
+          <div className="flex items-baseline gap-3 pb-4 border-b border-gray-400">
+            {product.discount_percentage && product.old_price ? (
+              <>
+                <span className="text-2xl md:text-3xl font-bold text-[#FFA500]">
+                  {Math.round(product.price * (1 - product.discount_percentage / 100))} ₴
+                </span>
+                <span className="text-lg text-gray-600 line-through">
+                  {product.price} ₴
+                </span>
+                <span className="text-sm font-semibold text-green-700 bg-green-100 px-2 py-1 rounded">
+                  -{product.discount_percentage}%
+                </span>
+              </>
+            ) : (
+              <span className="text-2xl md:text-3xl font-bold text-[#FFA500]">
+                {product.price} ₴
+              </span>
+            )}
           </div>
 
-          {/* Color Picker */}
+          {/* Flavor Picker */}
           {(product.colors && product.colors.length > 0) || relatedProducts.length > 0 ? (
             <div className="flex flex-col gap-3">
-              <div className="text-sm md:text-base font-['Inter'] uppercase tracking-tight">
-                Колір
+              <div className="text-sm md:text-base font-semibold text-gray-900 uppercase tracking-tight">
+                Смак
               </div>
               
               <div className="flex flex-wrap items-center gap-3 md:gap-4">
@@ -412,10 +403,10 @@ export default function ProductClient({ product: initialProduct }: ProductClient
                         key={`current-${c.label}-${idx}`}
                         type="button"
                         onClick={() => setSelectedColor(c.label)}
-                        className={`relative w-10 h-10 md:w-11 md:h-11 rounded-full border transition-all duration-200 ${
+                        className={`relative w-10 h-10 md:w-11 md:h-11 rounded-full border-2 transition-all duration-200 ${
                           isActive
-                            ? "border-black dark:border-white scale-100"
-                            : "border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500"
+                            ? "border-gray-900 scale-110 shadow-md"
+                            : "border-gray-500 hover:border-gray-700"
                         }`}
                         aria-label={c.label}
                         title={c.label}
@@ -424,7 +415,7 @@ export default function ProductClient({ product: initialProduct }: ProductClient
                         }}
                       >
                         {isActive && (
-                          <div className="absolute inset-0 rounded-full border-2 border-black dark:border-white"></div>
+                          <div className="absolute inset-0 rounded-full border-2 border-gray-900"></div>
                         )}
                       </button>
                     );
@@ -443,7 +434,7 @@ export default function ProductClient({ product: initialProduct }: ProductClient
                       type="button"
                       onClick={() => handleColorVariantChange(relatedProduct.id)}
                       disabled={isLoading}
-                      className={`relative w-10 h-10 md:w-11 md:h-11 rounded-full border border-gray-300 dark:border-gray-600 transition-all duration-200 hover:border-gray-500 dark:hover:border-gray-400 cursor-pointer ${
+                      className={`relative w-10 h-10 md:w-11 md:h-11 rounded-full border-2 border-gray-500 transition-all duration-200 hover:border-gray-700 cursor-pointer ${
                         isLoading ? 'opacity-50 cursor-wait' : ''
                       }`}
                       aria-label={`Переглянути ${color.label}`}
@@ -458,7 +449,7 @@ export default function ProductClient({ product: initialProduct }: ProductClient
               </div>
               
               {selectedColor && (
-                <div className="text-sm font-['Inter'] text-gray-700 dark:text-gray-300 font-light tracking-wide">
+                <div className="text-sm font-medium text-gray-900 tracking-wide">
                   {selectedColor}
                 </div>
               )}
@@ -466,27 +457,20 @@ export default function ProductClient({ product: initialProduct }: ProductClient
           ) : null}
 
           {/* Add to Cart Button */}
-          <div
+          <button
             onClick={handleAddToCart}
-            className={`w-full text-center ${
-              isDark
-                ? "bg-white text-black hover:bg-gray-100"
-                : "bg-black text-white hover:bg-gray-800"
-            } p-3 text-lg md:text-xl font-medium font-['Inter'] uppercase tracking-tight transition-all duration-200 cursor-pointer hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]`}
+            className="w-full text-center rounded-lg bg-black text-white hover:bg-gray-900 py-4 px-6 text-base md:text-lg font-semibold uppercase tracking-wide transition-all duration-200 cursor-pointer hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]"
+            style={{ color: '#ffffff' }}
           >
-            в кошик
-          </div>
+            Додати до кошика
+          </button>
 
           {/* Telegram Manager Link */}
           <a
             href={BRAND.socials.telegram}
             target="_blank"
             rel="noopener noreferrer"
-            className={`w-full text-center border ${
-              isDark
-                ? "border-gray-500 text-gray-400 hover:border-white hover:text-white"
-                : "border-gray-400 text-gray-600 hover:border-black hover:text-black"
-            } py-2 px-3 text-sm md:text-base font-light font-['Inter'] cursor-pointer transition-all duration-200`}
+            className="w-full text-center border-2 border-gray-600 text-gray-900 hover:border-gray-900 hover:text-gray-900 rounded-lg py-3 px-6 text-sm md:text-base font-medium cursor-pointer transition-all duration-200"
           >
             Написати менеджеру
           </a>
@@ -508,11 +492,11 @@ export default function ProductClient({ product: initialProduct }: ProductClient
 
           {/* Description Section */}
           {product.description && (
-            <div className="w-full md:w-[522px] mt-6">
-              <div className="mb-3 md:mb-4 text-xl md:text-2xl font-['Inter'] uppercase tracking-tight">
-                опис
+            <div className="w-full mt-6 pt-6 border-t border-gray-400">
+              <div className="mb-3 text-lg font-semibold text-gray-900 uppercase tracking-tight">
+                Опис
               </div>
-              <div className="text-sm md:text-lg font-['Inter'] leading-relaxed tracking-wide">
+              <div className="text-sm md:text-base text-gray-800 leading-relaxed">
                 {product.description}
               </div>
             </div>
@@ -522,27 +506,27 @@ export default function ProductClient({ product: initialProduct }: ProductClient
           {(product.cbdContentMg !== undefined && product.cbdContentMg > 0) || 
            (product.thcContentMg !== null && product.thcContentMg !== undefined) || 
            product.potency ? (
-            <div className="w-full md:w-[522px] mt-6">
-              <div className="mb-3 md:mb-4 text-xl md:text-2xl font-['Inter'] uppercase tracking-tight">
-                CBD Параметри
+            <div className="w-full mt-6">
+              <div className="mb-4 text-lg md:text-xl font-semibold text-gray-900 uppercase tracking-tight">
+                Параметри
               </div>
-              <div className="space-y-3 border-t border-gray-200 dark:border-gray-700 pt-4">
+              <div className="space-y-3 pt-4 border-t border-gray-400">
                 {product.cbdContentMg !== undefined && product.cbdContentMg > 0 && (
-                  <div className="flex items-center gap-3 text-sm md:text-base font-['Inter']">
-                    <span className="font-medium min-w-[100px]">CBD вміст:</span>
-                    <span className="text-gray-700 dark:text-gray-300">{product.cbdContentMg} мг</span>
+                  <div className="flex items-center justify-between text-sm md:text-base">
+                    <span className="font-medium text-gray-800">CBD вміст:</span>
+                    <span className="font-semibold text-gray-900">{product.cbdContentMg} мг</span>
                   </div>
                 )}
                 {product.thcContentMg !== null && product.thcContentMg !== undefined && (
-                  <div className="flex items-center gap-3 text-sm md:text-base font-['Inter']">
-                    <span className="font-medium min-w-[100px]">THC вміст:</span>
-                    <span className="text-gray-700 dark:text-gray-300">{product.thcContentMg} мг</span>
+                  <div className="flex items-center justify-between text-sm md:text-base">
+                    <span className="font-medium text-gray-800">THC вміст:</span>
+                    <span className="font-semibold text-gray-900">{product.thcContentMg} мг</span>
                   </div>
                 )}
                 {product.potency && (
-                  <div className="flex items-center gap-3 text-sm md:text-base font-['Inter']">
-                    <span className="font-medium min-w-[100px]">Потенція:</span>
-                    <span className="text-gray-700 dark:text-gray-300">{product.potency}</span>
+                  <div className="flex items-center justify-between text-sm md:text-base">
+                    <span className="font-medium text-gray-800">Потенція:</span>
+                    <span className="font-semibold text-gray-900">{product.potency}</span>
                   </div>
                 )}
               </div>

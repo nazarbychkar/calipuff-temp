@@ -1,6 +1,8 @@
 import ProductServer from "@/components/product/ProductServer";
 import YouMightLike from "@/components/product/YouMightLike";
 import { Suspense } from "react";
+import { generateMetadata } from "./metadata";
+export { generateMetadata };
 
 interface PageProps {
   params: Promise<{

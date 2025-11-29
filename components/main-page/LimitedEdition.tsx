@@ -8,7 +8,6 @@ import Image from "next/image";
 import { getProductImageSrc } from "@/lib/getFirstProductImage";
 import { useProducts } from "@/lib/useProducts";
 import { BRAND } from "@/lib/brand";
-import { useAppContext } from "@/lib/GeneralProvider";
 
 // Define a fallback (template) product
 const templateProduct = {
@@ -20,7 +19,6 @@ const templateProduct = {
 };
 
 export default function LimitedEdition() {
-  const { isDark } = useAppContext();
   const { products: limitedEditionProducts, loading } = useProducts({
     limitedEdition: true,
   });
@@ -162,13 +160,13 @@ export default function LimitedEdition() {
           <Link
             href={`/product/${product.id}`}
             key={product.id !== -1 ? product.id : `template-${i}`}
-            className="group space-y-4 sm:space-y-5 w-full"
+            className="group flex flex-col gap-3 w-full card-hover"
           >
-            <div className="aspect-[2/3] w-full overflow-hidden relative">
+            <div className="aspect-[2/3] w-full overflow-hidden relative rounded-lg bg-gray-50">
               {product.first_media?.type === "video" ? (
                 <video
                   src={`/api/images/${product.first_media.url}`}
-                  className="object-cover group-hover:brightness-90 transition duration-300 w-full h-full"
+                  className="object-cover group-hover:scale-105 transition-transform duration-300 w-full h-full"
                   loop
                   muted
                   playsInline
@@ -177,7 +175,7 @@ export default function LimitedEdition() {
                 />
               ) : (
                 <Image
-                  className="object-cover group-hover:brightness-90 transition duration-300"
+                  className="object-cover group-hover:scale-105 transition-transform duration-300"
                   src={getProductImageSrc(
                     product.first_media,
                     "https://placehold.co/432x682/FFA500/FFFFFF?text=Product"
@@ -189,12 +187,14 @@ export default function LimitedEdition() {
               )}
             </div>
 
-            <div>
-              <div className="text-center text-base sm:text-lg md:text-xl font-normal font-['Poppins'] capitalize leading-normal">
+            <div className="flex flex-col gap-2">
+              <h3 className="text-center text-base sm:text-lg md:text-xl font-medium font-['Poppins'] capitalize leading-tight">
                 {product.name}
-              </div>
-              <div className="text-center text-base sm:text-lg font-semibold text-[#FFA500] leading-none">
-                {product.price.toLocaleString()} ₴
+              </h3>
+              <div className="text-center">
+                <span className="text-lg sm:text-xl font-bold text-[#FFA500]">
+                  {product.price.toLocaleString()} ₴
+                </span>
               </div>
             </div>
           </Link>
@@ -203,14 +203,12 @@ export default function LimitedEdition() {
       
       {/* Smooth transition gradient to FAQ section - positioned at bottom */}
       <div className="absolute left-1/2 -translate-x-1/2 bottom-0 w-full max-w-[1920px] h-24 md:h-32 lg:h-40 pointer-events-none z-20">
-        <div className={`h-full bg-gradient-to-b from-transparent ${
-          isDark ? "via-stone-900/90 to-stone-900" : "via-[#FFF4E6]/90 to-[#FFF4E6]"
-        }`}>
+        <div className="h-full bg-gradient-to-b from-transparent via-[#FFF4E6]/90 to-[#FFF4E6]">
           {/* Wave transition element */}
           <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 1200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0,200 Q300,100 600,140 T1200,140 L1200,200 L0,200 Z" fill={isDark ? "#1c1917" : "#FFF4E6"} opacity="0.95" />
-            <path d="M0,200 Q250,120 500,150 T1000,150 T1200,150 L1200,200 L0,200 Z" fill={isDark ? "#1c1917" : "#FFF4E6"} opacity="0.9" />
-            <path d="M0,200 Q350,110 700,145 T1200,145 L1200,200 L0,200 Z" fill={isDark ? "#1c1917" : "#FFF4E6"} opacity="0.85" />
+            <path d="M0,200 Q300,100 600,140 T1200,140 L1200,200 L0,200 Z" fill="#FFF4E6" opacity="0.95" />
+            <path d="M0,200 Q250,120 500,150 T1000,150 T1200,150 L1200,200 L0,200 Z" fill="#FFF4E6" opacity="0.9" />
+            <path d="M0,200 Q350,110 700,145 T1200,145 L1200,200 L0,200 Z" fill="#FFF4E6" opacity="0.85" />
           </svg>
         </div>
       </div>

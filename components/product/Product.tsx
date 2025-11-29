@@ -1,6 +1,5 @@
 "use client";
 
-import { useAppContext } from "@/lib/GeneralProvider";
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useBasket } from "@/lib/BasketProvider";
@@ -10,22 +9,9 @@ import { getFirstProductImage } from "@/lib/getFirstProductImage";
 import { useProduct } from "@/lib/useProducts";
 import { BRAND } from "@/lib/brand";
 
-// Volume/Size mapping for vapes, liquids, and cartridges
-const SIZE_MAP: Record<string, string> = {
-  "1": "1ml",
-  "2": "2ml",
-  "3": "5ml",
-  "4": "10ml",
-  "5": "30ml",
-  "6": "50ml",
-  "7": "100ml",
-};
-
 export default function Product() {
   const { addItem } = useBasket();
-  const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const quantity = 1;
-  const { isDark } = useAppContext();
   const { id } = useParams();
   
   // Use the optimized hook for product fetching
@@ -65,7 +51,6 @@ export default function Product() {
       id: product.id,
       name: product.name,
       price: product.price,
-      ...(selectedSize && { size: selectedSize }),
       quantity,
       imageUrl: getFirstProductImage(media),
       ...(selectedColor && { color: selectedColor }),
@@ -80,10 +65,7 @@ export default function Product() {
     return <div className="p-10">Error: {error || "Product not found"}</div>;
 
   const media = product.media || [];
-  const sizes = (product.sizes as { size: string; stock?: number | string }[] | undefined)
-    ?.filter((s) => Number(s.stock ?? 0) > 0)
-    .map((s) => s.size) || [];
-  const outOfStock = product.stock === 0 || (sizes.length > 0 && sizes.length === 0);
+  const outOfStock = product.stock === 0;
 
   return (
     <section className="max-w-[1920px] w-full mx-auto">
@@ -124,11 +106,7 @@ export default function Product() {
                 }
               >
                 <Image
-                  src={
-                    isDark
-                      ? "/images/dark-theme/slider-button-left.svg"
-                      : "/images/light-theme/slider-button-left.svg"
-                  }
+                  src="/images/light-theme/slider-button-left.svg"
                   alt="Previous"
                   width={32}
                   height={32}
@@ -146,11 +124,7 @@ export default function Product() {
                 }
               >
                 <Image
-                  src={
-                    isDark
-                      ? "/images/dark-theme/slider-button-right.svg"
-                      : "/images/light-theme/slider-button-right.svg"
-                  }
+                  src="/images/light-theme/slider-button-right.svg"
                   alt="Next"
                   width={32}
                   height={32}
@@ -164,45 +138,21 @@ export default function Product() {
         {/* Info Section */}
         <div className="flex flex-col gap-6 md:gap-10 px-4 md:px-0 w-full lg:w-1/2">
           {/* Availability */}
-          <div className="text-base md:text-lg font-normal font-['Helvetica'] leading-relaxed tracking-wide">
+          <div className="text-base md:text-lg font-normal text-gray-800 font-['Helvetica'] leading-relaxed tracking-wide">
             В наявності
           </div>
 
           {/* Product Name */}
-          <div className="text-3xl md:text-5xl lg:text-6xl font-normal font-['Inter'] capitalize leading-tight">
+          <div className="text-3xl md:text-5xl lg:text-6xl font-bold text-gray-900 font-['Inter'] capitalize leading-tight">
             {product.name}
           </div>
 
           {/* Price */}
-          <div className="w-full flex flex-col sm:flex-row justify-start border-b p-2 sm:p-4 gap-2">
-            <div className="text-red-500 text-lg md:text-xl font-['Helvetica']">
+          <div className="w-full flex flex-col sm:flex-row justify-start border-b border-gray-400 p-2 sm:p-4 gap-2">
+            <div className="text-2xl md:text-3xl font-bold text-[#FFA500]">
               {product.price} ₴
             </div>
           </div>
-
-          {/* Volume/Size Picker (optional for vape products) */}
-          {sizes.length > 0 && (
-            <>
-              <div className="text-base md:text-lg font-['Inter'] uppercase tracking-tight">
-                Оберіть об&apos;єм
-              </div>
-              <div className="flex flex-wrap gap-2 md:gap-3">
-                {sizes.map((size) => (
-                  <div
-                    key={size}
-                    onClick={() => setSelectedSize(size)}
-                    className={`w-19 sm:w-19 md:w-22 p-2 sm:p-3 border-2 flex justify-center text-base md:text-lg font-['Inter'] uppercase cursor-pointer transition-all duration-200 ${
-                      selectedSize === size
-                        ? "border-black dark:border-white font-bold scale-105 shadow-md"
-                        : "border-gray-300 dark:border-gray-600 hover:border-gray-600 dark:hover:border-gray-400 hover:scale-105 hover:shadow-md"
-                    }`}
-                  >
-                    {SIZE_MAP[size] || size}
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
 
           {/* Stock Status */}
           {outOfStock && (
@@ -249,7 +199,7 @@ export default function Product() {
                 })}
               </div>
               {selectedColor && (
-                <div className="text-base md:text-lg font-['Inter'] text-gray-700">
+                <div className="text-base md:text-lg font-medium font-['Inter'] text-gray-900">
                   Смак: {selectedColor}
                 </div>
               )}
@@ -259,15 +209,12 @@ export default function Product() {
           {/* Add to Cart Button */}
           <div
             onClick={outOfStock ? undefined : handleAddToCart}
-            className={`w-full text-center ${
-              isDark
-                ? "bg-white text-black hover:bg-gray-100"
-                : "bg-black text-white hover:bg-gray-800"
-            } p-3 text-lg md:text-xl font-medium font-['Inter'] uppercase tracking-tight transition-all duration-200 ${
+            className={`w-full text-center bg-black hover:bg-gray-800 p-3 text-lg md:text-xl font-medium font-['Inter'] uppercase tracking-tight transition-all duration-200 ${
               outOfStock
                 ? "opacity-50 cursor-not-allowed"
                 : "cursor-pointer hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]"
             }`}
+            style={{ color: '#ffffff' }}
           >
             в кошик
           </div>
@@ -277,41 +224,37 @@ export default function Product() {
             href={BRAND.socials.telegram}
             target="_blank"
             rel="noopener noreferrer"
-            className={`w-full text-center border ${
-              isDark 
-                ? "border-gray-500 text-gray-400 hover:border-white hover:text-white" 
-                : "border-gray-400 text-gray-600 hover:border-black hover:text-black"
-            } py-2 px-3 text-sm md:text-base font-light font-['Inter'] cursor-pointer transition-all duration-200`}
+            className="w-full text-center border-2 border-gray-400 text-gray-900 hover:border-gray-900 hover:text-gray-900 py-2 px-3 text-sm md:text-base font-medium font-['Inter'] cursor-pointer transition-all duration-200"
           >
             Написати менеджеру
           </a>
 
           {/* CBD/THC Content Information */}
           {(product.cbdContentMg || product.thcContentMg || product.potency) && (
-            <div className="flex flex-col gap-3 p-4 bg-white/50 rounded-lg border border-stone-200">
-              <div className="text-base md:text-lg font-semibold font-['Montserrat'] uppercase tracking-tight">
+            <div className="flex flex-col gap-3 p-4 bg-gray-50 rounded-lg border border-gray-300">
+              <div className="text-base md:text-lg font-semibold text-gray-900 font-['Montserrat'] uppercase tracking-tight">
                 Склад
               </div>
               <div className="flex flex-col gap-2 text-sm md:text-base font-['Poppins']">
                 {product.cbdContentMg !== undefined && product.cbdContentMg > 0 && (
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold">CBD:</span>
-                    <span>{product.cbdContentMg} мг</span>
+                    <span className="font-semibold text-gray-800">CBD:</span>
+                    <span className="text-gray-900">{product.cbdContentMg} мг</span>
                   </div>
                 )}
                 {product.thcContentMg !== null && product.thcContentMg !== undefined && (
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold">ТГК:</span>
-                    <span>{product.thcContentMg} мг</span>
+                    <span className="font-semibold text-gray-800">ТГК:</span>
+                    <span className="text-gray-900">{product.thcContentMg} мг</span>
                   </div>
                 )}
                 {product.potency && (
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold">Потенційність:</span>
-                    <span>{product.potency}</span>
+                    <span className="font-semibold text-gray-800">Потенційність:</span>
+                    <span className="text-gray-900">{product.potency}</span>
                   </div>
                 )}
-                <div className="mt-2 text-xs md:text-sm text-stone-600 italic">
+                <div className="mt-2 text-xs md:text-sm text-gray-700 italic">
                   * Всі продукти мають COA сертифікацію
                 </div>
               </div>
@@ -335,18 +278,18 @@ export default function Product() {
 
           {/* Description Section */}
           <div className="w-full md:w-[522px]">
-            <div className="mb-3 md:mb-4 text-xl md:text-2xl font-['Inter'] uppercase tracking-tight">
-              опис
+            <div className="mb-3 md:mb-4 text-xl md:text-2xl font-semibold text-gray-900 font-['Inter'] uppercase tracking-tight">
+              Опис
             </div>
-            <div className="text-sm md:text-lg font-['Inter'] leading-relaxed tracking-wide">
+            <div className="text-sm md:text-base text-gray-800 font-['Inter'] leading-relaxed tracking-wide">
               {product.description}
             </div>
           </div>
 
           {/* Stock Information */}
           {product.stock !== undefined && product.stock > 0 && (
-            <div className="text-sm md:text-base font-['Poppins'] text-stone-600">
-              В наявності: {product.stock} шт.
+            <div className="text-sm md:text-base font-['Poppins'] text-gray-700">
+              В наявності: <span className="font-semibold text-gray-900">{product.stock}</span> шт.
             </div>
           )}
         </div>

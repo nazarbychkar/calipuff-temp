@@ -67,12 +67,11 @@ interface Product {
   name: string;
   price: number;
   first_media?: { url: string; type: string } | null;
-  sizes?: { size: string; stock: number }[];
   color?: string | null;
 }
 
 export default function Catalog() {
-  const { isDark, isSidebarOpen, setIsSidebarOpen } = useAppContext();
+  const { isSidebarOpen, setIsSidebarOpen } = useAppContext();
   const searchParams = useSearchParams();
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -83,26 +82,21 @@ export default function Catalog() {
   const [loading, setLoading] = useState(true);
 
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
   const [minPrice, setMinPrice] = useState<number | null>(null);
   const [maxPrice, setMaxPrice] = useState<number | null>(null);
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
-      const matchesSize =
-        selectedSizes.length === 0 ||
-        product.sizes?.some((s) => selectedSizes.includes(s.size));
-
       const matchesColor =
         selectedColors.length === 0 || (product.color && selectedColors.includes(product.color));
 
       const matchesMinPrice = minPrice === null || product.price >= minPrice;
       const matchesMaxPrice = maxPrice === null || product.price <= maxPrice;
 
-      return matchesSize && matchesMinPrice && matchesMaxPrice && matchesColor;
+      return matchesMinPrice && matchesMaxPrice && matchesColor;
     });
-  }, [products, selectedSizes, minPrice, maxPrice, selectedColors]);
+  }, [products, minPrice, maxPrice, selectedColors]);
 
   const sortedProducts = useMemo(() => {
     return [...filteredProducts].sort((a, b) =>
@@ -166,27 +160,30 @@ export default function Catalog() {
     <>
       <section className="max-w-[1824px] mx-auto px-4 sm:px-6 lg:px-8 pt-5 mt-10 mb-20">
         {/* Top Controls */}
-        <div className="flex justify-between items-center text-xl sm:text-2xl md:text-3xl mb-6">
-          <div className="flex items-center gap-3">
+        <div className="flex justify-between items-center mb-8">
+          <div className="flex items-center gap-4">
             <button
               onClick={() => setIsSidebarOpen(true)}
-              className="cursor-pointer text-2xl sm:text-3xl"
+              className="cursor-pointer text-2xl sm:text-3xl hover:text-[#FFA500] transition-colors"
             >
               {"<"}
             </button>
-            <span>
-              {subcategory
-                ? `Підкатегорія ${subcategory}${
-                    category ? ` (Категорія ${category})` : ""
-                  }`
-                : category
-                ? `Категорія ${category}`
-                : "Усі товари"}
-            </span>
+            <div>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">
+                {subcategory
+                  ? subcategory
+                  : category
+                  ? category
+                  : "Усі товари"}
+              </h1>
+              {subcategory && category && (
+                <p className="text-sm text-gray-500 mt-1">{category}</p>
+              )}
+            </div>
           </div>
 
           <button
-            className="cursor-pointer text-base sm:text-lg"
+            className="cursor-pointer px-4 py-2 border border-gray-300 rounded-lg hover:border-[#FFA500] hover:text-[#FFA500] transition-colors text-sm sm:text-base"
             onClick={() => setIsFilterOpen(true)}
           >
             Фільтри
@@ -205,31 +202,37 @@ export default function Catalog() {
             <Link
               href={`/product/${product.id}`}
               key={product.id}
-              className="flex flex-col gap-4 group"
+              className="flex flex-col gap-3 group card-hover"
             >
               {/* Image or Video */}
-              <div className="relative w-full aspect-[2/3] bg-gray-200 group-hover:filter group-hover:brightness-90 transition duration-300 overflow-hidden">
+              <div className="relative w-full aspect-[2/3] bg-gray-50 rounded-lg overflow-hidden">
                 {product.first_media?.type === "video" ? (
                   <VideoWithAutoplay
                     src={`/api/images/${product.first_media.url}`}
-                    className="object-cover transition-all duration-300 group-hover:brightness-90 w-full h-full"
+                    className="object-cover transition-transform duration-300 group-hover:scale-105 w-full h-full"
                   />
                 ) : (
                   <Image
                     src={getProductImageSrc(product.first_media)}
                     alt={product.name}
-                    className="object-cover transition-all duration-300 group-hover:brightness-90"
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
                   />
                 )}
               </div>
 
-              {/* Product Title + Price */}
-              <span className="text-base sm:text-lg">
-                {product.name}
-                <br /> {product.price}₴
-              </span>
+              {/* Product Info */}
+              <div className="flex flex-col gap-2">
+                <h3 className="text-base sm:text-lg font-medium leading-tight line-clamp-2">
+                  {product.name}
+                </h3>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-lg font-bold text-[#FFA500]">
+                    {product.price.toLocaleString()}₴
+                  </span>
+                </div>
+              </div>
             </Link>
           );
           })}
@@ -237,15 +240,13 @@ export default function Catalog() {
       </section>
 
       <SidebarFilter
-        isDark={isDark}
+        isDark={false}
         isOpen={isFilterOpen}
         setIsOpen={setIsFilterOpen}
         openAccordion={openAccordion}
         setOpenAccordion={setOpenAccordion}
         sortOrder={sortOrder}
         setSortOrder={setSortOrder}
-        selectedSizes={selectedSizes}
-        setSelectedSizes={setSelectedSizes}
         minPrice={minPrice}
         maxPrice={maxPrice}
         setMinPrice={setMinPrice}
@@ -253,11 +254,12 @@ export default function Catalog() {
         selectedColors={selectedColors}
         setSelectedColors={setSelectedColors}
         colors={colors}
+        products={products}
       />
 
       {/* Menu Sidebar */}
       <SidebarMenu
-        isDark={isDark}
+        isDark={false}
         isOpen={isSidebarOpen}
         setIsOpen={setIsSidebarOpen}
       />

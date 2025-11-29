@@ -23,12 +23,9 @@ interface Subcategory {
 }
 
 const LIGHT_LOGO = "/images/light-theme/calipuff-logo-header-light.svg";
-const DARK_LOGO = "/images/dark-theme/calipuff-logo-header-dark.svg";
 
 export default function Header() {
   const {
-    isDark,
-    setIsDark,
     isSidebarOpen,
     setIsSidebarOpen,
     isBasketOpen,
@@ -39,7 +36,6 @@ export default function Header() {
 
   const { items } = useBasket();
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-  const toggleTheme = () => setIsDark((prev) => !prev);
   const pathname = usePathname();
   
   const [isScrolled, setIsScrolled] = useState(false);
@@ -137,9 +133,7 @@ export default function Header() {
         className={`max-w-[1920px] mx-auto fixed top-0 left-1/2 transform -translate-x-1/2 w-full z-50 transition-all duration-300 ${
           isMounted && isHomePage && !isScrolled
             ? "bg-transparent text-white" 
-            : isDark 
-              ? "bg-[#1e1e1e] text-white shadow-md" 
-              : "bg-stone-100 text-black shadow-md"
+            : "bg-stone-100 text-black shadow-md"
         }`}
         onMouseLeave={() => {
           if (!pinnedCatalog) {
@@ -160,11 +154,11 @@ export default function Header() {
                 height="57"
                 width="200"
                 alt={`${BRAND.name} logo`}
-                src={isDark ? DARK_LOGO : LIGHT_LOGO}
+                src={LIGHT_LOGO}
               />
             </Link>
 
-            <div className="flex items-center gap-10 text-xl font-normal font-['Inter']">
+            <div className="flex items-center gap-8 text-base font-medium font-['Inter']">
               {/* Product Categories shown directly in top nav */}
               {Array.isArray(categories) && categories.map((category) => (
                 <div
@@ -189,7 +183,7 @@ export default function Header() {
                         category.name
                       )}`)
                     }
-                    className="cursor-pointer whitespace-nowrap hover:text-[#8C7461] text-base font-normal font-['Inter']"
+                    className="cursor-pointer whitespace-nowrap hover:text-[#FFA500] text-base font-semibold font-['Inter'] px-2 py-1 transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#FFA500] after:transition-all hover:after:w-full"
                   >
                     {category.name}
                   </button>
@@ -197,8 +191,8 @@ export default function Header() {
                   {/* Subcategories dropdown */}
                   {hoveredCategoryId === category.id &&
                     subcategories.length > 0 && (
-                      <div className={`absolute top-full left-0 mt-2 shadow-md rounded px-4 py-2 flex flex-col min-w-[200px] z-50 ${
-                        isMounted && isHomePage && !isScrolled ? 'bg-white/95 backdrop-blur-sm' : 'bg-white'
+                      <div className={`absolute top-full left-0 mt-2 shadow-lg rounded-lg px-4 py-2 flex flex-col min-w-[200px] z-50 border border-gray-100 ${
+                        isMounted && isHomePage && !isScrolled ? 'bg-white' : 'bg-white'
                       }`}>
                         {subcategories.map((subcat) => (
                           <Link
@@ -228,13 +222,13 @@ export default function Header() {
                   }, 200); // delay in ms
                 }}
               >
-                <span className="cursor-default whitespace-nowrap hover:text-[#8C7461] text-base font-normal font-['Inter']">
+                <span className="cursor-default whitespace-nowrap hover:text-[#FFA500] text-base font-semibold font-['Inter'] px-2 py-1 transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#FFA500] after:transition-all hover:after:w-full">
                   Інформація
                 </span>
 
                 <div
-                  className={`absolute top-full left-0 mt-2 shadow-md rounded px-4 py-2 flex flex-col min-w-[200px] z-50 transition-opacity duration-200 ${
-                    isMounted && isHomePage && !isScrolled ? 'bg-white/95 backdrop-blur-sm' : 'bg-white'
+                  className={`absolute top-full left-0 mt-2 shadow-lg rounded-lg px-4 py-2 flex flex-col min-w-[200px] z-50 transition-opacity duration-200 border border-gray-100 ${
+                    isMounted && isHomePage && !isScrolled ? 'bg-white' : 'bg-white'
                   } ${
                     infoMenuOpen
                       ? "opacity-100 pointer-events-auto"
@@ -270,48 +264,28 @@ export default function Header() {
             </div>
 
             {/* Right Icons */}
-            <div className="flex items-center gap-5">
-              <button className="cursor-pointer" onClick={toggleTheme}>
-                <Image
-                  height="32"
-                  width="32"
-                  alt="theme switch"
-                  src={
-                    isDark
-                      ? "/images/dark-theme/theme-switch.svg"
-                      : "/images/light-theme/theme-switch.svg"
-                  }
-                />
-              </button>
-              <button onClick={() => setIsSearchOpen(true)}>
+            <div className="flex items-center gap-6">
+              <button onClick={() => setIsSearchOpen(true)} className="p-2 hover:bg-black/10 rounded-lg transition-colors">
                 <Image
                   className="cursor-pointer"
-                  height="32"
-                  width="32"
+                  height="40"
+                  width="40"
                   alt="search icon"
-                  src={
-                    isDark
-                      ? "/images/dark-theme/search.svg"
-                      : "/images/light-theme/search.svg"
-                  }
+                  src="/images/light-theme/search.svg"
                 />
               </button>
               <button
-                className="cursor-pointer relative"
+                className="cursor-pointer relative p-2 hover:bg-black/10 rounded-lg transition-colors"
                 onClick={() => setIsBasketOpen(!isBasketOpen)}
               >
                 <Image
-                  height="32"
-                  width="32"
+                  height="40"
+                  width="40"
                   alt="shopping basket"
-                  src={
-                    isDark
-                      ? "/images/dark-theme/basket.svg"
-                      : "/images/light-theme/basket.svg"
-                  }
+                  src="/images/light-theme/basket.svg"
                 />
                 {totalItems > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center">
                     {totalItems > 99 ? "99+" : totalItems}
                   </span>
                 )}
@@ -324,28 +298,14 @@ export default function Header() {
         <div className={`lg:hidden w-full h-16 relative overflow-hidden px-4 flex items-center justify-between transition-all duration-300 ${
           isMounted && isHomePage && !isScrolled
             ? "bg-transparent text-white"
-            : isDark 
-              ? "bg-[#1e1e1e] text-white" 
-              : "bg-stone-100 text-black"
+            : "bg-stone-100 text-black"
         }`}>
           <div className="flex gap-4">
             <button
               onClick={() => setIsSidebarOpen(true)}
-              className="relative w-12 h-12 text-3xl"
+              className="relative w-14 h-14 text-4xl flex items-center justify-center"
             >
               ☰
-            </button>
-            <button className="cursor-pointer" onClick={toggleTheme}>
-              <Image
-                height="32"
-                width="32"
-                alt="theme switch"
-                src={
-                  isDark
-                    ? "/images/dark-theme/theme-switch.svg"
-                    : "/images/light-theme/theme-switch.svg"
-                }
-              />
             </button>
           </div>
 
@@ -354,39 +314,31 @@ export default function Header() {
               height="28"
               width="100"
             alt={`${BRAND.name} logo`}
-            src={isDark ? DARK_LOGO : LIGHT_LOGO}
+            src={LIGHT_LOGO}
             />
           </Link>
 
           <div className="flex gap-4">
-            <button onClick={() => setIsSearchOpen(true)}>
+            <button onClick={() => setIsSearchOpen(true)} className="p-2">
               <Image
-                height="32"
-                width="32"
+                height="40"
+                width="40"
                 alt="search icon"
-                src={
-                  isDark
-                    ? "/images/dark-theme/search.svg"
-                    : "/images/light-theme/search.svg"
-                }
+                src="/images/light-theme/search.svg"
               />
             </button>
             <button
               onClick={() => setIsBasketOpen(!isBasketOpen)}
-              className="relative"
+              className="relative p-2"
             >
               <Image
-                height="32"
-                width="32"
+                height="40"
+                width="40"
                 alt="shopping basket"
-                src={
-                  isDark
-                    ? "/images/dark-theme/basket.svg"
-                    : "/images/light-theme/basket.svg"
-                }
+                src="/images/light-theme/basket.svg"
               />
               {totalItems > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center">
                   {totalItems > 99 ? "99+" : totalItems}
                 </span>
               )}
@@ -396,18 +348,18 @@ export default function Header() {
       </header>
 
       <SidebarMenu
-        isDark={isDark}
+        isDark={false}
         isOpen={isSidebarOpen}
         setIsOpen={setIsSidebarOpen}
       />
       
       <SidebarBasket
-        isDark={isDark}
+        isDark={false}
         isOpen={isBasketOpen}
         setIsOpen={setIsBasketOpen}
       />
       <SidebarSearch
-        isDark={isDark}
+        isDark={false}
         isOpen={isSearchOpen}
         setIsOpen={setIsSearchOpen}
       />

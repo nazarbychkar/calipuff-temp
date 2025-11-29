@@ -209,7 +209,7 @@ export default function ProductsTable() {
                   isHeader
                   className="px-5 py-3 text-left text-sm font-semibold text-gray-600 dark:text-gray-300"
                 >
-                  Колір
+                  Смак
                 </TableCell>
                 <TableCell
                   isHeader

@@ -6,8 +6,8 @@
     "postinstall": "prisma generate && node scripts/install-sharp.js",
     "install:sharp": "node scripts/install-sharp.js",
     "dev": "next dev --turbopack",
-    "build": "prisma migrate deploy && pnpm run install:sharp && next build --turbopack && pnpm run compress && pnpm run optimize",
-    "build:analyze": "ANALYZE=true pnpm run build",
+    "build": "prisma migrate deploy && npm run install:sharp && next build --turbopack && npm run compress && npm run optimize",
+    "build:analyze": "ANALYZE=true npm run build",
     "build:fast": "next build --turbopack",
     "compress": "gzip -k -f .next/static/**/*.js .next/static/**/*.css || true",
     "optimize": "echo 'Build optimized for production' && du -sh .next/static",
@@ -18,6 +18,7 @@
     "migrate": "ts-node scripts/migrate.ts",
     "migrate:deploy": "prisma migrate deploy",
     "migrate:custom": "ts-node scripts/migrate.ts",
+    "seed": "ts-node scripts/seed.ts",
     "check-vitals": "echo 'Run lighthouse audit after deployment'"
   },
   "dependencies": {

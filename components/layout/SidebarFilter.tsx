@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 interface SidebarFilterProps {
   isOpen: boolean;
@@ -10,8 +10,6 @@ interface SidebarFilterProps {
   isDark: boolean;
   sortOrder: "asc" | "desc";
   setSortOrder: React.Dispatch<React.SetStateAction<"asc" | "desc">>;
-  selectedSizes: string[];
-  setSelectedSizes: React.Dispatch<React.SetStateAction<string[]>>;
   minPrice: number | null;
   maxPrice: number | null;
   setMinPrice: React.Dispatch<React.SetStateAction<number | null>>;
@@ -19,6 +17,7 @@ interface SidebarFilterProps {
   selectedColors: string[];
   setSelectedColors: React.Dispatch<React.SetStateAction<string[]>>;
   colors: string[];
+  products?: Array<{ price: number }>;
 }
 
 export default function SidebarFilter({
@@ -29,8 +28,6 @@ export default function SidebarFilter({
   isDark,
   sortOrder,
   setSortOrder,
-  selectedSizes,
-  setSelectedSizes,
   minPrice,
   maxPrice,
   setMinPrice,
@@ -38,17 +35,10 @@ export default function SidebarFilter({
   selectedColors,
   setSelectedColors,
   colors,
+  products = [],
 }: SidebarFilterProps) {
   const toggleAccordion = (index: number) => {
     setOpenAccordion(openAccordion === index ? null : index);
-  };
-
-  const availableSizes = ["XS", "S", "M", "L", "XL"];
-
-  const toggleSize = (size: string) => {
-    setSelectedSizes((prev) =>
-      prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size]
-    );
   };
 
   const toggleColor = (color: string) => {
@@ -60,6 +50,61 @@ export default function SidebarFilter({
   useEffect(() => {
     console.log("Selected colors updated:", selectedColors);
   }, [selectedColors]);
+
+  // Calculate price range from products
+  const priceRange = useMemo(() => {
+    if (!products || products.length === 0) {
+      return { min: 0, max: 10000 };
+    }
+    const prices = products.map((p) => p.price);
+    const min = Math.floor(Math.min(...prices));
+    const max = Math.ceil(Math.max(...prices));
+    // Round to nice numbers for better UX
+    const roundedMin = Math.max(0, Math.floor(min / 100) * 100);
+    const roundedMax = Math.ceil(max / 100) * 100;
+    return { min: roundedMin, max: roundedMax };
+  }, [products]);
+
+  // Initialize price range state
+  const [priceRangeState, setPriceRangeState] = useState(() => ({
+    min: minPrice ?? priceRange.min,
+    max: maxPrice ?? priceRange.max,
+  }));
+
+  // Sync state when priceRange changes
+  useEffect(() => {
+    if (minPrice === null && maxPrice === null) {
+      setPriceRangeState({
+        min: priceRange.min,
+        max: priceRange.max,
+      });
+    }
+  }, [priceRange.min, priceRange.max, minPrice, maxPrice]);
+
+  // Sync state when minPrice/maxPrice change externally
+  useEffect(() => {
+    if (minPrice !== null || maxPrice !== null) {
+      setPriceRangeState({
+        min: minPrice ?? priceRange.min,
+        max: maxPrice ?? priceRange.max,
+      });
+    }
+  }, [minPrice, maxPrice, priceRange.min, priceRange.max]);
+
+  const handlePriceRangeChange = (type: "min" | "max", value: number) => {
+    const numValue = Math.round(value);
+    if (type === "min") {
+      const newMin = Math.min(numValue, priceRangeState.max - 1);
+      setPriceRangeState((prev) => ({ ...prev, min: newMin }));
+      // Only set filter if it's different from the minimum range
+      setMinPrice(newMin <= priceRange.min ? null : newMin);
+    } else {
+      const newMax = Math.max(numValue, priceRangeState.min + 1);
+      setPriceRangeState((prev) => ({ ...prev, max: newMax }));
+      // Only set filter if it's different from the maximum range
+      setMaxPrice(newMax >= priceRange.max ? null : newMax);
+    }
+  };
 
   return (
     <div className="relative z-50">
@@ -127,51 +172,19 @@ export default function SidebarFilter({
             )}
           </div>
 
-          {/* Accordion: Size */}
+          {/* Accordion: Flavor */}
           <div className="w-full border-b px-2 sm:px-4 py-3 hover:bg-gray-200 transition">
             <div
               className="flex justify-between items-center cursor-pointer"
               onClick={() => toggleAccordion(2)}
             >
-              <span className="text-xl sm:text-2xl uppercase">Розмір</span>
+              <span className="text-xl sm:text-2xl uppercase">Смак</span>
               <span className="font-semibold text-xl sm:text-2xl">
                 {openAccordion === 2 ? "−" : "+"}
               </span>
             </div>
 
             {openAccordion === 2 && (
-              <div className="pl-4 mt-2 space-y-2">
-                {availableSizes.map((size) => (
-                  <label
-                    key={size}
-                    className="flex items-center gap-2 cursor-pointer"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={selectedSizes.includes(size)}
-                      onChange={() => toggleSize(size)}
-                      className="form-checkbox h-4 w-4 text-[#8C7461]"
-                    />
-                    <span className="text-base sm:text-lg">{size}</span>
-                  </label>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Accordion: Color */}
-          <div className="w-full border-b px-2 sm:px-4 py-3 hover:bg-gray-200 transition">
-            <div
-              className="flex justify-between items-center cursor-pointer"
-              onClick={() => toggleAccordion(3)}
-            >
-              <span className="text-xl sm:text-2xl uppercase">Колір</span>
-              <span className="font-semibold text-xl sm:text-2xl">
-                {openAccordion === 3 ? "−" : "+"}
-              </span>
-            </div>
-
-            {openAccordion === 3 && (
               <div className="pl-4 mt-2 space-y-2">
                 {colors.map((color, index) => (
                   <label
@@ -195,49 +208,88 @@ export default function SidebarFilter({
           <div className="w-full border-b px-2 sm:px-4 py-3 hover:bg-gray-200 transition">
             <div
               className="flex justify-between items-center cursor-pointer"
-              onClick={() => toggleAccordion(4)}
+              onClick={() => toggleAccordion(3)}
             >
               <span className="text-xl sm:text-2xl uppercase">Вартість</span>
               <span className="font-semibold text-xl sm:text-2xl">
-                {openAccordion === 4 ? "−" : "+"}
+                {openAccordion === 3 ? "−" : "+"}
               </span>
             </div>
 
-            {openAccordion === 4 && (
-              <div className="pl-4 mt-4 space-y-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1">
-                    Мінімальна ціна
-                  </label>
+            {openAccordion === 3 && (
+              <div className="pl-4 mt-4 space-y-6">
+                {/* Price Range Display */}
+                <div className="flex items-center justify-between text-lg font-bold">
+                  <span className="text-[#FFA500]">
+                    {priceRangeState.min.toLocaleString()} ₴
+                  </span>
+                  <span className="text-gray-400 mx-2">—</span>
+                  <span className="text-[#FFA500]">
+                    {priceRangeState.max.toLocaleString()} ₴
+                  </span>
+                </div>
+
+                {/* Dual Range Slider */}
+                <div className="relative py-4">
+                  {/* Track Background */}
+                  <div className="relative h-2 bg-gray-200 rounded-full">
+                    {/* Active Range Fill */}
+                    <div
+                      className="absolute h-2 bg-[#FFA500] rounded-full transition-all duration-200"
+                      style={{
+                        left: `${Math.max(0, ((priceRangeState.min - priceRange.min) / (priceRange.max - priceRange.min)) * 100)}%`,
+                        width: `${Math.max(0, ((priceRangeState.max - priceRangeState.min) / (priceRange.max - priceRange.min)) * 100)}%`,
+                      }}
+                    />
+                  </div>
+
+                  {/* Min Range Input */}
                   <input
-                    type="number"
-                    value={minPrice ?? ""}
+                    type="range"
+                    min={priceRange.min}
+                    max={priceRange.max}
+                    step={Math.max(1, Math.floor((priceRange.max - priceRange.min) / 100))}
+                    value={priceRangeState.min}
                     onChange={(e) =>
-                      setMinPrice(
-                        e.target.value ? parseInt(e.target.value) : null
-                      )
+                      handlePriceRangeChange("min", parseInt(e.target.value))
                     }
-                    className="w-full border rounded px-2 py-1 text-sm"
-                    placeholder="від"
+                    className="absolute top-0 w-full h-2 bg-transparent appearance-none cursor-pointer slider-thumb"
+                    style={{
+                      zIndex: priceRangeState.min > priceRangeState.max ? 3 : 1,
+                    }}
+                  />
+
+                  {/* Max Range Input */}
+                  <input
+                    type="range"
+                    min={priceRange.min}
+                    max={priceRange.max}
+                    step={Math.max(1, Math.floor((priceRange.max - priceRange.min) / 100))}
+                    value={priceRangeState.max}
+                    onChange={(e) =>
+                      handlePriceRangeChange("max", parseInt(e.target.value))
+                    }
+                    className="absolute top-0 w-full h-2 bg-transparent appearance-none cursor-pointer slider-thumb"
+                    style={{ zIndex: 2 }}
                   />
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium mb-1">
-                    Максимальна ціна
-                  </label>
-                  <input
-                    type="number"
-                    value={maxPrice ?? ""}
-                    onChange={(e) =>
-                      setMaxPrice(
-                        e.target.value ? parseInt(e.target.value) : null
-                      )
-                    }
-                    className="w-full border rounded px-2 py-1 text-sm"
-                    placeholder="до"
-                  />
-                </div>
+                {/* Reset Button */}
+                {(minPrice !== null || maxPrice !== null) && (
+                  <button
+                    onClick={() => {
+                      setMinPrice(null);
+                      setMaxPrice(null);
+                      setPriceRangeState({
+                        min: priceRange.min,
+                        max: priceRange.max,
+                      });
+                    }}
+                    className="text-sm text-[#FFA500] hover:text-[#FFD700] underline transition-colors font-medium"
+                  >
+                    Скинути фільтр
+                  </button>
+                )}
               </div>
             )}
           </div>

@@ -14,7 +14,6 @@ interface Product {
   name: string;
   price: number;
   first_media?: { url: string; type: string } | null;
-  sizes?: { size: string; stock: number }[];
   color?: string | null;
   discount_percentage?: number;
 }
@@ -28,24 +27,19 @@ export default function CatalogClient({
   initialProducts,
   colors,
 }: CatalogClientProps) {
-  const { isDark, isSidebarOpen, setIsSidebarOpen } = useAppContext();
+  const { isSidebarOpen, setIsSidebarOpen } = useAppContext();
   const searchParams = useSearchParams();
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [openAccordion, setOpenAccordion] = useState<number | null>(null);
 
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
   const [minPrice, setMinPrice] = useState<number | null>(null);
   const [maxPrice, setMaxPrice] = useState<number | null>(null);
 
   const filteredProducts = useMemo(() => {
     return initialProducts.filter((product) => {
-      const matchesSize =
-        selectedSizes.length === 0 ||
-        product.sizes?.some((s) => selectedSizes.includes(s.size));
-
       const matchesColor =
         selectedColors.length === 0 ||
         (product.color && selectedColors.includes(product.color));
@@ -53,9 +47,9 @@ export default function CatalogClient({
       const matchesMinPrice = minPrice === null || product.price >= minPrice;
       const matchesMaxPrice = maxPrice === null || product.price <= maxPrice;
 
-      return matchesSize && matchesMinPrice && matchesMaxPrice && matchesColor;
+      return matchesMinPrice && matchesMaxPrice && matchesColor;
     });
-  }, [initialProducts, selectedSizes, minPrice, maxPrice, selectedColors]);
+  }, [initialProducts, minPrice, maxPrice, selectedColors]);
 
   const sortedProducts = useMemo(() => {
     return [...filteredProducts].sort((a, b) =>
@@ -76,27 +70,30 @@ export default function CatalogClient({
     <>
       <section className="max-w-[1824px] mx-auto px-4 sm:px-6 lg:px-8 pt-5 mt-10 mb-20">
         {/* Top Controls */}
-        <div className="flex justify-between items-center text-xl sm:text-2xl md:text-3xl mb-6">
-          <div className="flex items-center gap-3">
+        <div className="flex justify-between items-center mb-8">
+          <div className="flex items-center gap-4">
             <button
               onClick={() => setIsSidebarOpen(true)}
-              className="cursor-pointer text-2xl sm:text-3xl"
+              className="cursor-pointer text-2xl sm:text-3xl hover:text-[#FFA500] transition-colors"
             >
               {"<"}
             </button>
-            <span>
-              {subcategory
-                ? `Підкатегорія ${subcategory}${
-                    category ? ` (Категорія ${category})` : ""
-                  }`
-                : category
-                ? `Категорія ${category}`
-                : "Усі товари"}
-            </span>
+            <div>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">
+                {subcategory
+                  ? subcategory
+                  : category
+                  ? category
+                  : "Усі товари"}
+              </h1>
+              {subcategory && category && (
+                <p className="text-sm text-gray-500 mt-1">{category}</p>
+              )}
+            </div>
           </div>
 
           <button
-            className="cursor-pointer text-base sm:text-lg"
+            className="cursor-pointer px-4 py-2 border border-gray-300 rounded-lg hover:border-[#FFA500] hover:text-[#FFA500] transition-colors text-sm sm:text-base"
             onClick={() => setIsFilterOpen(true)}
           >
             Фільтри
@@ -115,14 +112,14 @@ export default function CatalogClient({
             <Link
               href={`/product/${product.id}`}
               key={product.id}
-              className="flex flex-col gap-2 sm:gap-4 group"
+              className="flex flex-col gap-3 group card-hover"
             >
               {/* Image or Video */}
-              <div className="relative w-full aspect-[2/3] bg-gray-200 group-hover:filter group-hover:brightness-90 transition duration-300 overflow-hidden">
+              <div className="relative w-full aspect-[2/3] bg-gray-50 rounded-lg overflow-hidden">
                 {product.first_media?.type === "video" ? (
                   <video
                     src={`/api/images/${product.first_media.url}`}
-                    className="object-cover transition-all duration-300 group-hover:brightness-90 w-full h-full"
+                    className="object-cover transition-transform duration-300 group-hover:scale-105 w-full h-full"
                     loop
                     muted
                     playsInline
@@ -136,47 +133,46 @@ export default function CatalogClient({
                       "https://placehold.co/432x613"
                     )}
                     alt={product.name}
-                    className="object-cover transition-all duration-300 group-hover:brightness-90"
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
                     fill
                     sizes="(max-width: 420px) 45vw, (max-width: 640px) 45vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
-                    loading={index < 6 ? "eager" : "lazy"} // First 6 images load immediately
-                    priority={index < 4} // First 4 get priority
-                    quality={index < 8 ? 80 : 70} // Progressive quality
+                    loading={index < 6 ? "eager" : "lazy"}
+                    priority={index < 4}
+                    quality={index < 8 ? 80 : 70}
                     placeholder="blur"
                     blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
                   />
                 )}
               </div>
 
-              {/* Product Title + Price */}
-              <span className="text-sm sm:text-base lg:text-lg leading-tight">
-                {product.name}
-                <br />
-                {product.discount_percentage ? (
-                  <div className="flex items-center gap-2">
-                    {/* Discounted price */}
-                    <span className="font-medium text-red-600">
-                      {(
-                        product.price *
-                        (1 - product.discount_percentage / 100)
-                      ).toFixed(2)}
-                      ₴
+              {/* Product Info */}
+              <div className="flex flex-col gap-2">
+                <h3 className="text-sm sm:text-base font-medium leading-tight line-clamp-2">
+                  {product.name}
+                </h3>
+                <div className="flex items-baseline gap-2">
+                  {product.discount_percentage ? (
+                    <>
+                      <span className="text-lg font-bold text-[#FFA500]">
+                        {(
+                          product.price *
+                          (1 - product.discount_percentage / 100)
+                        ).toFixed(0)}₴
+                      </span>
+                      <span className="text-sm text-gray-400 line-through">
+                        {product.price}₴
+                      </span>
+                      <span className="text-xs font-semibold text-green-600 bg-green-50 px-2 py-0.5 rounded">
+                        -{product.discount_percentage}%
+                      </span>
+                    </>
+                  ) : (
+                    <span className="text-lg font-bold text-[#FFA500]">
+                      {product.price.toLocaleString()}₴
                     </span>
-
-                    {/* Original (crossed-out) price */}
-                    <span className="text-gray-500 line-through">
-                      {product.price}₴
-                    </span>
-
-                    {/* Optional: show discount percentage */}
-                    <span className="text-green-600 text-sm">
-                      -{product.discount_percentage}%
-                    </span>
-                  </div>
-                ) : (
-                  <span className="font-medium">{product.price}₴</span>
-                )}
-              </span>
+                  )}
+                </div>
+              </div>
               </Link>
             );
           })}
@@ -185,11 +181,7 @@ export default function CatalogClient({
           <div className="mt-6 flex justify-center">
             <button
               onClick={() => setVisibleCount((prev) => prev + 12)}
-              className={`cursor-pointer px-6 py-3 ${
-                isDark
-                  ? "bg-stone-100 text-stone-900"
-                  : "bg-stone-900 text-stone-100"
-              }`}
+              className="cursor-pointer px-6 py-3 bg-stone-900 text-stone-100"
             >
               Показати ще
             </button>
@@ -198,15 +190,13 @@ export default function CatalogClient({
       </section>
 
       <SidebarFilter
-        isDark={isDark}
+        isDark={false}
         isOpen={isFilterOpen}
         setIsOpen={setIsFilterOpen}
         openAccordion={openAccordion}
         setOpenAccordion={setOpenAccordion}
         sortOrder={sortOrder}
         setSortOrder={setSortOrder}
-        selectedSizes={selectedSizes}
-        setSelectedSizes={setSelectedSizes}
         minPrice={minPrice}
         maxPrice={maxPrice}
         setMinPrice={setMinPrice}
@@ -214,11 +204,12 @@ export default function CatalogClient({
         selectedColors={selectedColors}
         setSelectedColors={setSelectedColors}
         colors={colors}
+        products={initialProducts}
       />
 
       {/* Menu Sidebar */}
       <SidebarMenu
-        isDark={isDark}
+        isDark={false}
         isOpen={isSidebarOpen}
         setIsOpen={setIsSidebarOpen}
       />

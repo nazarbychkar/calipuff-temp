@@ -1,6 +1,5 @@
 "use client";
 
-import { useAppContext } from "@/lib/GeneralProvider";
 import { BRAND } from "@/lib/brand";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay } from "swiper/modules";
@@ -36,13 +35,10 @@ const WHY_US = [
 ];
 
 export default function WhyChooseUs() {
-  const { isDark } = useAppContext();
 
   return (
     <section
-      className={`max-w-[1920px] mx-auto w-full relative ${
-        isDark ? "bg-[#050505]" : "bg-[#fef9f2]"
-      } overflow-hidden py-16 -mt-12 md:-mt-16 lg:-mt-20 pt-12 md:pt-16 lg:pt-20 pb-24 md:pb-32 lg:pb-40`}
+      className="max-w-[1920px] mx-auto w-full relative bg-[#fef9f2] overflow-hidden py-16 -mt-12 md:-mt-16 lg:-mt-20 pt-12 md:pt-16 lg:pt-20 pb-24 md:pb-32 lg:pb-40"
     >
       <div className="flex flex-col lg:flex-row lg:justify-between items-start lg:items-center px-6 md:px-12">
         <div className="text-start lg:text-center text-3xl lg:text-5xl font-semibold font-['Montserrat'] uppercase">
@@ -58,7 +54,7 @@ export default function WhyChooseUs() {
         {WHY_US.map((item, i) => (
           <div
             key={item.title}
-            className="border border-white/10 rounded-3xl overflow-hidden shadow-lg bg-white/80 backdrop-blur"
+            className="border border-gray-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md bg-white transition-shadow duration-300"
           >
             <div
               className="h-40 w-full relative"
@@ -122,7 +118,7 @@ export default function WhyChooseUs() {
         >
           {WHY_US.map((item, i) => (
             <SwiperSlide key={item.title}>
-              <div className="border border-white/10 rounded-3xl overflow-hidden shadow-lg bg-white/80 backdrop-blur h-full transition-[transform,box-shadow,background-color] duration-500 ease-out hover:shadow-2xl hover:scale-[1.02] hover:bg-white/90 group">
+              <div className="border border-gray-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg bg-white h-full transition-all duration-300 ease-out hover:scale-[1.02] group">
                 <div
                   className="h-48 w-full relative transition-[height] duration-500 ease-out group-hover:h-52"
                   style={{
@@ -158,14 +154,12 @@ export default function WhyChooseUs() {
       
       {/* Smooth transition gradient to SocialMedia section - positioned at bottom */}
       <div className="absolute left-1/2 -translate-x-1/2 bottom-0 w-full max-w-[1920px] h-24 md:h-32 lg:h-40 pointer-events-none z-20">
-        <div className={`h-full bg-gradient-to-b from-transparent ${
-          isDark ? "via-[#050505]/90 to-[#050505]" : "via-white/90 to-white"
-        }`}>
+        <div className="h-full bg-gradient-to-b from-transparent via-white/90 to-white">
           {/* Wave transition element */}
           <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 1200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0,200 Q300,100 600,140 T1200,140 L1200,200 L0,200 Z" fill={isDark ? "#050505" : "white"} opacity="0.95" />
-            <path d="M0,200 Q250,120 500,150 T1000,150 T1200,150 L1200,200 L0,200 Z" fill={isDark ? "#050505" : "white"} opacity="0.9" />
-            <path d="M0,200 Q350,110 700,145 T1200,145 L1200,200 L0,200 Z" fill={isDark ? "#050505" : "white"} opacity="0.85" />
+            <path d="M0,200 Q300,100 600,140 T1200,140 L1200,200 L0,200 Z" fill="white" opacity="0.95" />
+            <path d="M0,200 Q250,120 500,150 T1000,150 T1200,150 L1200,200 L0,200 Z" fill="white" opacity="0.9" />
+            <path d="M0,200 Q350,110 700,145 T1200,145 L1200,200 L0,200 Z" fill="white" opacity="0.85" />
           </svg>
         </div>
       </div>

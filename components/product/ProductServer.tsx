@@ -1,4 +1,5 @@
 import ProductClientWrapper from "./ProductClientWrapper";
+import StructuredData from "@/components/shared/StructuredData";
 import { notFound } from "next/navigation";
 import { sqlGetProduct } from "@/lib/sql";
 
@@ -56,6 +57,32 @@ export default async function ProductServer({ id }: ProductServerProps) {
     notFound();
   }
 
-  // Wrap ProductClient to ensure it only renders client-side after hydration
-  return <ProductClientWrapper product={product} />;
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://calipuff.ua';
+  const productImage = product.media?.[0]?.url || `${baseUrl}/images/hero-bg.png`;
+  const fullImageUrl = productImage.startsWith('http') ? productImage : `${baseUrl}${productImage}`;
+
+  // Build breadcrumbs
+  const breadcrumbs = [
+    { name: "Головна", url: baseUrl },
+    { name: "Каталог", url: `${baseUrl}/catalog` },
+    { name: product.name, url: `${baseUrl}/product/${id}` },
+  ];
+
+  return (
+    <>
+      <StructuredData
+        type="product"
+        product={{
+          name: product.name,
+          description: product.description || `${product.name} від CALIPUFF`,
+          price: product.price,
+          image: fullImageUrl,
+          sku: id.toString(),
+          availability: product.stock && product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+        }}
+      />
+      <StructuredData type="breadcrumb" breadcrumbs={breadcrumbs} />
+      <ProductClientWrapper product={product} />
+    </>
+  );
 }

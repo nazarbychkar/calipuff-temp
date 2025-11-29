@@ -87,28 +87,28 @@ export default function SidebarMenu({
         } overflow-y-auto`}
       >
         {view === "menu" && (
-          <nav className="flex flex-col px-4 py-6 space-y-2 text-xl sm:text-2xl md:text-3xl">
-            <div className="flex justify-between items-center mb-4">
-              <h2>Меню</h2>
+          <nav className="flex flex-col px-6 py-8 space-y-1">
+            <div className="flex justify-between items-center mb-6 pb-4 border-b">
+              <h2 className="text-2xl sm:text-3xl font-bold">Категорії</h2>
               <button
-                className="text-2xl sm:text-3xl cursor-pointer hover:text-[#8C7461]"
+                className="text-2xl sm:text-3xl cursor-pointer hover:text-[#FFA500] transition-colors"
                 onClick={() => setIsOpen(false)}
               >
                 ×
               </button>
             </div>
 
-            {loading && <p>Loading categories...</p>}
-            {error && <p className="text-red-500">Error: {error}</p>}
+            {loading && <p className="text-gray-500">Завантаження...</p>}
+            {error && <p className="text-red-500">Помилка: {error}</p>}
 
             {!loading &&
               !error &&
               categories.map((cat) => (
-                <div key={cat.id} className="flex flex-col">
-                  <div className="flex justify-between items-center">
+                <div key={cat.id} className="flex flex-col border-b border-gray-200 last:border-0">
+                  <div className="flex justify-between items-center py-4">
                     <Link
                       href={`/catalog?category=${encodeURIComponent(cat.name)}`}
-                      className="hover:text-[#8C7461]"
+                      className="text-lg sm:text-xl font-semibold hover:text-[#FFA500] transition-colors"
                       onClick={() => setIsOpen(false)}
                     >
                       {cat.name}
@@ -116,7 +116,7 @@ export default function SidebarMenu({
 
                     {cat.subcategories && cat.subcategories.length > 0 && (
                       <button
-                        className="ml-2 text-xl sm:text-2xl font-bold"
+                        className="ml-2 text-xl font-bold text-gray-400 hover:text-[#FFA500] transition-colors"
                         onClick={() =>
                           setOpenCategoryId(
                             openCategoryId === cat.id ? null : cat.id
@@ -130,14 +130,14 @@ export default function SidebarMenu({
 
                   {/* Subcategories dropdown */}
                   {openCategoryId === cat.id && cat.subcategories && (
-                    <div className="flex flex-col pl-6 mt-1 space-y-1">
+                    <div className="flex flex-col pl-4 pb-4 space-y-2">
                       {cat.subcategories.map((sub) => (
                         <Link
                           key={sub.id}
                           href={`/catalog?subcategory=${encodeURIComponent(
                             sub.name
                           )}`}
-                          className="hover:text-[#8C7461]"
+                          className="text-base text-gray-600 hover:text-[#FFA500] transition-colors"
                           onClick={() => setIsOpen(false)}
                         >
                           {sub.name}

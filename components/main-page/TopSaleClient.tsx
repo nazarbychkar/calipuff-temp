@@ -65,6 +65,8 @@ interface Product {
   id: number;
   name: string;
   price: number;
+  old_price?: number | null;
+  discount_percentage?: number | null;
   first_media?: { url: string; type: string } | null;
 }
 
@@ -101,17 +103,17 @@ export default function TopSaleClient({ products }: TopSaleClientProps) {
           <Link
             href={`/product/${product.id}`}
             key={product.id}
-            className="flex flex-col gap-3 group w-full"
+            className="flex flex-col gap-4 group w-full card-hover"
           >
-            <div className="aspect-[2/3] w-full overflow-hidden relative">
+            <div className="aspect-[2/3] w-full overflow-hidden relative rounded-lg bg-gray-50">
               {product.first_media?.type === "video" ? (
                 <VideoWithAutoplay
                   src={`/api/images/${product.first_media.url}`}
-                  className="object-cover group-hover:brightness-90 transition duration-300 w-full h-full"
+                  className="object-cover group-hover:scale-105 transition-transform duration-300 w-full h-full"
                 />
               ) : (
                 <Image
-                  className="object-cover group-hover:brightness-90 transition duration-300"
+                  className="object-cover group-hover:scale-105 transition-transform duration-300"
                   src={getProductImageSrc(
                     product.first_media,
                     "https://placehold.co/432x613"
@@ -119,18 +121,29 @@ export default function TopSaleClient({ products }: TopSaleClientProps) {
                   alt={product.name}
                   fill
                   sizes="(max-width: 420px) 90vw, (max-width: 640px) 45vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
-                  priority={index < 2} // Only first 2 images get priority for mobile
+                  priority={index < 2}
                   loading={index < 2 ? undefined : "lazy"}
-                  quality={index < 4 ? 85 : 75} // Higher quality for first 4, lower for others
+                  quality={index < 4 ? 85 : 75}
                   placeholder="blur"
                   blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
                 />
               )}
             </div>
 
-            <div className="text-center text-base sm:text-lg md:text-xl font-normal font-['Poppins'] capitalize leading-normal">
-              {product.name} <br />
-              <span className="font-semibold text-[#FFA500]">{product.price.toLocaleString()} ₴</span>
+            <div className="text-center">
+              <h3 className="text-base sm:text-lg md:text-xl font-medium font-['Poppins'] capitalize leading-tight mb-2">
+                {product.name}
+              </h3>
+              <div className="flex items-center justify-center gap-2">
+                <span className="text-lg sm:text-xl md:text-2xl font-bold text-[#FFA500]">
+                  {product.price.toLocaleString()} ₴
+                </span>
+                {product.old_price && (
+                  <span className="text-sm text-gray-400 line-through">
+                    {product.old_price.toLocaleString()} ₴
+                  </span>
+                )}
+              </div>
             </div>
           </Link>
         ))}

@@ -1,12 +1,11 @@
 "use client";
 
-import { useAppContext } from "@/lib/GeneralProvider";
+import StructuredData from "@/components/shared/StructuredData";
 import { useState } from "react";
 import { BRAND } from "@/lib/brand";
 
 export default function FAQ() {
   const [openAccordion, setOpenAccordion] = useState<number | null>(null);
-  const { isDark } = useAppContext();
 
   const toggleAccordion = (index: number) => {
     setOpenAccordion(openAccordion === index ? null : index);
@@ -15,10 +14,9 @@ export default function FAQ() {
   return (
     <section
       id="payment-and-delivery"
-      className={`scroll-mt-20 max-w-[1920px] w-full mx-auto ${
-        isDark ? "bg-stone-900" : "bg-gradient-to-br from-[#FFF4E6] via-[#FFFBE6] to-[#F0FDFC]"
-      } py-10 lg:py-20 -mt-12 md:-mt-16 lg:-mt-20 pt-12 md:pt-16 lg:pt-20 relative overflow-hidden pb-24 md:pb-32 lg:pb-40`}
+      className="scroll-mt-20 max-w-[1920px] w-full mx-auto bg-gradient-to-br from-[#FFF4E6] via-[#FFFBE6] to-[#F0FDFC] py-10 lg:py-20 -mt-12 md:-mt-16 lg:-mt-20 pt-12 md:pt-16 lg:pt-20 relative overflow-hidden pb-24 md:pb-32 lg:pb-40"
     >
+      <StructuredData type="faq" />
       <div className="flex flex-col lg:flex-row justify-between m-5 lg:m-10 gap-10">
         <div className="w-full lg:w-96 lg:h-72 relative">
           <div className="text-4xl lg:text-7xl font-medium font-['Montserrat'] leading-snug lg:leading-[74.69px]">
@@ -97,14 +95,12 @@ export default function FAQ() {
       
       {/* Smooth transition gradient to Reviews section - positioned at bottom */}
       <div className="absolute left-1/2 -translate-x-1/2 bottom-0 w-full max-w-[1920px] h-24 md:h-32 lg:h-40 pointer-events-none z-20">
-        <div className={`h-full bg-gradient-to-b from-transparent ${
-          isDark ? "via-stone-900/90 to-stone-900" : "via-[#FFF4E6]/90 to-[#FFF4E6]"
-        }`}>
+        <div className="h-full bg-gradient-to-b from-transparent via-[#FFF4E6]/90 to-[#FFF4E6]">
           {/* Wave transition element */}
           <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 1200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0,200 Q300,100 600,140 T1200,140 L1200,200 L0,200 Z" fill={isDark ? "#1c1917" : "#FFF4E6"} opacity="0.95" />
-            <path d="M0,200 Q250,120 500,150 T1000,150 T1200,150 L1200,200 L0,200 Z" fill={isDark ? "#1c1917" : "#FFF4E6"} opacity="0.9" />
-            <path d="M0,200 Q350,110 700,145 T1200,145 L1200,200 L0,200 Z" fill={isDark ? "#1c1917" : "#FFF4E6"} opacity="0.85" />
+            <path d="M0,200 Q300,100 600,140 T1200,140 L1200,200 L0,200 Z" fill="#FFF4E6" opacity="0.95" />
+            <path d="M0,200 Q250,120 500,150 T1000,150 T1200,150 L1200,200 L0,200 Z" fill="#FFF4E6" opacity="0.9" />
+            <path d="M0,200 Q350,110 700,145 T1200,145 L1200,200 L0,200 Z" fill="#FFF4E6" opacity="0.85" />
           </svg>
         </div>
       </div>

@@ -5,23 +5,14 @@ import { useAppContext } from "@/lib/GeneralProvider";
 import { BRAND } from "@/lib/brand";
 import Link from "next/link";
 
-const featurePills = [
-  "0% ТГК",
-  "COA сертифікація",
-  "California Wave & Sun",
-];
-
 export default function Hero() {
-  const { isDark, isSidebarOpen, setIsSidebarOpen } = useAppContext();
+  const { isSidebarOpen, setIsSidebarOpen } = useAppContext();
 
   return (
     <section className="relative">
       <div className="max-w-[1920px] mx-auto w-full h-screen sm:h-[720px] md:h-[860px] lg:h-[980px] relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-[#FFA500] via-[#FFD700] to-[#40E0D0]" />
-        <div className="absolute inset-x-0 bottom-0 h-44 md:h-60 bg-white/30 mix-blend-soft-light blur-2xl" />
-        <div className="absolute -bottom-20 -left-16 w-80 h-80 bg-white/15 blur-3xl rounded-full" />
-        <div className="absolute -top-20 -right-10 w-72 h-72 bg-[#40E0D0]/50 blur-3xl rounded-full" />
-        <div className="absolute inset-0 opacity-15">
+        <div className="absolute inset-0 opacity-10">
           <svg className="w-full h-full" preserveAspectRatio="none">
             <path
               d="M0 500 Q 300 420 600 500 T 1200 500"
@@ -38,47 +29,33 @@ export default function Hero() {
           </svg>
         </div>
 
-        <div className="relative z-10 flex flex-col justify-center h-full px-6 sm:px-10 lg:px-24 gap-10 text-white">
-          <p className="uppercase tracking-[0.3em] text-sm sm:text-base font-semibold">
-            {BRAND.name} — Бізнес-план «Україна»
+        <div className="relative z-10 flex flex-col justify-center h-full px-6 sm:px-10 lg:px-24 gap-8 text-white">
+          <p className="uppercase tracking-[0.2em] text-xs sm:text-sm font-medium opacity-90">
+            {BRAND.name}
           </p>
-          <div className="space-y-6 max-w-4xl">
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-semibold leading-tight drop-shadow">
+          <div className="space-y-5 max-w-4xl">
+            <h1 className="text-5xl sm:text-7xl lg:text-8xl font-bold leading-tight">
               {BRAND.tagline}
             </h1>
-            <p className="text-base sm:text-xl lg:text-2xl max-w-3xl">
-              {BRAND.description} {BRAND.compliance}.
-            </p>
-            <p className="text-base sm:text-lg max-w-2xl">
-              {BRAND.style}
+            <p className="text-lg sm:text-xl lg:text-2xl max-w-2xl font-light opacity-95">
+              {BRAND.description}
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-4">
-            {featurePills.map((item) => (
-              <span
-                key={item}
-                className="px-4 py-2 rounded-full border border-white/40 text-sm sm:text-base bg-white/10 backdrop-blur"
-              >
-                {item}
-              </span>
-            ))}
-          </div>
+          <div className="flex flex-col sm:flex-row gap-4 mt-4">
+            <Link
+              href="/catalog"
+              className="px-12 py-5 rounded-full bg-white text-black font-bold text-base sm:text-lg tracking-wide uppercase text-center hover:bg-gray-100 transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105"
+            >
+              Перейти до каталогу
+            </Link>
 
-          <div className="flex flex-col sm:flex-row gap-4">
             <button
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="px-8 py-4 rounded-full border border-white/70 text-white font-semibold tracking-wide uppercase hover:bg-white hover:text-black transition-all duration-300"
+              className="px-12 py-5 rounded-full border-2 border-white text-white font-bold text-base sm:text-lg tracking-wide uppercase hover:bg-white hover:text-black transition-all duration-300"
             >
               {BRAND.catalogCTA}
             </button>
-
-            <Link
-              href="/catalog"
-              className="px-8 py-4 rounded-full bg-black/70 text-white font-semibold tracking-wide uppercase text-center hover:bg-black transition-all duration-300"
-            >
-              Дивитися колекцію
-            </Link>
           </div>
         </div>
       </div>
@@ -95,7 +72,7 @@ export default function Hero() {
       </div>
 
       <SidebarMenu
-        isDark={isDark}
+        isDark={false}
         isOpen={isSidebarOpen}
         setIsOpen={setIsSidebarOpen}
       />

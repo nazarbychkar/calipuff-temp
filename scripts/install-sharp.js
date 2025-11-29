@@ -9,16 +9,28 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-// Detect package manager
+// Detect package manager and check availability
 const hasPnpmLock = fs.existsSync(path.join(process.cwd(), 'pnpm-lock.yaml'));
 const hasNpmLock = fs.existsSync(path.join(process.cwd(), 'package-lock.json'));
 const hasYarnLock = fs.existsSync(path.join(process.cwd(), 'yarn.lock'));
 
+// Check if package manager command is available
+function isCommandAvailable(cmd) {
+  try {
+    execSync(`which ${cmd}`, { stdio: 'ignore' });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 let packageManager = 'npm';
-if (hasPnpmLock) {
+if (hasPnpmLock && isCommandAvailable('pnpm')) {
   packageManager = 'pnpm';
-} else if (hasYarnLock) {
+} else if (hasYarnLock && isCommandAvailable('yarn')) {
   packageManager = 'yarn';
+} else {
+  packageManager = 'npm';
 }
 
 console.log(`📦 Detected package manager: ${packageManager}`);

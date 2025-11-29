@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { useAppContext } from "@/lib/GeneralProvider";
+import StructuredData from "@/components/shared/StructuredData";
 import { BRAND } from "@/lib/brand";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay } from "swiper/modules";
@@ -43,15 +43,13 @@ const PLACEHOLDER_REVIEWS = [
 ];
 
 export default function Reviews() {
-  const { isDark } = useAppContext();
 
   return (
     <section
       id="reviews"
-      className={`scroll-mt-5 max-w-[1920px] w-full mx-auto relative ${
-        isDark ? "bg-stone-900" : "bg-gradient-to-br from-[#FFF4E6] via-[#FFFBE6] to-[#F0FDFC]"
-      } px-6 py-12 md:py-20 overflow-hidden -mt-12 md:-mt-16 lg:-mt-20 pt-12 md:pt-16 lg:pt-20 pb-40 md:pb-56 lg:pb-72`}
+      className="scroll-mt-5 max-w-[1920px] w-full mx-auto relative bg-gradient-to-br from-[#FFF4E6] via-[#FFFBE6] to-[#F0FDFC] px-6 py-12 md:py-20 overflow-hidden -mt-12 md:-mt-16 lg:-mt-20 pt-12 md:pt-16 lg:pt-20 pb-40 md:pb-56 lg:pb-72"
     >
+      <StructuredData type="reviews" />
       {/* Content section */}
       <div className="flex flex-col lg:flex-row justify-between lg:items-end gap-8">
         <div className="text-4xl lg:text-7xl font-medium font-['Montserrat'] lg:leading-[74.69px]">
@@ -108,7 +106,7 @@ export default function Reviews() {
         >
           {PLACEHOLDER_REVIEWS.map((review) => (
             <SwiperSlide key={review.id}>
-              <div className="bg-white/80 backdrop-blur rounded-3xl border border-white/50 p-6 lg:p-8 shadow-lg h-full flex flex-col gap-4 transition-all duration-300 hover:shadow-xl hover:bg-white/90 group">
+              <div className="bg-white rounded-2xl border border-gray-200 p-6 lg:p-8 shadow-sm h-full flex flex-col gap-4 transition-all duration-300 hover:shadow-md hover:border-[#FFA500] group">
                 <div className="flex items-center gap-2">
                   {[...Array(review.rating)].map((_, i) => (
                     <span key={i} className="text-[#FFD700] text-xl">★</span>

@@ -18,20 +18,21 @@ export default function AboutUs() {
         <p className="text-[#FFA500] text-sm tracking-[0.4em] uppercase font-semibold">
           {BRAND.tagline}
         </p>
-        <h2 className="text-center text-3xl lg:text-5xl font-semibold font-['Montserrat'] uppercase">
+        <h2 className="text-center text-3xl lg:text-5xl font-semibold font-['Montserrat'] uppercase" itemProp="name">
           Про бренд {BRAND.name}
         </h2>
         <p className="max-w-4xl text-center text-base lg:text-2xl leading-relaxed font-['Poppins']">
-          {BRAND.shortDescription} Ми народилися на українському ринку, щоб перенести
+          {BRAND.shortDescription} Ми народилися на європейському ринку, щоб перенести
           настрій узбережжя Каліфорнії в легальний та безпечний вейп-досвід з акцентом на відповідальне споживання.
         </p>
       </div>
 
       <div className="relative grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-10 max-w-6xl">
         {BRAND.mission.map((missionPoint, index) => (
-          <div
+          <article
             key={missionPoint}
-            className="bg-white/80 backdrop-blur rounded-3xl border border-black/5 overflow-hidden shadow-md"
+            className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md card-hover animate-fade-in transition-shadow duration-300"
+            style={{ animationDelay: `${index * 0.1}s` }}
           >
             <div className="relative w-full h-48 lg:h-56 overflow-hidden">
               <Image
@@ -50,7 +51,7 @@ export default function AboutUs() {
                 {missionPoint}
               </p>
             </div>
-          </div>
+          </article>
         ))}
       </div>
 

@@ -1,12 +1,10 @@
 "use client";
 
-import { useAppContext } from "@/lib/GeneralProvider";
 import Link from "next/link";
 import Image from "next/image";
 import { BRAND } from "@/lib/brand";
 
 export default function SocialMedia() {
-  const { isDark } = useAppContext();
 
   return (
     // h-[977px]
@@ -44,9 +42,7 @@ export default function SocialMedia() {
           <div className="flex justify-start gap-10 lg:justify-between items-center w-full lg:w-115">
             <Link
               href={BRAND.socials.tiktok}
-              className={`w-60 h-12 md:w-80 md:h-16 text-center flex items-center ${
-                isDark ? "bg-stone-100 text-black" : "bg-stone-900 text-white"
-              } justify-center text-base md:text-2xl font-normal font-['Inter'] uppercase leading-none tracking-tight`}
+              className="w-60 h-12 md:w-80 md:h-16 text-center flex items-center bg-stone-900 text-white justify-center text-base md:text-2xl font-normal font-['Inter'] uppercase leading-none tracking-tight"
             >
               МИ В TIKTOK
             </Link>
@@ -54,9 +50,7 @@ export default function SocialMedia() {
               width={39}
               height={39}
               className="w-11 h-11 md:w-13 md:h-13"
-              src={`/images/${
-                isDark ? "dark-theme/tiktok.svg" : "light-theme/tiktok.svg"
-              }`}
+              src="/images/light-theme/tiktok.svg"
               alt={"tiktok icon"}
             />
           </div>
@@ -64,9 +58,7 @@ export default function SocialMedia() {
           <div className="flex justify-start gap-10 lg:justify-between items-center w-full lg:w-115 mt-4 md:mt-0">
             <Link
               href={BRAND.socials.instagram}
-              className={`w-60 h-12 md:w-80 md:h-16 text-center flex items-center ${
-                isDark ? "bg-stone-100 text-black" : "bg-stone-900 text-white"
-              } justify-center text-base md:text-2xl font-normal font-['Inter'] uppercase leading-none tracking-tight`}
+              className="w-60 h-12 md:w-80 md:h-16 text-center flex items-center bg-stone-900 text-white justify-center text-base md:text-2xl font-normal font-['Inter'] uppercase leading-none tracking-tight"
             >
               МИ В ІНСТАГРАМ
             </Link>
@@ -74,11 +66,7 @@ export default function SocialMedia() {
               width={39}
               height={39}
               className="w-8 h-8 md:w-10 md:h-10"
-              src={`/images/${
-                isDark
-                  ? "dark-theme/instagram.svg"
-                  : "light-theme/instagram.svg"
-              }`}
+              src="/images/light-theme/instagram.svg"
               alt={"instagram icon"}
             />
           </div>

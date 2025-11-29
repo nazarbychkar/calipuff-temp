@@ -18,17 +18,15 @@ export default function YouMightLike() {
   if (loading) return null; // or a spinner
 
   return (
-    <section className="max-w-[1920px] w-full mx-auto px-4 md:px-10">
-      <div className="flex flex-col gap-10">
+    <section className="max-w-[1920px] w-full mx-auto px-4 md:px-8 lg:px-12 py-12 md:py-16">
+      <div className="flex flex-col gap-8 md:gap-12">
         {/* Title */}
-        <div
-          className={`text-4xl md:text-7xl font-normal font-['Inter'] leading-tight md:leading-[84.91px] text-center md:text-left`}
-        >
+        <div className="text-3xl md:text-5xl lg:text-6xl font-bold text-gray-900 text-center md:text-left">
           Вам може сподобатися
         </div>
 
         {/* Products list - Mobile Optimized */}
-        <div className="grid grid-cols-2 sm:flex sm:flex-row sm:flex-wrap justify-center sm:justify-around gap-4 mx-auto">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           {products.map((product) => {
             const isVideo = product.first_media?.type === "video";
             
@@ -36,67 +34,67 @@ export default function YouMightLike() {
               <Link
                 key={product.id}
                 href={`/product/${product.id}`}
-                className="w-full sm:w-96 relative mx-auto"
+                className="flex flex-col gap-3 group card-hover"
               >
-                {isVideo && product.first_media ? (
-                  <video
-                    src={`/api/images/${product.first_media.url}`}
-                    className="w-full h-auto sm:h-[613px] object-cover"
-                    loop
-                    muted
-                    playsInline
-                    autoPlay
-                    preload="metadata"
-                  />
-                ) : product.first_media ? (
-                  <Image
-                    src={getProductImageSrc(
-                      product.first_media,
-                      "https://placehold.co/432x613"
-                    )}
-                    alt={product.name}
-                    width={400}
-                    height={600}
-                    className="w-full h-auto sm:h-[613px] object-cover"
-                    sizes="(max-width: 420px) 45vw, (max-width: 640px) 45vw, (max-width: 1024px) 33vw, 400px"
-                    loading="lazy"
-                    quality={75} // Lower quality for recommendations
-                    placeholder="blur"
-                    blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400">
-                    Немає зображення
-                  </div>
-                )}
-                <div className="mt-2 text-sm sm:text-lg lg:text-xl font-normal font-['Inter'] capitalize leading-normal text-center">
-                  {product.name}
+                {/* Image Container */}
+                <div className="relative w-full aspect-[2/3] bg-gray-50 rounded-lg overflow-hidden">
+                  {isVideo && product.first_media ? (
+                    <video
+                      src={`/api/images/${product.first_media.url}`}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      loop
+                      muted
+                      playsInline
+                      autoPlay
+                      preload="metadata"
+                    />
+                  ) : product.first_media ? (
+                    <Image
+                      src={getProductImageSrc(
+                        product.first_media,
+                        "https://placehold.co/432x613"
+                      )}
+                      alt={product.name}
+                      width={400}
+                      height={600}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      sizes="(max-width: 420px) 45vw, (max-width: 640px) 45vw, (max-width: 1024px) 33vw, 400px"
+                      loading="lazy"
+                      quality={75}
+                      placeholder="blur"
+                      blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500">
+                      Немає зображення
+                    </div>
+                  )}
                 </div>
-                <div className="mt-1 w-24 h-4 mx-auto text-lg sm:text-xl font-normal font-['Inter'] leading-none text-center">
-                  {product.price} ₴
+
+                {/* Product Info */}
+                <div className="flex flex-col gap-2">
+                  <h3 className="text-sm sm:text-base font-medium text-gray-900 leading-tight line-clamp-2 text-center">
+                    {product.name}
+                  </h3>
+                  <div className="flex items-center justify-center gap-2">
+                    <span className="text-base sm:text-lg font-bold text-[#FFA500]">
+                      {product.price.toLocaleString()} ₴
+                    </span>
+                  </div>
                 </div>
               </Link>
             );
           })}
         </div>
 
-        {/* More products button container */}
-        <div className="w-full max-w-full sm:max-w-[1824px] h-[300px] sm:h-[679px] relative overflow-hidden mx-auto">
-          <Image
-            src="https://placehold.co/432x613"
-            alt="More products background"
-            fill
-            className="object-cover"
-            priority={false}
-            quality={85}
-          />
+        {/* More products button */}
+        <div className="flex justify-center mt-4">
           <Link
             href="/catalog"
-            className="absolute bg-white inline-flex justify-center items-center gap-2 px-4 py-2 left-1/2 transform -translate-x-1/2 bottom-8 sm:bottom-12 w-max sm:w-80 h-auto sm:h-16 hover:bg-gray-100 transition-colors z-10"
+            className="inline-flex items-center justify-center px-8 py-4 bg-black rounded-lg font-semibold text-base md:text-lg uppercase tracking-wide hover:bg-gray-900 transition-all duration-200 hover:scale-105 hover:shadow-lg"
+            style={{ color: '#ffffff' }}
           >
-            <div className="text-center justify-center text-black text-base sm:text-2xl font-normal font-['Inter'] uppercase leading-none tracking-tight">
-              більше товарів
-            </div>
+            Переглянути всі товари
           </Link>
         </div>
       </div>
