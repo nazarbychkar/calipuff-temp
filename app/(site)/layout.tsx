@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     "cartridge",
     "liquids",
     "wave lab",
-    "вейп Україна",
+    "вейп Європа",
     "легальні картриджі",
     "CBD ліквіди",
     "вейп магазин",

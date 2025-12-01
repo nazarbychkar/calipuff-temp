@@ -869,7 +869,7 @@ export default function FinalCard() {
               </select>
 
               <button
-                className="bg-black text-white p-4 sm:p-5 rounded mt-3 font-semibold"
+                className="bg-neutral-900 text-white p-4 sm:p-5 rounded mt-3 font-semibold hover:bg-neutral-800 transition-colors"
                 type="submit"
                 disabled={loading}
               >

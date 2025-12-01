@@ -43,7 +43,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
         product.category?.name,
         product.subcategory?.name,
         "купити вейп",
-        "вейп Україна",
+        "вейп Європа",
       ].filter(Boolean) as string[],
       openGraph: {
         type: "website",

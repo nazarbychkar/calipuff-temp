@@ -374,16 +374,16 @@ export default function ProductClient({ product: initialProduct }: ProductClient
                 </span>
                 <span className="text-lg text-gray-600 line-through">
                   {product.price} ₴
-                </span>
+                  </span>
                 <span className="text-sm font-semibold text-green-700 bg-green-100 px-2 py-1 rounded">
-                  -{product.discount_percentage}%
-                </span>
+                    -{product.discount_percentage}%
+                  </span>
               </>
-            ) : (
+              ) : (
               <span className="text-2xl md:text-3xl font-bold text-[#FFA500]">
                 {product.price} ₴
               </span>
-            )}
+              )}
           </div>
 
           {/* Flavor Picker */}
@@ -459,8 +459,7 @@ export default function ProductClient({ product: initialProduct }: ProductClient
           {/* Add to Cart Button */}
           <button
             onClick={handleAddToCart}
-            className="w-full text-center rounded-lg bg-black text-white hover:bg-gray-900 py-4 px-6 text-base md:text-lg font-semibold uppercase tracking-wide transition-all duration-200 cursor-pointer hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]"
-            style={{ color: '#ffffff' }}
+            className="w-full text-center rounded-lg bg-[#FFA500] text-white hover:bg-[#ff8c00] py-4 px-6 text-base md:text-lg font-semibold uppercase tracking-wide transition-all duration-200 cursor-pointer hover:scale-[1.03] hover:shadow-xl active:scale-[0.98]"
           >
             Додати до кошика
           </button>

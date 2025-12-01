@@ -45,7 +45,7 @@ export default function WhyChooseUs() {
           Чому обирають {BRAND.name}
         </div>
         <div className="opacity-80 lg:text-xl font-['Poppins'] leading-normal max-w-xl mt-6 lg:mt-0">
-          Каліфорнійська хвиля свободи, контроль якості українського виробництва та сервіс, який говорить мовою бізнесу.
+          Каліфорнійська хвиля свободи. Європейська якість, виробництво та сервіс, що говорить мовою бізнесу.
         </div>
       </div>
 

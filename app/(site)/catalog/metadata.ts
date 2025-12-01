@@ -17,7 +17,7 @@ export function generateMetadata({
     const baseKeywords = [
       "каталог вейпів",
       "купити вейп",
-      "легальні вейпи Україна",
+      "легальні вейпи Європа",
       "CALIPUFF каталог",
       "вейпи без ТГК",
       "CBD вейпи",

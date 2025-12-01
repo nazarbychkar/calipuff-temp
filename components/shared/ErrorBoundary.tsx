@@ -60,7 +60,7 @@ export class ErrorBoundary extends Component<Props, State> {
             </p>
             <button
               onClick={() => window.location.reload()}
-              className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition-colors"
+              className="bg-neutral-900 text-white px-4 py-2 rounded hover:bg-neutral-800 transition-colors"
             >
               Оновити сторінку
             </button>

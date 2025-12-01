@@ -91,8 +91,7 @@ export default function YouMightLike() {
         <div className="flex justify-center mt-4">
           <Link
             href="/catalog"
-            className="inline-flex items-center justify-center px-8 py-4 bg-black rounded-lg font-semibold text-base md:text-lg uppercase tracking-wide hover:bg-gray-900 transition-all duration-200 hover:scale-105 hover:shadow-lg"
-            style={{ color: '#ffffff' }}
+            className="inline-flex items-center justify-center px-8 py-4 rounded-lg font-semibold text-base md:text-lg uppercase tracking-wide bg-[#FFA500] text-white hover:bg-[#ff8c00] transition-all duration-200 hover:scale-105 hover:shadow-xl"
           >
             Переглянути всі товари
           </Link>

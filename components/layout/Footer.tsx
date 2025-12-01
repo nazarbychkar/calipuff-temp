@@ -85,43 +85,6 @@ export default function Footer() {
               }}
             >
               <Image
-                src="/images/location-icon.svg"
-                alt="Location"
-                width={40}
-                height={40}
-                className="w-8 h-8 md:w-10 md:h-10 transition-all duration-300 opacity-60"
-              />
-            </div>
-            <Link
-              href="https://maps.app.goo.gl/jJS3JdddMq6njJvb8?g_st=it"
-              target="_blank"
-              className="font-['Poppins'] w-48 h-8 md:w-72 md:h-11 text-sm md:text-xl flex justify-start my-3 transition-all duration-300"
-              style={{
-                color: "rgba(28, 25, 23, 0.8)",
-              }}
-              onMouseEnter={(e) => {
-                  e.currentTarget.style.color = "rgba(28, 25, 23, 1)";
-                e.currentTarget.style.transform = "translateX(2px)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.color = "rgba(28, 25, 23, 0.8)";
-                e.currentTarget.style.transform = "translateX(0)";
-              }}
-            >
-              {BRAND.contact.showroom}
-            </Link>
-          </div>
-
-          <div className="flex justify-start gap-6 group cursor-pointer">
-            <div
-              className={`w-20 h-20 md:w-26 md:h-26 rounded-full border-2 flex items-center justify-center transition-all duration-300 group-hover:scale-105 ${
-                "border-stone-300/60 group-hover:border-stone-400"
-              }`}
-              style={{
-                background: "rgba(245, 245, 244, 0.5)",
-              }}
-            >
-              <Image
                 src="/images/email-icon.svg"
                 alt="Email"
                 width={40}
@@ -226,21 +189,6 @@ export default function Footer() {
         </div>
 
         <div className="flex flex-col gap-10">
-          <div className="space-y-4">
-            <h3
-              className="font-['Montserrat'] text-lg md:text-2xl font-semibold mb-4"
-              style={{ color: "rgba(28, 25, 23, 0.95)" }}
-            >
-              Графік роботи
-            </h3>
-            <p
-              className="font-['Poppins'] text-sm md:text-lg"
-              style={{ color: "rgba(28, 25, 23, 0.7)" }}
-            >
-              {BRAND.contact.schedule}
-            </p>
-          </div>
-
           <div className="space-y-4">
             <h3
               className="font-['Montserrat'] text-lg md:text-2xl font-semibold mb-4"
@@ -470,39 +418,6 @@ export default function Footer() {
 
         <div className="flex justify-between gap-4 md:gap-6">
           <div className="flex flex-col gap-4">
-            <div className="flex justify-start gap-4">
-              <div
-                className={`w-15 h-15 md:w-26 md:h-26 rounded-full border-2 flex items-center justify-center transition-all duration-300 hover:scale-105 ${
-                  "border-stone-300/60"
-                }`}
-                style={{
-                  background: "rgba(245, 245, 244, 0.5)",
-                }}
-              >
-                <Image
-                  src="/images/location-icon.svg"
-                  alt="Location"
-                  width={16}
-                  height={16}
-                  className="w-3 h-3 md:w-4 md:h-4 opacity-60"
-                />
-              </div>
-              <Link
-                href="https://maps.app.goo.gl/jJS3JdddMq6njJvb8?g_st=it"
-                target="_blank"
-                className="font-['Poppins'] w-48 h-8 md:w-56 md:h-11 text-sm md:text-xl flex justify-start my-3 transition-colors duration-300"
-                style={{ color: "rgba(28, 25, 23, 0.8)" }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.color = "rgba(28, 25, 23, 1)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.color = "rgba(28, 25, 23, 0.8)";
-                }}
-              >
-                {BRAND.contact.showroom}
-              </Link>
-            </div>
-
             <div className="flex justify-start gap-4 md:gap-6">
               <div
                 className={`w-15 h-15 md:w-26 md:h-26 rounded-full border-2 flex items-center justify-center transition-all duration-300 hover:scale-105 ${
@@ -604,52 +519,13 @@ export default function Footer() {
         </div>
       </div>
 
-      <div
-        className="flex flex-col sm:flex-row justify-between items-center sm:items-start mt-16 gap-6 border-t pt-8 relative z-10"
-        style={{
-          borderColor: "rgba(255, 165, 0, 0.3)",
-        }}
-      >
+      <div className="mt-12 relative z-10">
         <span
-          className="font-['Poppins'] text-sm md:text-lg text-center sm:text-left"
-          style={{ color: "rgba(28, 25, 23, 0.6)" }}
+          className="block text-center font-['Poppins'] text-xs md:text-sm tracking-wide"
+          style={{ color: "rgba(28, 25, 23, 0.55)" }}
         >
-          {BRAND.name} © 2025 All rights reserved
+          {BRAND.name} © 2025 · All rights reserved
         </span>
-        <div className="flex gap-4 md:gap-6 items-center">
-          <Link
-            href="/privacy-policy"
-            className="font-['Poppins'] text-sm md:text-lg transition-all duration-300 text-center"
-            style={{ color: "rgba(28, 25, 23, 0.6)" }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = "rgba(28, 25, 23, 0.9)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = "rgba(28, 25, 23, 0.6)";
-            }}
-          >
-            Політика конфіденційності
-          </Link>
-          <span
-            className="text-sm md:text-lg hidden sm:inline"
-            style={{ color: "rgba(28, 25, 23, 0.3)" }}
-          >
-            |
-          </span>
-          <Link
-            href="/terms-of-service"
-            className="font-['Poppins'] text-sm md:text-lg transition-all duration-300 text-center"
-            style={{ color: "rgba(28, 25, 23, 0.6)" }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = "rgba(28, 25, 23, 0.9)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = "rgba(28, 25, 23, 0.6)";
-            }}
-          >
-            Договір оферти
-          </Link>
-        </div>
       </div>
 
       {/* Centered developer credit */}

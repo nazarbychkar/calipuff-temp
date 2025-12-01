@@ -191,7 +191,7 @@ export default function Product() {
                       />
                       <div
                         className={`mt-1 h-[2px] rounded-full ${
-                          isActive ? "w-6 bg-black" : "w-0 bg-transparent"
+                          isActive ? "w-6 bg-neutral-900" : "w-0 bg-transparent"
                         }`}
                       />
                     </div>
@@ -209,12 +209,11 @@ export default function Product() {
           {/* Add to Cart Button */}
           <div
             onClick={outOfStock ? undefined : handleAddToCart}
-            className={`w-full text-center bg-black hover:bg-gray-800 p-3 text-lg md:text-xl font-medium font-['Inter'] uppercase tracking-tight transition-all duration-200 ${
+            className={`w-full text-center bg-neutral-900 hover:bg-neutral-800 p-3 text-lg md:text-xl font-medium font-['Inter'] uppercase tracking-tight transition-all duration-200 text-white ${
               outOfStock
                 ? "opacity-50 cursor-not-allowed"
                 : "cursor-pointer hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]"
             }`}
-            style={{ color: '#ffffff' }}
           >
             в кошик
           </div>

@@ -48,14 +48,14 @@ export default function NotFound() {
         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
           <Link
             href="/"
-            className="group px-10 py-5 bg-black dark:bg-white text-white dark:text-black rounded-full font-semibold text-lg hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl relative overflow-hidden"
+            className="group px-10 py-5 bg-neutral-900 text-white rounded-full font-semibold text-lg hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl relative overflow-hidden"
           >
             <span className="relative z-10">На головну</span>
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           </Link>
           <Link
             href="/catalog"
-            className="group px-10 py-5 border-2 border-black dark:border-white rounded-full font-semibold text-lg hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all duration-300 relative overflow-hidden"
+            className="group px-10 py-5 border-2 border-neutral-900 rounded-full font-semibold text-lg hover:bg-neutral-900 hover:text-white transition-all duration-300 relative overflow-hidden"
           >
             <span className="relative z-10">Каталог товарів</span>
             <div className="absolute inset-0 bg-black dark:bg-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
