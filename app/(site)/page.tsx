@@ -2,6 +2,7 @@ import dynamic from "next/dynamic";
 import Hero from "@/components/main-page/Hero";
 import TopSaleServer from "@/components/main-page/TopSaleServer";
 import StructuredData from "@/components/shared/StructuredData";
+import DisclaimerPopup from "@/components/shared/DisclaimerPopup";
 import { Suspense } from "react";
 import { Metadata } from "next";
 import { BRAND } from "@/lib/brand";
@@ -68,6 +69,7 @@ export default function Home() {
       <LimitedEdition />
       <FAQ />
       <Reviews />
+      <DisclaimerPopup />
     </>
   );
 }

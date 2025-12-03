@@ -120,21 +120,60 @@ export default function SidebarBasket({
             ))}
 
             {items.length > 0 && (
-              <Link
-                href="/final"
-                className={`text-center py-3 rounded-md mt-4 ${
-                  isDark ? "bg-white text-black" : "bg-black text-white"
-                }`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setIsOpen(false);
-                  setTimeout(() => {
-                    window.location.href = "/final";
-                  }, 100);
-                }}
-              >
-                Оформити замовлення
-              </Link>
+              <>
+                <div className={`flex items-center gap-2 text-sm ${
+                  isDark ? "text-gray-300" : "text-gray-700"
+                }`}>
+                  <svg 
+                    className="w-4 h-4 flex-shrink-0" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      strokeWidth={2} 
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" 
+                    />
+                  </svg>
+                  <p className="font-medium">
+                    Доставка в той самий день, якщо замовлення до 16-00
+                  </p>
+                </div>
+                <Link
+                  href="/catalog"
+                  className={`text-center py-3 rounded-md mt-4 border ${
+                    isDark 
+                      ? "bg-stone-800 text-white border-stone-600 hover:bg-stone-700" 
+                      : "bg-white text-black border-black hover:bg-stone-50"
+                  }`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsOpen(false);
+                    setTimeout(() => {
+                      window.location.href = "/catalog";
+                    }, 100);
+                  }}
+                >
+                  Продовжити покупки
+                </Link>
+                <Link
+                  href="/final"
+                  className={`text-center py-3 rounded-md mt-4 ${
+                    isDark ? "bg-white text-black" : "bg-black text-white"
+                  }`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsOpen(false);
+                    setTimeout(() => {
+                      window.location.href = "/final";
+                    }, 100);
+                  }}
+                >
+                  Оформити замовлення
+                </Link>
+              </>
             )}
           </div>
         </nav>

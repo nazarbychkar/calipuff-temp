@@ -469,7 +469,7 @@ export default function EditProductPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Кольори</Label>
+                  <Label>Cмаки</Label>
                   <div className="flex gap-2 flex-wrap">
                     {colors.map((c, idx) => (
                       <span
@@ -527,7 +527,7 @@ export default function EditProductPage() {
                       type="text"
                       value={customColorLabel}
                       onChange={(e) => setCustomColorLabel(e.target.value)}
-                      placeholder="Назва кольору"
+                      placeholder="Назва смаку"
                     />
                     <button
                       type="button"
