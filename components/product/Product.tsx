@@ -72,10 +72,10 @@ export default function Product() {
       <div className="flex flex-col lg:flex-row justify-around p-4 md:p-10 gap-10">
         {/* Media Section */}
         <div className="relative flex justify-center w-full lg:w-1/2">
-          <div className="w-full max-w-[800px] max-h-[85vh] flex items-center justify-center overflow-hidden">
+          <div className="w-full max-w-[600px] aspect-[2/3] flex items-center justify-center overflow-hidden bg-gray-50 rounded-lg">
             {media[activeImageIndex]?.type === "video" ? (
               <video
-                className="w-full h-auto max-h-[85vh] object-contain"
+                className="w-full h-full object-cover"
                 src={`/api/images/${media[activeImageIndex]?.url}`}
                 autoPlay
                 loop
@@ -84,12 +84,11 @@ export default function Product() {
               />
             ) : (
               <Image
-                className="object-contain"
+                className="object-cover w-full h-full"
                 src={`/api/images/${media[activeImageIndex]?.url}`}
                 alt={product.name}
-                width={800}
-                height={1160}
-                style={{ maxHeight: "85vh", width: "auto", height: "auto" }}
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
               />
             )}
           </div>
@@ -98,7 +97,7 @@ export default function Product() {
             <>
               {/* Prev */}
               <button
-                className="absolute top-[40%] -translate-y-1/2 left-2 md:left-4 rounded-full cursor-pointer z-10 opacity-60 hover:opacity-100 transition"
+                className="absolute top-1/2 -translate-y-1/2 left-2 md:left-4 rounded-full cursor-pointer z-10 opacity-60 hover:opacity-100 transition"
                 onClick={() =>
                   setActiveImageIndex((prev) =>
                     prev === 0 ? media.length - 1 : prev - 1
@@ -116,7 +115,7 @@ export default function Product() {
 
               {/* Next */}
               <button
-                className="absolute top-[40%] -translate-y-1/2 right-2 md:right-4 rounded-full cursor-pointer z-10 opacity-60 hover:opacity-100 transition"
+                className="absolute top-1/2 -translate-y-1/2 right-2 md:right-4 rounded-full cursor-pointer z-10 opacity-60 hover:opacity-100 transition"
                 onClick={() =>
                   setActiveImageIndex((prev) =>
                     prev === media.length - 1 ? 0 : prev + 1
@@ -228,37 +227,6 @@ export default function Product() {
             Написати менеджеру
           </a>
 
-          {/* CBD/THC Content Information */}
-          {(product.cbdContentMg || product.thcContentMg || product.potency) && (
-            <div className="flex flex-col gap-3 p-4 bg-gray-50 rounded-lg border border-gray-300">
-              <div className="text-base md:text-lg font-semibold text-gray-900 font-['Montserrat'] uppercase tracking-tight">
-                Склад
-              </div>
-              <div className="flex flex-col gap-2 text-sm md:text-base font-['Poppins']">
-                {product.cbdContentMg !== undefined && product.cbdContentMg > 0 && (
-                  <div className="flex items-center gap-2">
-                    <span className="font-semibold text-gray-800">CBD:</span>
-                    <span className="text-gray-900">{product.cbdContentMg} мг</span>
-                  </div>
-                )}
-                {product.thcContentMg !== null && product.thcContentMg !== undefined && (
-                  <div className="flex items-center gap-2">
-                    <span className="font-semibold text-gray-800">ТГК:</span>
-                    <span className="text-gray-900">{product.thcContentMg} мг</span>
-                  </div>
-                )}
-                {product.potency && (
-                  <div className="flex items-center gap-2">
-                    <span className="font-semibold text-gray-800">Потенційність:</span>
-                    <span className="text-gray-900">{product.potency}</span>
-                  </div>
-                )}
-                <div className="mt-2 text-xs md:text-sm text-gray-700 italic">
-                  * Всі продукти мають COA сертифікацію
-                </div>
-              </div>
-            </div>
-          )}
 
           {/* Toast */}
           {showToast && (

@@ -265,15 +265,6 @@ export default function Header() {
 
             {/* Right Icons */}
             <div className="flex items-center gap-6">
-              <Link href="/" className="p-2 hover:bg-black/10 rounded-lg transition-colors">
-                <Image
-                  className="cursor-pointer"
-                  height="45"
-                  width="45"
-                  alt="home icon"
-                  src="/images/light-theme/home.svg"
-                />
-              </Link>
               <button onClick={() => setIsSearchOpen(true)} className="p-2 hover:bg-black/10 rounded-lg transition-colors">
                 <Image
                   className="cursor-pointer"
@@ -328,14 +319,6 @@ export default function Header() {
           </Link>
 
           <div className="flex gap-4">
-            <Link href="/" className="p-2">
-              <Image
-                height="40"
-                width="40"
-                alt="home icon"
-                src="/images/light-theme/home.svg"
-              />
-            </Link>
             <button onClick={() => setIsSearchOpen(true)} className="p-2">
               <Image
                 height="40"

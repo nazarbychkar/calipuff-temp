@@ -23,7 +23,7 @@ export default function AboutUs() {
         </h2>
         <p className="max-w-4xl text-center text-base lg:text-2xl leading-relaxed font-['Poppins']">
           {BRAND.shortDescription} Ми народилися на європейському ринку, щоб перенести
-          настрій узбережжя Каліфорнії в легальний та безпечний вейп-досвід з акцентом на відповідальне споживання.
+          настрій узбережжя Каліфорнії в унікальний аромадосвід з акцентом на якість та стиль.
         </p>
       </div>
 

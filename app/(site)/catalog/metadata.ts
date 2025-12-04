@@ -13,14 +13,14 @@ export function generateMetadata({
     const subcategory = params.subcategory;
 
     let title = `Каталог товарів | ${BRAND.name}`;
-    let description = `Каталог легальних вейпів, ліквідів та картриджів від ${BRAND.name}. ${BRAND.shortDescription}`;
+    let description = `Каталог ароматичних девайсів та lifestyle‑продуктів від ${BRAND.name}. ${BRAND.shortDescription}`;
     const baseKeywords = [
-      "каталог вейпів",
-      "купити вейп",
-      "легальні вейпи Європа",
+      "каталог аромадевайсів",
+      "купити аромадевайс",
+      "ароматичні девайси Європа",
       "CALIPUFF каталог",
-      "вейпи без ТГК",
-      "CBD вейпи",
+      "аромадевайси",
+      "lifestyle продукти",
     ];
 
     const additionalKeywords: string[] = [];

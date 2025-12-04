@@ -519,7 +519,12 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="mt-12 relative z-10">
+      <div className="mt-12 relative z-10 flex flex-col items-center gap-4">
+        <div className="px-4 py-2 bg-gray-100 rounded-lg border border-gray-300">
+          <span className="font-['Poppins'] text-sm md:text-base font-semibold text-gray-800">
+            Продукція доступна лише для повнолітніх користувачів 18+
+          </span>
+        </div>
         <span
           className="block text-center font-['Poppins'] text-xs md:text-sm tracking-wide"
           style={{ color: "rgba(28, 25, 23, 0.55)" }}

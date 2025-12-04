@@ -40,11 +40,26 @@ html {
 
 body {
   background-color: var(--background-color-light);
-  color: #111827;
+  color: var(--text-color-light);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+}
+
+/* Force dark text for all content */
+body,
+body * {
+  color: #111827 !important;
+}
+
+/* Allow specific elements to override */
+button,
+a,
+input,
+textarea,
+select {
+  color: inherit;
 }
 
 /* Ensure all text elements use Inter by default */

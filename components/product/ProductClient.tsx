@@ -262,7 +262,7 @@ export default function ProductClient({ product: initialProduct }: ProductClient
             allowTouchMove={!isLoading}
             centeredSlides={true}
             onSlideChange={(s) => setActiveImageIndex(s.activeIndex)}
-            className="product-swiper w-full max-w-[800px]"
+            className="product-swiper w-full max-w-[600px]"
             key={product.id}
             touchRatio={1}
             touchAngle={45}
@@ -279,7 +279,7 @@ export default function ProductClient({ product: initialProduct }: ProductClient
             {media.map((item, i) => (
               <SwiperSlide key={i} style={{ touchAction: 'pan-y pinch-zoom' }}>
                 <div 
-                  className="flex justify-center items-center max-h-[85vh] overflow-hidden"
+                  className="flex justify-center items-center w-full aspect-[2/3] overflow-hidden bg-gray-50 rounded-lg"
                   style={{ 
                     WebkitUserSelect: 'none',
                     userSelect: 'none',
@@ -288,7 +288,7 @@ export default function ProductClient({ product: initialProduct }: ProductClient
                 >
                   {item.type === "video" ? (
                     <video
-                      className="object-contain w-full max-h-[85vh]"
+                      className="object-cover w-full h-full"
                       src={`/api/images/${item.url}`}
                       autoPlay
                       loop
@@ -304,13 +304,12 @@ export default function ProductClient({ product: initialProduct }: ProductClient
                     <Image
                       src={`/api/images/${item.url}`}
                       alt={`${product.name} - зображення ${i + 1}`}
-                      width={800}
-                      height={1160}
+                      fill
                       priority={i === activeImageIndex}
                       quality={i === activeImageIndex ? 90 : 80}
-                      className="object-contain w-auto h-auto"
+                      className="object-cover"
+                      sizes="(max-width: 1024px) 100vw, 50vw"
                       style={{ 
-                        maxHeight: "85vh",
                         WebkitUserSelect: 'none',
                         userSelect: 'none',
                         pointerEvents: 'auto'
@@ -328,7 +327,7 @@ export default function ProductClient({ product: initialProduct }: ProductClient
               <button
                 onClick={handlePrev}
                 aria-label="Previous image"
-                className="absolute left-2 top-[42.5vh] -translate-y-1/2 z-10 hidden lg:flex items-center justify-center w-8 h-8 border-2 border-gray-600 rounded-full bg-white backdrop-blur-sm hover:bg-gray-50 transition-all shadow-md"
+                className="absolute left-2 top-1/2 -translate-y-1/2 z-10 hidden lg:flex items-center justify-center w-8 h-8 border-2 border-gray-600 rounded-full bg-white backdrop-blur-sm hover:bg-gray-50 transition-all shadow-md"
               >
                 <svg 
                   className="w-4 h-4 text-gray-900" 
@@ -343,7 +342,7 @@ export default function ProductClient({ product: initialProduct }: ProductClient
               <button
                 onClick={handleNext}
                 aria-label="Next image"
-                className="absolute right-2 top-[42.5vh] -translate-y-1/2 z-10 hidden lg:flex items-center justify-center w-8 h-8 border-2 border-gray-600 rounded-full bg-white backdrop-blur-sm hover:bg-gray-50 transition-all shadow-md"
+                className="absolute right-2 top-1/2 -translate-y-1/2 z-10 hidden lg:flex items-center justify-center w-8 h-8 border-2 border-gray-600 rounded-full bg-white backdrop-blur-sm hover:bg-gray-50 transition-all shadow-md"
               >
                 <svg 
                   className="w-4 h-4 text-gray-900" 
@@ -501,36 +500,6 @@ export default function ProductClient({ product: initialProduct }: ProductClient
             </div>
           )}
 
-          {/* CBD Parameters Section */}
-          {(product.cbdContentMg !== undefined && product.cbdContentMg > 0) || 
-           (product.thcContentMg !== null && product.thcContentMg !== undefined) || 
-           product.potency ? (
-            <div className="w-full mt-6">
-              <div className="mb-4 text-lg md:text-xl font-semibold text-gray-900 uppercase tracking-tight">
-                Параметри
-              </div>
-              <div className="space-y-3 pt-4 border-t border-gray-400">
-                {product.cbdContentMg !== undefined && product.cbdContentMg > 0 && (
-                  <div className="flex items-center justify-between text-sm md:text-base">
-                    <span className="font-medium text-gray-800">CBD вміст:</span>
-                    <span className="font-semibold text-gray-900">{product.cbdContentMg} мг</span>
-                  </div>
-                )}
-                {product.thcContentMg !== null && product.thcContentMg !== undefined && (
-                  <div className="flex items-center justify-between text-sm md:text-base">
-                    <span className="font-medium text-gray-800">THC вміст:</span>
-                    <span className="font-semibold text-gray-900">{product.thcContentMg} мг</span>
-                  </div>
-                )}
-                {product.potency && (
-                  <div className="flex items-center justify-between text-sm md:text-base">
-                    <span className="font-medium text-gray-800">Потенція:</span>
-                    <span className="font-semibold text-gray-900">{product.potency}</span>
-                  </div>
-                )}
-              </div>
-            </div>
-          ) : null}
         </div>
       </div>
     </section>

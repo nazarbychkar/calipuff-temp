@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     const productImage = product.media[0]?.url || product.imageUrl || `${baseUrl}/images/hero-bg.png`;
     const fullImageUrl = productImage.startsWith('http') ? productImage : `${baseUrl}${productImage}`;
     
-    const title = `${product.name} | ${BRAND.name} — Легальні вейпи`;
+    const title = `${product.name} | ${BRAND.name} — Ароматичні девайси`;
     const description = product.description || `${product.name} від ${BRAND.name}. ${BRAND.shortDescription}`;
     const price = Number(product.price);
     const oldPrice = product.old_price ? Number(product.old_price) : null;
@@ -38,12 +38,12 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       keywords: [
         product.name,
         "CALIPUFF",
-        "легальні вейпи",
-        "вейпи без ТГК",
+        "ароматичні девайси",
+        "аромадевайси",
         product.category?.name,
         product.subcategory?.name,
-        "купити вейп",
-        "вейп Європа",
+        "купити аромадевайс",
+        "lifestyle продукти",
       ].filter(Boolean) as string[],
       openGraph: {
         type: "website",

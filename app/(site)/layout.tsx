@@ -12,6 +12,7 @@ import { ErrorBoundary } from "@/components/shared/ErrorBoundary";
 import { WebVitals } from "@/components/shared/WebVitals";
 import MainContent from "@/components/shared/MainContent";
 import StructuredData from "@/components/shared/StructuredData";
+import AgeVerificationPopup from "@/components/shared/AgeVerificationPopup";
 import { BRAND } from "@/lib/brand";
 
 const inter = Inter({
@@ -28,36 +29,34 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://calipuff.ua';
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: `${BRAND.name} — Каліфорнійська затяжка 🌴 | Легальні вейпи без ТГК`,
+    default: `${BRAND.name} — Каліфорнійська хвиля свободи 🌴 | Ароматичні девайси 18+`,
     template: `%s | ${BRAND.name}`,
   },
   description: BRAND.shortDescription,
   keywords: [
     "CALIPUFF",
-    "легальні вейпи",
-    "вейпи без ТГК",
-    "CBD вейпи",
-    "COA сертифікація",
+    "ароматичні девайси",
+    "аромадевайси",
+    "lifestyle продукти",
     "європейський бренд",
     "каліфорнійський стиль",
-    "cartridge",
-    "liquids",
+    "змінні модулі",
+    "аромаконцентрати",
     "wave lab",
-    "вейп Європа",
-    "легальні картриджі",
-    "CBD ліквіди",
-    "вейп магазин",
-    "купити вейп",
-    "вейп онлайн",
-    "каліфорнійські вейпи",
-    "безпечні вейпи",
-    "якісні вейпи",
-    "вейп картриджі",
-    "вейп рідини",
-    "CBD картриджі",
-    "легальні вейп продукти",
-    "вейп аксесуари",
-    "каліфорнійська затяжка",
+    "аромадевайси Європа",
+    "ароматичні модулі",
+    "ароматичні концентрати",
+    "магазин аромадевайсів",
+    "купити аромадевайс",
+    "аромадевайси онлайн",
+    "каліфорнійські аромадевайси",
+    "якісні аромадевайси",
+    "ароматичні модулі",
+    "ароматичні концентрати",
+    "ароматичні продукти",
+    "ароматичні аксесуари",
+    "каліфорнійська хвиля свободи",
+    "18+",
   ],
   authors: [{ name: BRAND.name }],
   creator: BRAND.name,
@@ -77,20 +76,20 @@ export const metadata: Metadata = {
     locale: "uk_UA",
     url: baseUrl,
     siteName: BRAND.name,
-    title: `${BRAND.name} — Каліфорнійська затяжка 🌴 | Легальні вейпи без ТГК`,
+    title: `${BRAND.name} — Каліфорнійська хвиля свободи 🌴 | Ароматичні девайси 18+`,
     description: BRAND.shortDescription,
     images: [
       {
         url: `${baseUrl}/images/hero-bg.png`,
         width: 1200,
         height: 630,
-        alt: `${BRAND.name} — Каліфорнійська затяжка`,
+        alt: `${BRAND.name} — Каліфорнійська хвиля свободи`,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${BRAND.name} — Каліфорнійська затяжка 🌴`,
+    title: `${BRAND.name} — Каліфорнійська хвиля свободи 🌴`,
     description: BRAND.shortDescription,
     images: [`${baseUrl}/images/hero-bg.png`],
     creator: "@calipuff_ua",
@@ -293,6 +292,7 @@ export default function RootLayout({
         <ErrorBoundary>
           <AppProvider>
             <BasketProvider>
+              <AgeVerificationPopup />
               <Header />
               <MainContent>{children}</MainContent>
               <Footer />

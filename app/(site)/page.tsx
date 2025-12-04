@@ -2,7 +2,6 @@ import dynamic from "next/dynamic";
 import Hero from "@/components/main-page/Hero";
 import TopSaleServer from "@/components/main-page/TopSaleServer";
 import StructuredData from "@/components/shared/StructuredData";
-import DisclaimerPopup from "@/components/shared/DisclaimerPopup";
 import { Suspense } from "react";
 import { Metadata } from "next";
 import { BRAND } from "@/lib/brand";
@@ -10,10 +9,10 @@ import { BRAND } from "@/lib/brand";
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://calipuff.ua';
 
 export const metadata: Metadata = {
-  title: `${BRAND.name} — Каліфорнійська затяжка 🌴 | Легальні вейпи без ТГК`,
+  title: `${BRAND.name} — Каліфорнійська хвиля свободи 🌴 | Ароматичні девайси 18+`,
   description: BRAND.shortDescription,
   openGraph: {
-    title: `${BRAND.name} — Каліфорнійська затяжка 🌴`,
+    title: `${BRAND.name} — Каліфорнійська хвиля свободи 🌴`,
     description: BRAND.shortDescription,
     url: baseUrl,
     siteName: BRAND.name,
@@ -22,7 +21,7 @@ export const metadata: Metadata = {
         url: `${baseUrl}/images/hero-bg.png`,
         width: 1200,
         height: 630,
-        alt: `${BRAND.name} — Каліфорнійська затяжка`,
+        alt: `${BRAND.name} — Каліфорнійська хвиля свободи`,
       },
     ],
     locale: "uk_UA",
@@ -69,7 +68,6 @@ export default function Home() {
       <LimitedEdition />
       <FAQ />
       <Reviews />
-      <DisclaimerPopup />
     </>
   );
 }
