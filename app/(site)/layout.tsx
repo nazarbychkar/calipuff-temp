@@ -24,7 +24,7 @@ const inter = Inter({
   adjustFontFallback: true,
 });
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://calipuff.ua';
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://calishops.com';
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   },
   description: BRAND.shortDescription,
   keywords: [
-    "CALIPUFF",
+    "cali aroma devices",
     "ароматичні девайси",
     "аромадевайси",
     "lifestyle продукти",
@@ -67,9 +67,9 @@ export const metadata: Metadata = {
     telephone: false,
   },
   icons: {
-    icon: "/images/light-theme/calipuff-logo-header-light.svg",
-    shortcut: "/images/light-theme/calipuff-logo-header-light.svg",
-    apple: "/images/light-theme/calipuff-logo-header-light.svg",
+    icon: "/images/light-theme/cali-logo-header-light.svg",
+    shortcut: "/images/light-theme/cali-logo-header-light.svg",
+    apple: "/images/light-theme/cali-logo-header-light.svg",
   },
   openGraph: {
     type: "website",
@@ -92,7 +92,7 @@ export const metadata: Metadata = {
     title: `${BRAND.name} — Каліфорнійська хвиля свободи 🌴`,
     description: BRAND.shortDescription,
     images: [`${baseUrl}/images/hero-bg.png`],
-    creator: "@calipuff_ua",
+    creator: "@calishops_com",
   },
   alternates: {
     canonical: baseUrl,
@@ -156,8 +156,8 @@ export default function RootLayout({
         <meta property="og:site_name" content={BRAND.name} />
         
         {/* Additional Twitter Tags */}
-        <meta name="twitter:site" content="@calipuff_ua" />
-        <meta name="twitter:domain" content="calipuff.ua" />
+          <meta name="twitter:site" content="@calishops_com" />
+        <meta name="twitter:domain" content="calishops.com" />
         
         {/* Schema.org additional markup */}
         <link rel="alternate" type="application/rss+xml" title={`${BRAND.name} RSS Feed`} href={`${baseUrl}/feed.xml`} />
@@ -166,16 +166,16 @@ export default function RootLayout({
         <link
           rel="icon"
           type="image/svg+xml"
-          href="/images/light-theme/calipuff-logo-header-light.svg"
+          href="/images/light-theme/cali-logo-header-light.svg"
         />
         <link
           rel="shortcut icon"
           type="image/svg+xml"
-          href="/images/light-theme/calipuff-logo-header-light.svg"
+          href="/images/light-theme/cali-logo-header-light.svg"
         />
         <link
           rel="apple-touch-icon"
-          href="/images/light-theme/calipuff-logo-header-light.svg"
+          href="/images/light-theme/cali-logo-header-light.svg"
         />
         <link rel="manifest" href="/site.webmanifest" />
         <meta name="theme-color" content={BRAND.palette.sunset} />
@@ -184,7 +184,7 @@ export default function RootLayout({
         {/* Preload critical resources */}
         <link
           rel="preload"
-          href="/images/light-theme/calipuff-logo-header-light.svg"
+          href="/images/light-theme/cali-logo-header-light.svg"
           as="image"
         />
         {/* Conditional preload: image for mobile, video for desktop */}
@@ -250,7 +250,7 @@ export default function RootLayout({
         {/* Apple touch icon */}
         <link
           rel="apple-touch-icon"
-          href="/images/light-theme/calipuff-logo-header-light.svg"
+          href="/images/light-theme/cali-logo-header-light.svg"
         />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />

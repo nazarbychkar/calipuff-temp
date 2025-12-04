@@ -4,7 +4,7 @@ import { Metadata } from "next";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: "Категорії | CALIPUFF Admin",
+  title: "Категорії | cali aroma devices Admin",
   description: "Управління категоріями товарів",
 };
 

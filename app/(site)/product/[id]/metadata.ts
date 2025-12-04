@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { prisma } from "@/lib/sql";
 import { BRAND } from "@/lib/brand";
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://calipuff.ua';
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://calishops.com';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       description,
       keywords: [
         product.name,
-        "CALIPUFF",
+        "CALI ",
         "ароматичні девайси",
         "аромадевайси",
         product.category?.name,

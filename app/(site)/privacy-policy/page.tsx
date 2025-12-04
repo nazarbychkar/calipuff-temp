@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Політика конфіденційності | CALIPUFF",
-  description: "Політика конфіденційності персональних даних CALIPUFF",
+  title: "Політика конфіденційності | cali aroma devices",
+  description: "Політика конфіденційності персональних даних cali aroma devices",
 };
 
 export default function PrivacyPolicyPage() {
@@ -30,7 +30,7 @@ export default function PrivacyPolicyPage() {
             <p className="text-lg opacity-80">
               Ця Політика конфіденційності персональних даних (далі – Політика
               конфіденційності) діє щодо всієї інформації, яку інтернет-магазин
-              «CALIPUFF» може отримати про Користувача під час використання сайту
+              "cali aroma devices" може отримати про Користувача під час використання сайту
               Інтернет-магазину, програм та продуктів Інтернет-магазину.
             </p>
           </section>

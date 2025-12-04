@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { BRAND } from "@/lib/brand";
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://calipuff.ua';
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://calishops.com';
 
 export function generateMetadata({
   searchParams,
@@ -18,7 +18,7 @@ export function generateMetadata({
       "каталог аромадевайсів",
       "купити аромадевайс",
       "ароматичні девайси Європа",
-      "CALIPUFF каталог",
+      "CALISHOPs каталог",
       "аромадевайси",
       "lifestyle продукти",
     ];

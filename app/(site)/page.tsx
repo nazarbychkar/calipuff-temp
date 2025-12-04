@@ -6,7 +6,7 @@ import { Suspense } from "react";
 import { Metadata } from "next";
 import { BRAND } from "@/lib/brand";
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://calipuff.ua';
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://calishops.com';
 
 export const metadata: Metadata = {
   title: `${BRAND.name} — Каліфорнійська хвиля свободи 🌴 | Ароматичні девайси 18+`,

@@ -98,7 +98,7 @@ async function main() {
   // Товар 1 - Топ продаж
   const product1 = await prisma.product.create({
     data: {
-      name: "CALIPUFF Wave Disposable",
+      name: "cali aroma devices Wave Disposable",
       description:
         "Одноразовий вейп з каліфорнійським настроєм. 2000 затяжок, 5% CBD, без ТГК. Доступні смаки: тропічні фрукти, м'ята, полуниця.",
       price: 899.0,
@@ -117,7 +117,7 @@ async function main() {
       media: {
         create: [
           {
-            url: "https://placehold.co/800x600/FFA500/FFFFFF?text=CALIPUFF+Wave",
+            url: "https://placehold.co/800x600/FFA500/FFFFFF?text=cali+aroma+devices+Wave",
             type: "image",
           },
           {
@@ -139,7 +139,7 @@ async function main() {
   // Товар 2 - Лімітована серія
   const product2 = await prisma.product.create({
     data: {
-      name: "CALIPUFF Limited Edition Beach",
+      name: "cali aroma devices Limited Edition Beach",
       description:
         "Лімітована серія з натхненням від пляжів Каліфорнії. Ексклюзивний дизайн, 3000 затяжок, 7% CBD. Тільки 100 штук в Україні.",
       price: 1299.0,
@@ -175,7 +175,7 @@ async function main() {
   // Товар 3 - Ліквід
   const product3 = await prisma.product.create({
     data: {
-      name: "CALIPUFF CBD Liquid Tropical",
+      name: "cali aroma devices CBD Liquid Tropical",
       description:
         "Преміум CBD ліквід з тропічними смаками. 30ml, 500mg CBD. Без нікотину, без ТГК. Ідеально для релаксації.",
       price: 599.0,
@@ -212,7 +212,7 @@ async function main() {
   // Товар 4 - Картридж
   const product4 = await prisma.product.create({
     data: {
-      name: "CALIPUFF Cartridge 1ml Mint",
+      name: "cali aroma devices Cartridge 1ml Mint",
       description:
         "Картридж 1ml з м'ятним смаком. 300mg CBD, сумісний з більшістю вейпів. COA сертифікат включено.",
       price: 399.0,
@@ -245,7 +245,7 @@ async function main() {
   // Товар 5 - Більше товарів
   const product5 = await prisma.product.create({
     data: {
-      name: "CALIPUFF Wave Rechargeable",
+      name: "cali aroma devices Wave Rechargeable",
       description:
         "Багаторазовий вейп з можливістю перезарядки. 1500mAh батарея, USB-C зарядка. Елегантний дизайн у каліфорнійському стилі.",
       price: 1599.0,
@@ -280,7 +280,7 @@ async function main() {
 
   const product6 = await prisma.product.create({
     data: {
-      name: "CALIPUFF CBD Liquid Strawberry",
+      name: "cali aroma devices CBD Liquid Strawberry",
       description:
         "Солодкий полуничний смак з високою концентрацією CBD. 30ml, 750mg CBD. Без штучних ароматизаторів.",
       price: 699.0,
@@ -312,7 +312,7 @@ async function main() {
 
   const product7 = await prisma.product.create({
     data: {
-      name: "CALIPUFF Cartridge 2ml Blueberry",
+      name: "cali aroma devices Cartridge 2ml Blueberry",
       description:
         "Великий картридж 2ml з смаком чорниці. 600mg CBD, тривалий термін використання. COA сертифікат.",
       price: 699.0,
@@ -344,9 +344,9 @@ async function main() {
 
   const product8 = await prisma.product.create({
     data: {
-      name: "CALIPUFF Charging Cable",
+      name: "cali aroma devices Charging Cable",
       description:
-        "Оригінальний USB-C кабель для зарядки вейпів CALIPUFF. Швидка зарядка, надійна конструкція. Довжина 1м.",
+        "Оригінальний USB-C кабель для зарядки вейпів cali aroma devices. Швидка зарядка, надійна конструкція. Довжина 1м.",
       price: 199.0,
       old_price: null,
       discount_percentage: null,

@@ -15,7 +15,7 @@ export const revalidate = 300; // ISR every 5 minutes
 
 export default async function Page({ searchParams }: PageProps) {
     const params = await searchParams;
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://calipuff.ua';
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://calishops.com';
     
     // Build breadcrumbs for structured data
     const breadcrumbs = [
