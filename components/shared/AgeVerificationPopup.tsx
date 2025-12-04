@@ -1,14 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 
 const STORAGE_KEY = "calipuff_age_verified";
 
 export default function AgeVerificationPopup() {
   const [isVisible, setIsVisible] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
     // Check if user has already verified their age
