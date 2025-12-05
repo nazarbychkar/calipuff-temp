@@ -123,7 +123,7 @@ export default function RootLayout({
   return (
     <html lang="uk" className={inter.className}>
       <head>
-        <meta name="cryptomus" content="64290c43" />
+        <meta name="cryptomus" content="6a410bc7" />
         {/* Mobile viewport optimization */}
         <meta
           name="viewport"
