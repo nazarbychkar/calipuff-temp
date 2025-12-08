@@ -2,12 +2,24 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Блог | Calishops",
   description: "Останні новини та статті від Calishops",
 };
 
-async function getBlogPosts() {
+interface BlogPost {
+  id: number;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  imageUrl: string | null;
+  publishedAt: string | null;
+  created_at: string;
+}
+
+async function getBlogPosts(): Promise<{ posts: BlogPost[]; total: number }> {
   try {
     const baseUrl =
       process.env.NEXT_PUBLIC_BASE_URL ||
@@ -57,7 +69,7 @@ export default async function BlogPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {posts.map((post: any) => (
+            {posts.map((post) => (
               <Link
                 key={post.id}
                 href={`/blog/${post.slug}`}

@@ -69,7 +69,15 @@ export async function PUT(
       }
     }
 
-    const updateData: any = {};
+    const updateData: {
+      title?: string;
+      slug?: string;
+      excerpt?: string | null;
+      content?: string;
+      imageUrl?: string | null;
+      published?: boolean;
+      publishedAt?: Date | null;
+    } = {};
     if (title !== undefined) updateData.title = title;
     if (slug !== undefined) updateData.slug = slug;
     if (excerpt !== undefined) updateData.excerpt = excerpt;
@@ -89,9 +97,9 @@ export async function PUT(
     });
 
     return NextResponse.json(post);
-  } catch (error: any) {
+  } catch (error) {
     console.error("[PUT /api/blog/[id]]", error);
-    if (error.code === "P2002") {
+    if (error && typeof error === "object" && "code" in error && error.code === "P2002") {
       return NextResponse.json(
         { error: "Post with this slug already exists" },
         { status: 400 }

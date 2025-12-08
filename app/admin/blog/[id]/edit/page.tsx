@@ -98,8 +98,10 @@ export default function EditBlogPostPage() {
 
       router.push("/admin/blog");
       router.refresh();
-    } catch (error: any) {
-      alert(error.message || "Помилка при оновленні поста");
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Помилка при оновленні поста";
+      alert(errorMessage);
       setSaving(false);
     }
   };

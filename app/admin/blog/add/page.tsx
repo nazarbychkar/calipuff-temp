@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import PageBreadcrumb from "@/components/admin/PageBreadCrumb";
 import { generateSlug } from "@/lib/slug";
@@ -56,8 +56,10 @@ export default function AddBlogPostPage() {
 
       router.push("/admin/blog");
       router.refresh();
-    } catch (error: any) {
-      alert(error.message || "Помилка при створенні поста");
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Помилка при створенні поста";
+      alert(errorMessage);
       setLoading(false);
     }
   };

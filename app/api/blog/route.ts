@@ -44,14 +44,17 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    let { title, slug, excerpt, content, imageUrl, published, publishedAt } = body;
+    const { title: bodyTitle, slug: bodySlug, excerpt, content, imageUrl, published, publishedAt } = body;
+    let slug = bodySlug;
 
-    if (!title || !content) {
+    if (!bodyTitle || !content) {
       return NextResponse.json(
         { error: "Missing required fields: title, content" },
         { status: 400 }
       );
     }
+
+    const title = bodyTitle;
 
     // Автоматично генеруємо slug з заголовку, якщо не наданий
     if (!slug) {
@@ -97,9 +100,9 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(post, { status: 201 });
-  } catch (error: any) {
+  } catch (error) {
     console.error("[POST /api/blog]", error);
-    if (error.code === "P2002") {
+    if (error && typeof error === "object" && "code" in error && error.code === "P2002") {
       return NextResponse.json(
         { error: "Post with this slug already exists" },
         { status: 400 }
