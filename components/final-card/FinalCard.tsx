@@ -868,6 +868,14 @@ export default function FinalCard() {
                 <option value="prepay">Передоплата 300 ₴</option>
               </select>
 
+              <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
+                Підтверджуючи замовлення, ви погоджуєтеся з{" "}
+                <Link href="/privacy-policy" className="underline">
+                  політикою повернення, доставки та офертою Calishops
+                </Link>
+                .
+              </p>
+
               <button
                 className="bg-neutral-900 text-white p-4 sm:p-5 rounded mt-3 font-semibold hover:bg-neutral-800 transition-colors"
                 type="submit"

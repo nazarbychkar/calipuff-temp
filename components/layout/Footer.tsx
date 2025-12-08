@@ -271,6 +271,19 @@ export default function Footer() {
           >
             Контакти
           </Link>
+          <Link
+            href="/privacy-policy"
+            className="font-['Poppins'] text-sm md:text-lg transition-all duration-300 hover:translate-x-1 inline-block w-fit"
+            style={{ color: "rgba(28, 25, 23, 0.7)" }}
+            onMouseEnter={(e) => {
+                  e.currentTarget.style.color = "rgba(28, 25, 23, 1)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = "rgba(28, 25, 23, 0.7)";
+            }}
+          >
+            Політика повернення та доставки
+          </Link>
         </div>
 
         <Link
@@ -412,6 +425,19 @@ export default function Footer() {
               }}
             >
               Контакти
+            </Link>
+            <Link
+              href="/privacy-policy"
+              className="font-['Poppins'] text-sm md:text-lg transition-colors duration-300"
+              style={{ color: "rgba(28, 25, 23, 0.7)" }}
+              onMouseEnter={(e) => {
+                  e.currentTarget.style.color = "rgba(28, 25, 23, 1)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = "rgba(28, 25, 23, 0.7)";
+              }}
+            >
+              Політика повернення та доставки
             </Link>
           </div>
         </div>
