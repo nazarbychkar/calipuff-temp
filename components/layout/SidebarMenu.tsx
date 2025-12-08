@@ -101,6 +101,15 @@ export default function SidebarMenu({
             {loading && <p className="text-gray-500">Завантаження...</p>}
             {error && <p className="text-red-500">Помилка: {error}</p>}
 
+            {/* Blog link */}
+            <Link
+              href="/blog"
+              className="text-lg sm:text-xl font-semibold hover:text-[#FFA500] transition-colors py-4 border-b border-gray-200"
+              onClick={() => setIsOpen(false)}
+            >
+              Блог
+            </Link>
+
             {!loading &&
               !error &&
               categories.map((cat) => (

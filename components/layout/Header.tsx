@@ -209,6 +209,13 @@ export default function Header() {
                     )}
                 </div>
               ))}
+              {/* Blog link */}
+              <Link
+                href="/blog"
+                className="cursor-pointer whitespace-nowrap hover:text-[#FFA500] text-base font-semibold font-['Inter'] px-2 py-1 transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#FFA500] after:transition-all hover:after:w-full"
+              >
+                Блог
+              </Link>
               {/* Information dropdown */}
               <div
                 className="relative"

@@ -11,6 +11,7 @@ import {
   HorizontaLDots,
   TableIcon,
   ListIcon,
+  PageIcon,
 } from "@/public/admin-icons/index";
 
 type NavItem = {
@@ -45,6 +46,11 @@ const navItems: NavItem[] = [
     icon: <TableIcon />,
     // subItems: [{ name: "Orders Tables", path: "/admin/orders", pro: false }],
     path: "/admin/orders",
+  },
+  {
+    name: "Блог",
+    icon: <PageIcon />,
+    path: "/admin/blog",
   },
 ];
 

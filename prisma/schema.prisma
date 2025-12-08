@@ -143,3 +143,18 @@ model OrderItem {
 
   @@map("order_items")
 }
+
+model BlogPost {
+  id          Int      @id @default(autoincrement())
+  title       String
+  slug        String   @unique
+  excerpt     String?
+  content     String   @db.Text
+  imageUrl    String?
+  published   Boolean  @default(false)
+  publishedAt DateTime?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  @@map("blog_posts")
+}
