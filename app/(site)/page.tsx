@@ -2,6 +2,7 @@ import dynamic from "next/dynamic";
 import Hero from "@/components/main-page/Hero";
 import TopSaleServer from "@/components/main-page/TopSaleServer";
 import StructuredData from "@/components/shared/StructuredData";
+import ProductDisclaimer from "@/components/shared/ProductDisclaimer";
 import { Suspense } from "react";
 import { Metadata } from "next";
 import { BRAND } from "@/lib/brand";
@@ -59,6 +60,7 @@ export default function Home() {
     <>
       <StructuredData type="website" />
       <Hero />
+      <ProductDisclaimer />
       <Suspense fallback={<div className="text-center py-20 text-lg">Завантаження топових товарів...</div>}>
         <TopSaleServer />
       </Suspense>

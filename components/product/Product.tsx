@@ -72,7 +72,7 @@ export default function Product() {
       <div className="flex flex-col lg:flex-row justify-around p-4 md:p-10 gap-10">
         {/* Media Section */}
         <div className="relative flex justify-center w-full lg:w-1/2">
-          <div className="w-full max-w-[600px] aspect-[2/3] flex items-center justify-center overflow-hidden bg-gray-50 rounded-lg">
+          <div className="w-full max-w-[510px] aspect-[2/3] flex items-center justify-center overflow-hidden bg-gray-50 rounded-lg">
             {media[activeImageIndex]?.type === "video" ? (
               <video
                 className="w-full h-full object-cover"

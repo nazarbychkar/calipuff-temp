@@ -262,7 +262,7 @@ export default function ProductClient({ product: initialProduct }: ProductClient
             allowTouchMove={!isLoading}
             centeredSlides={true}
             onSlideChange={(s) => setActiveImageIndex(s.activeIndex)}
-            className="product-swiper w-full max-w-[600px]"
+            className="product-swiper w-full max-w-[510px]"
             key={product.id}
             touchRatio={1}
             touchAngle={45}

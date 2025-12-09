@@ -170,11 +170,11 @@ export default function Catalog() {
             </button>
             <div>
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">
-                {subcategory
+              {subcategory
                   ? subcategory
-                  : category
+                : category
                   ? category
-                  : "Усі товари"}
+                : "Усі товари"}
               </h1>
               {subcategory && category && (
                 <p className="text-sm text-gray-500 mt-1">{category}</p>
@@ -205,7 +205,7 @@ export default function Catalog() {
               className="flex flex-col gap-3 group card-hover"
             >
               {/* Image or Video */}
-              <div className="relative w-full aspect-[2/3] bg-gray-50 rounded-lg overflow-hidden">
+              <div className="relative w-full aspect-[2/3] max-h-[350px] sm:max-h-[400px] bg-gray-50 rounded-lg overflow-hidden">
                 {product.first_media?.type === "video" ? (
                   <VideoWithAutoplay
                     src={`/api/images/${product.first_media.url}`}
@@ -225,12 +225,12 @@ export default function Catalog() {
               {/* Product Info */}
               <div className="flex flex-col gap-2">
                 <h3 className="text-base sm:text-lg font-medium leading-tight line-clamp-2">
-                  {product.name}
+                {product.name}
                 </h3>
                 <div className="flex items-baseline gap-2">
                   <span className="text-lg font-bold text-[#FFA500]">
                     {product.price.toLocaleString()}₴
-                  </span>
+              </span>
                 </div>
               </div>
             </Link>

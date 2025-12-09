@@ -80,11 +80,11 @@ export default function CatalogClient({
             </button>
             <div>
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">
-                {subcategory
+              {subcategory
                   ? subcategory
-                  : category
+                : category
                   ? category
-                  : "Усі товари"}
+                : "Усі товари"}
               </h1>
               {subcategory && category && (
                 <p className="text-sm text-gray-500 mt-1">{category}</p>
@@ -115,7 +115,7 @@ export default function CatalogClient({
               className="flex flex-col gap-3 group card-hover"
             >
               {/* Image or Video */}
-              <div className="relative w-full aspect-[2/3] bg-gray-50 rounded-lg overflow-hidden">
+              <div className="relative w-full aspect-[2/3] max-h-[350px] sm:max-h-[400px] bg-gray-50 rounded-lg overflow-hidden">
                 {product.first_media?.type === "video" ? (
                   <video
                     src={`/api/images/${product.first_media.url}`}
@@ -148,22 +148,22 @@ export default function CatalogClient({
               {/* Product Info */}
               <div className="flex flex-col gap-2">
                 <h3 className="text-sm sm:text-base font-medium leading-tight line-clamp-2">
-                  {product.name}
+                {product.name}
                 </h3>
                 <div className="flex items-baseline gap-2">
-                  {product.discount_percentage ? (
+                {product.discount_percentage ? (
                     <>
                       <span className="text-lg font-bold text-[#FFA500]">
-                        {(
-                          product.price *
-                          (1 - product.discount_percentage / 100)
+                      {(
+                        product.price *
+                        (1 - product.discount_percentage / 100)
                         ).toFixed(0)}₴
-                      </span>
+                    </span>
                       <span className="text-sm text-gray-400 line-through">
-                        {product.price}₴
-                      </span>
+                      {product.price}₴
+                    </span>
                       <span className="text-xs font-semibold text-green-600 bg-green-50 px-2 py-0.5 rounded">
-                        -{product.discount_percentage}%
+                      -{product.discount_percentage}%
                       </span>
                     </>
                   ) : (
@@ -172,7 +172,7 @@ export default function CatalogClient({
                     </span>
                   )}
                 </div>
-              </div>
+                  </div>
               </Link>
             );
           })}

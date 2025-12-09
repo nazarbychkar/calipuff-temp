@@ -105,7 +105,7 @@ export default function TopSaleClient({ products }: TopSaleClientProps) {
             key={product.id}
             className="flex flex-col gap-4 group w-full card-hover"
           >
-            <div className="aspect-[2/3] w-full overflow-hidden relative rounded-lg bg-gray-50">
+            <div className="aspect-[2/3] w-full max-h-[350px] sm:max-h-[400px] overflow-hidden relative rounded-lg bg-gray-50">
               {product.first_media?.type === "video" ? (
                 <VideoWithAutoplay
                   src={`/api/images/${product.first_media.url}`}
@@ -164,7 +164,7 @@ export default function TopSaleClient({ products }: TopSaleClientProps) {
                 href={`/product/${product.id}`}
                 className="relative flex flex-col gap-3 group"
               >
-                <div className="relative w-full h-[350px]">
+                <div className="relative w-full h-[300px] max-h-[300px]">
                   {product.first_media?.type === "video" ? (
                     <VideoWithAutoplay
                       src={`/api/images/${product.first_media.url}`}

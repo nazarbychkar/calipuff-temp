@@ -37,7 +37,7 @@ export default function YouMightLike() {
                 className="flex flex-col gap-3 group card-hover"
               >
                 {/* Image Container */}
-                <div className="relative w-full aspect-[2/3] bg-gray-50 rounded-lg overflow-hidden">
+                <div className="relative w-full aspect-[2/3] max-h-[350px] sm:max-h-[400px] bg-gray-50 rounded-lg overflow-hidden">
                   {isVideo && product.first_media ? (
                     <video
                       src={`/api/images/${product.first_media.url}`}

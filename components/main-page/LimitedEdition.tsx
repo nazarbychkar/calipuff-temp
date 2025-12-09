@@ -85,7 +85,7 @@ export default function LimitedEdition() {
                 href={`/product/${product.id}`}
                 className="w-full group space-y-5"
               >
-                <div className="relative w-full h-[500px]">
+                <div className="relative w-full h-[350px] max-h-[350px]">
                   <Image
                     className="object-cover group-hover:brightness-90 transition duration-300"
                     src={getProductImageSrc(
@@ -128,7 +128,7 @@ export default function LimitedEdition() {
                 href={`/product/${product.id}`}
                 className="w-full group space-y-5"
               >
-                <div className="relative w-full h-[500px]">
+                <div className="relative w-full h-[350px] max-h-[350px]">
                   <Image
                     className="object-cover group-hover:brightness-90 transition duration-300"
                     src={getProductImageSrc(
@@ -162,7 +162,7 @@ export default function LimitedEdition() {
             key={product.id !== -1 ? product.id : `template-${i}`}
             className="group flex flex-col gap-3 w-full card-hover"
           >
-            <div className="aspect-[2/3] w-full overflow-hidden relative rounded-lg bg-gray-50">
+            <div className="aspect-[2/3] w-full max-h-[350px] sm:max-h-[400px] overflow-hidden relative rounded-lg bg-gray-50">
               {product.first_media?.type === "video" ? (
                 <video
                   src={`/api/images/${product.first_media.url}`}
@@ -193,7 +193,7 @@ export default function LimitedEdition() {
               </h3>
               <div className="text-center">
                 <span className="text-lg sm:text-xl font-bold text-[#FFA500]">
-                  {product.price.toLocaleString()} ₴
+                {product.price.toLocaleString()} ₴
                 </span>
               </div>
             </div>

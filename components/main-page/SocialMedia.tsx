@@ -39,37 +39,6 @@ export default function SocialMedia() {
             Stay tuned: нові хвилі смаку презентуємо спочатку в соцмережах і Telegram-каналі партнерів.
           </div>
 
-          <div className="flex justify-start gap-10 lg:justify-between items-center w-full lg:w-115">
-            <Link
-              href={BRAND.socials.tiktok}
-              className="w-60 h-12 md:w-80 md:h-16 text-center flex items-center bg-stone-900 text-white justify-center text-base md:text-2xl font-normal font-['Inter'] uppercase leading-none tracking-tight"
-            >
-              МИ В TIKTOK
-            </Link>
-            <Image
-              width={39}
-              height={39}
-              className="w-11 h-11 md:w-13 md:h-13"
-              src="/images/light-theme/tiktok.svg"
-              alt={"tiktok icon"}
-            />
-          </div>
-
-          <div className="flex justify-start gap-10 lg:justify-between items-center w-full lg:w-115 mt-4 md:mt-0">
-            <Link
-              href={BRAND.socials.instagram}
-              className="w-60 h-12 md:w-80 md:h-16 text-center flex items-center bg-stone-900 text-white justify-center text-base md:text-2xl font-normal font-['Inter'] uppercase leading-none tracking-tight"
-            >
-              МИ В ІНСТАГРАМ
-            </Link>
-            <Image
-              width={39}
-              height={39}
-              className="w-8 h-8 md:w-10 md:h-10"
-              src="/images/light-theme/instagram.svg"
-              alt={"instagram icon"}
-            />
-          </div>
           <Link
             href={BRAND.socials.telegram}
             className="text-base lg:text-xl underline decoration-dotted hover:opacity-80 transition-opacity"

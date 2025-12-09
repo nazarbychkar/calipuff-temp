@@ -40,7 +40,7 @@ export default function TopSale() {
             key={product.id}
             className="flex flex-col gap-3 group w-full"
           >
-            <div className="aspect-[2/3] w-full overflow-hidden relative">
+            <div className="aspect-[2/3] w-full max-h-[350px] sm:max-h-[400px] overflow-hidden relative">
               {product.first_media?.type === "video" ? (
                 <video
                   src={`/api/images/${product.first_media.url}`}
@@ -85,7 +85,7 @@ export default function TopSale() {
                 href={`/product/${product.id}`}
                 className="relative flex flex-col gap-3 group"
               >
-                <div className="relative w-full h-[350px]">
+                <div className="relative w-full h-[300px] max-h-[300px]">
                   {product.first_media?.type === "video" ? (
                     <video
                       src={`/api/images/${product.first_media.url}`}
