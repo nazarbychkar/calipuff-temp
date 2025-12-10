@@ -23,6 +23,13 @@ interface ProductClientWrapperProps {
     volume?: string | null;
     composition?: string | null;
     deviceType?: string | null;
+    manufacturer?: string | null;
+    // Boolean badges
+    isPopular?: boolean;
+    isRecommended?: boolean;
+    hasStrongEffect?: boolean;
+    // Category for similar products
+    category?: { name: string } | null;
   };
 }
 

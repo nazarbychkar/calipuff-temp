@@ -27,6 +27,8 @@ interface Product {
   isPopular?: boolean;
   isRecommended?: boolean;
   hasStrongEffect?: boolean;
+  // Category for similar products
+  category?: { name: string } | null;
 }
 
 async function getProduct(id: string): Promise<Product | null> {

@@ -61,6 +61,7 @@ model Product {
   orderItems          OrderItem[]
   colors              ProductColor[]
   media               ProductMedia[]
+  reviews             Review[]
   category            Category       @relation("CategoryProducts", fields: [category_id], references: [id])
   subcategory         Subcategory?   @relation(fields: [subcategory_id], references: [id])
   favoritedBy         User[]         @relation("UserFavorites")
@@ -162,4 +163,17 @@ model BlogPost {
   updated_at  DateTime  @updatedAt
 
   @@map("blog_posts")
+}
+
+model Review {
+  id         Int      @id @default(autoincrement())
+  product_id Int
+  author_name String
+  rating     Int      @default(5) // 1-5 stars
+  comment    String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  product    Product  @relation(fields: [product_id], references: [id], onDelete: Cascade)
+
+  @@map("reviews")
 }

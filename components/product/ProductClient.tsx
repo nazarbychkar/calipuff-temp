@@ -11,6 +11,8 @@ import { BRAND } from "@/lib/brand";
 import "swiper/css";
 import "swiper/css/navigation";
 import ProductLightbox from "./ProductLightbox";
+import ProductReviews from "./ProductReviews";
+import SimilarProducts from "./SimilarProducts";
 
 // Add custom styles for smooth transitions
 const swiperStyles = `
@@ -67,6 +69,8 @@ interface ProductClientProps {
     isPopular?: boolean;
     isRecommended?: boolean;
     hasStrongEffect?: boolean;
+    // Category for similar products
+    category?: { name: string } | null;
   };
 }
 
@@ -104,6 +108,7 @@ export default function ProductClient({ product: initialProduct }: ProductClient
     "success" | "error" | "warning" | "info"
   >("info");
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  const [activeSection, setActiveSection] = useState<string>("overview");
 
   // Auto-select first color if available
   useEffect(() => {
@@ -235,6 +240,63 @@ export default function ProductClient({ product: initialProduct }: ProductClient
 
   // Avoid SSR hydration flicker
   useEffect(() => setIsMounted(true), []);
+
+  // Track active section on scroll
+  useEffect(() => {
+    const sections = ["overview", "specifications", "buyer-info", "reviews", "similar"];
+    const observerOptions = {
+      root: null,
+      rootMargin: "-20% 0px -60% 0px",
+      threshold: 0,
+    };
+
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const sectionId = entry.target.id;
+          if (sections.includes(sectionId)) {
+            setActiveSection(sectionId);
+          }
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+    sections.forEach((sectionId) => {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        observer.observe(element);
+      }
+    });
+
+    return () => {
+      sections.forEach((sectionId) => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          observer.unobserve(element);
+        }
+      });
+    };
+  }, [product.id]);
+
+  // Smooth scroll handler
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, sectionId: string) => {
+    e.preventDefault();
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const offset = 100; // Offset for sticky nav
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth",
+      });
+      setActiveSection(sectionId);
+    }
+  };
+
   if (!isMounted || !media?.length) return null;
 
   // Manual next/prev handling (to avoid loop flickers)
@@ -571,68 +633,200 @@ export default function ProductClient({ product: initialProduct }: ProductClient
             isVisible={!!alertMessage}
             onClose={() => setAlertMessage(null)}
           />
-
-          {/* Description Section */}
-          {product.description && (
-            <div className="w-full mt-6 pt-6 border-t border-gray-400">
-              <div className="mb-3 text-lg font-semibold text-gray-900 uppercase tracking-tight">
-                Опис
-              </div>
-              <div className="text-sm md:text-base text-gray-800 leading-relaxed">
-                {product.description}
-              </div>
-            </div>
-          )}
-
-          {/* Product Specifications Section */}
-          {(product.effect || product.inhalationCount || product.volume || 
-            product.composition || product.deviceType || product.manufacturer) && (
-            <div className="w-full mt-6 pt-6 border-t border-gray-400">
-              <div className="mb-4 text-lg font-semibold text-gray-900 uppercase tracking-tight">
-                Характеристики
-              </div>
-              <div className="space-y-3 text-sm md:text-base text-gray-800">
-                {product.effect && (
-                  <div>
-                    <span className="font-semibold">Ефект: </span>
-                    <span>{product.effect}</span>
-                  </div>
-                )}
-                {product.inhalationCount && (
-                  <div>
-                    <span className="font-semibold">Кількість інгаляцій: </span>
-                    <span>{product.inhalationCount}</span>
-                  </div>
-                )}
-                {product.volume && (
-                  <div>
-                    <span className="font-semibold">Об'єм: </span>
-                    <span>{product.volume}</span>
-                  </div>
-                )}
-                {product.composition && (
-                  <div>
-                    <span className="font-semibold">Склад: </span>
-                    <span className="whitespace-pre-line">{product.composition}</span>
-                  </div>
-                )}
-                {product.deviceType && (
-                  <div>
-                    <span className="font-semibold">Тип пристрою: </span>
-                    <span>{product.deviceType}</span>
-                  </div>
-                )}
-                {product.manufacturer && (
-                  <div>
-                    <span className="font-semibold">Виробник: </span>
-                    <span>{product.manufacturer}</span>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
         </div>
+      </div>
+
+      {/* Navigation Menu */}
+      <div className="w-full border-t border-gray-300 bg-gray-50 sticky top-0 z-40 shadow-sm">
+        <div className="max-w-[1920px] mx-auto px-4 md:px-8 lg:px-12">
+          <nav className="flex justify-around flex-wrap gap-4 md:gap-6 py-4 overflow-x-auto">
+            <a
+              href="#overview"
+              onClick={(e) => handleNavClick(e, "overview")}
+              className={`text-sm md:text-base font-medium whitespace-nowrap px-3 py-2 rounded-lg transition-all duration-200 ${
+                activeSection === "overview"
+                  ? "text-[#FFA500] bg-orange-50 font-semibold"
+                  : "text-gray-700 hover:text-[#FFA500] hover:bg-gray-100"
+              }`}
+            >
+              Огляд товару
+            </a>
+            <a
+              href="#specifications"
+              onClick={(e) => handleNavClick(e, "specifications")}
+              className={`text-sm md:text-base font-medium whitespace-nowrap px-3 py-2 rounded-lg transition-all duration-200 ${
+                activeSection === "specifications"
+                  ? "text-[#FFA500] bg-orange-50 font-semibold"
+                  : "text-gray-700 hover:text-[#FFA500] hover:bg-gray-100"
+              }`}
+            >
+              Характеристики
+            </a>
+            <a
+              href="#buyer-info"
+              onClick={(e) => handleNavClick(e, "buyer-info")}
+              className={`text-sm md:text-base font-medium whitespace-nowrap px-3 py-2 rounded-lg transition-all duration-200 ${
+                activeSection === "buyer-info"
+                  ? "text-[#FFA500] bg-orange-50 font-semibold"
+                  : "text-gray-700 hover:text-[#FFA500] hover:bg-gray-100"
+              }`}
+            >
+              Інформація покупцю
+            </a>
+            <a
+              href="#reviews"
+              onClick={(e) => handleNavClick(e, "reviews")}
+              className={`text-sm md:text-base font-medium whitespace-nowrap px-3 py-2 rounded-lg transition-all duration-200 ${
+                activeSection === "reviews"
+                  ? "text-[#FFA500] bg-orange-50 font-semibold"
+                  : "text-gray-700 hover:text-[#FFA500] hover:bg-gray-100"
+              }`}
+            >
+              Відгуки
+            </a>
+            <a
+              href="#similar"
+              onClick={(e) => handleNavClick(e, "similar")}
+              className={`text-sm md:text-base font-medium whitespace-nowrap px-3 py-2 rounded-lg transition-all duration-200 ${
+                activeSection === "similar"
+                  ? "text-[#FFA500] bg-orange-50 font-semibold"
+                  : "text-gray-700 hover:text-[#FFA500] hover:bg-gray-100"
+              }`}
+            >
+              Схожі товари
+            </a>
+          </nav>
+        </div>
+      </div>
+
+      {/* Sections */}
+      <div className="max-w-[1920px] w-full mx-auto px-4 md:px-8 lg:px-12 py-8 md:py-12">
+        {/* Section 1: Огляд товару */}
+        <section id="overview" className="scroll-mt-24 mb-12 md:mb-16">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
+            Огляд товару
+          </h2>
+          {product.description ? (
+            <div className="text-sm md:text-base text-gray-800 leading-relaxed">
+              {product.description}
+            </div>
+          ) : (
+            <p className="text-gray-600">Опис товару відсутній.</p>
+          )}
+        </section>
+
+        {/* Section 2: Характеристики */}
+        <section id="specifications" className="scroll-mt-24 mb-12 md:mb-16">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
+            Характеристики
+          </h2>
+          {(product.effect || product.inhalationCount || product.volume || 
+            product.composition || product.deviceType || product.manufacturer ||
+            product.cbdContentMg || product.thcContentMg) ? (
+            <div className="space-y-4 text-sm md:text-base text-gray-800">
+              {product.effect && (
+                <div className="flex flex-col sm:flex-row sm:items-start gap-2 pb-3 border-b border-gray-200">
+                  <span className="font-semibold min-w-[200px]">Ефект:</span>
+                  <span>{product.effect}</span>
+                </div>
+              )}
+              {product.inhalationCount && (
+                <div className="flex flex-col sm:flex-row sm:items-start gap-2 pb-3 border-b border-gray-200">
+                  <span className="font-semibold min-w-[200px]">Кількість інгаляцій:</span>
+                  <span>{product.inhalationCount}</span>
+                </div>
+              )}
+              {product.volume && (
+                <div className="flex flex-col sm:flex-row sm:items-start gap-2 pb-3 border-b border-gray-200">
+                  <span className="font-semibold min-w-[200px]">Об'єм:</span>
+                  <span>{product.volume}</span>
+                </div>
+              )}
+              {product.composition && (
+                <div className="flex flex-col sm:flex-row sm:items-start gap-2 pb-3 border-b border-gray-200">
+                  <span className="font-semibold min-w-[200px]">Склад:</span>
+                  <span className="whitespace-pre-line">{product.composition}</span>
+                </div>
+              )}
+              {product.deviceType && (
+                <div className="flex flex-col sm:flex-row sm:items-start gap-2 pb-3 border-b border-gray-200">
+                  <span className="font-semibold min-w-[200px]">Тип пристрою:</span>
+                  <span>{product.deviceType}</span>
+                </div>
+              )}
+              {product.manufacturer && (
+                <div className="flex flex-col sm:flex-row sm:items-start gap-2 pb-3 border-b border-gray-200">
+                  <span className="font-semibold min-w-[200px]">Виробник:</span>
+                  <span>{product.manufacturer}</span>
+                </div>
+              )}
+              {product.cbdContentMg !== undefined && product.cbdContentMg > 0 && (
+                <div className="flex flex-col sm:flex-row sm:items-start gap-2 pb-3 border-b border-gray-200">
+                  <span className="font-semibold min-w-[200px]">Вміст CBD:</span>
+                  <span>{product.cbdContentMg} мг</span>
+                </div>
+              )}
+              {product.thcContentMg !== undefined && product.thcContentMg !== null && (
+                <div className="flex flex-col sm:flex-row sm:items-start gap-2 pb-3 border-b border-gray-200">
+                  <span className="font-semibold min-w-[200px]">Вміст THC:</span>
+                  <span>{product.thcContentMg} мг</span>
+                </div>
+              )}
+            </div>
+          ) : (
+            <p className="text-gray-600">Характеристики товару відсутні.</p>
+          )}
+        </section>
+
+        {/* Section 3: Інформація покупцю */}
+        <section id="buyer-info" className="scroll-mt-24 mb-12 md:mb-16">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
+            Інформація покупцю
+          </h2>
+          <div className="space-y-6 text-sm md:text-base text-gray-800">
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-2">Доставка</h3>
+              <p className="text-gray-700">
+                Доставка здійснюється по всій Україні через Нову Пошту та інші служби доставки. 
+                Терміни доставки: 1-3 робочі дні. Вартість доставки розраховується при оформленні замовлення.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-2">Оплата</h3>
+              <p className="text-gray-700">
+                Приймаємо оплату готівкою при отриманні, банківськими картками онлайн, 
+                а також через платіжні системи. Всі платежі захищені.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-2">Гарантія та повернення</h3>
+              <p className="text-gray-700">
+                Ми гарантуємо якість всіх товарів. У разі виявлення дефектів або невідповідності 
+                товару опису, ви можете повернути товар протягом 14 днів з моменту отримання.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-2">Контакти</h3>
+              <p className="text-gray-700">
+                Якщо у вас виникли питання, зверніться до нашого менеджера через Telegram 
+                або інші канали зв'язку, вказані на сайті.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Section 4: Відгуки */}
+        <section id="reviews" className="scroll-mt-24 mb-12 md:mb-16">
+          <ProductReviews productId={product.id} />
+        </section>
+
+        {/* Section 5: Схожі товари */}
+        <section id="similar" className="scroll-mt-24 mb-12 md:mb-16">
+          <SimilarProducts 
+            productId={product.id} 
+            categoryName={product.category?.name}
+          />
+        </section>
       </div>
 
       {isLightboxOpen && (
