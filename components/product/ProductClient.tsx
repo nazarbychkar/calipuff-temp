@@ -10,6 +10,7 @@ import { Navigation } from "swiper/modules";
 import { BRAND } from "@/lib/brand";
 import "swiper/css";
 import "swiper/css/navigation";
+import ProductLightbox from "./ProductLightbox";
 
 // Add custom styles for smooth transitions
 const swiperStyles = `
@@ -71,6 +72,8 @@ export default function ProductClient({ product: initialProduct }: ProductClient
   const [product, setProduct] = useState(initialProduct);
   const [isLoading, setIsLoading] = useState(false);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
   
   // Use basket hook - component is client-side only with 'use client'
   const { addItem } = useBasket();
@@ -207,6 +210,10 @@ export default function ProductClient({ product: initialProduct }: ProductClient
   // SWIPER
   const [swiper, setSwiper] = useState<SwiperType | null>(null);
   const [isMounted, setIsMounted] = useState(false);
+  const handleOpenLightbox = (index: number) => {
+    setLightboxIndex(index);
+    setIsLightboxOpen(true);
+  };
   
   // Update swiper when product changes
   useEffect(() => {
@@ -261,7 +268,12 @@ export default function ProductClient({ product: initialProduct }: ProductClient
             speed={500}
             allowTouchMove={!isLoading}
             centeredSlides={true}
-            onSlideChange={(s) => setActiveImageIndex(s.activeIndex)}
+            onSlideChange={(s) => {
+              setActiveImageIndex(s.activeIndex);
+              if (isLightboxOpen) {
+                setLightboxIndex(s.activeIndex);
+              }
+            }}
             className="product-swiper w-full max-w-[510px]"
             key={product.id}
             touchRatio={1}
@@ -278,15 +290,15 @@ export default function ProductClient({ product: initialProduct }: ProductClient
           >
             {media.map((item, i) => (
               <SwiperSlide key={i} style={{ touchAction: 'pan-y pinch-zoom' }}>
-                <div 
-                  className="flex justify-center items-center w-full aspect-[2/3] overflow-hidden bg-gray-50 rounded-lg"
-                  style={{ 
-                    WebkitUserSelect: 'none',
-                    userSelect: 'none',
-                    WebkitTouchCallout: 'none'
-                  }}
-                >
-                  {item.type === "video" ? (
+                {item.type === "video" ? (
+                  <div 
+                    className="relative flex justify-center items-center w-full aspect-[3/4] overflow-hidden bg-gray-50 rounded-lg"
+                    style={{ 
+                      WebkitUserSelect: 'none',
+                      userSelect: 'none',
+                      WebkitTouchCallout: 'none'
+                    }}
+                  >
                     <video
                       className="object-cover w-full h-full"
                       src={`/api/images/${item.url}`}
@@ -294,13 +306,32 @@ export default function ProductClient({ product: initialProduct }: ProductClient
                       loop
                       muted
                       playsInline
+                      controls
                       style={{ 
                         WebkitUserSelect: 'none',
                         userSelect: 'none',
                         pointerEvents: 'auto'
                       }}
                     />
-                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => handleOpenLightbox(i)}
+                      className="absolute bottom-3 right-3 rounded-full bg-black/60 text-white text-xs px-3 py-1 hover:bg-black/80 transition-colors"
+                    >
+                      Переглянути
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => handleOpenLightbox(i)}
+                    className="group relative flex justify-center items-center w-full aspect-[3/4] overflow-hidden bg-gray-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
+                    style={{ 
+                      WebkitUserSelect: 'none',
+                      userSelect: 'none',
+                      WebkitTouchCallout: 'none'
+                    }}
+                  >
                     <Image
                       src={`/api/images/${item.url}`}
                       alt={`${product.name} - зображення ${i + 1}`}
@@ -308,7 +339,7 @@ export default function ProductClient({ product: initialProduct }: ProductClient
                       priority={i === activeImageIndex}
                       quality={i === activeImageIndex ? 90 : 80}
                       className="object-cover"
-                      sizes="(max-width: 1024px) 100vw, 50vw"
+                      sizes="(max-width: 1024px) 80vw, 50vw"
                       style={{ 
                         WebkitUserSelect: 'none',
                         userSelect: 'none',
@@ -316,8 +347,11 @@ export default function ProductClient({ product: initialProduct }: ProductClient
                       }}
                       draggable={false}
                     />
-                  )}
-                </div>
+                    <span className="absolute bottom-3 right-3 rounded-full bg-black/60 text-white text-xs px-3 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      Переглянути
+                    </span>
+                  </button>
+                )}
               </SwiperSlide>
             ))}
           </Swiper>
@@ -502,6 +536,19 @@ export default function ProductClient({ product: initialProduct }: ProductClient
 
         </div>
       </div>
+
+      {isLightboxOpen && (
+        <ProductLightbox
+          media={media}
+          initialIndex={lightboxIndex}
+          onClose={() => setIsLightboxOpen(false)}
+          onIndexChange={(index) => {
+            setLightboxIndex(index);
+            setActiveImageIndex(index);
+            swiper?.slideTo(index);
+          }}
+        />
+      )}
     </section>
   );
 }
