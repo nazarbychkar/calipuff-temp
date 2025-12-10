@@ -738,7 +738,7 @@ export default function ProductClient({ product: initialProduct }: ProductClient
               )}
               {product.volume && (
                 <div className="flex flex-col sm:flex-row sm:items-start gap-2 pb-3 border-b border-gray-200">
-                  <span className="font-semibold min-w-[200px]">Об'єм:</span>
+                  <span className="font-semibold min-w-[200px]">Об&apos;єм:</span>
                   <span>{product.volume}</span>
                 </div>
               )}
@@ -809,7 +809,7 @@ export default function ProductClient({ product: initialProduct }: ProductClient
               <h3 className="font-semibold text-gray-900 mb-2">Контакти</h3>
               <p className="text-gray-700">
                 Якщо у вас виникли питання, зверніться до нашого менеджера через Telegram 
-                або інші канали зв'язку, вказані на сайті.
+                або інші канали зв&apos;язку, вказані на сайті.
               </p>
             </div>
           </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 
 interface LightboxMedia {
@@ -28,6 +28,22 @@ export default function ProductLightbox({
     setCurrentIndex(initialIndex);
   }, [initialIndex]);
 
+  const handleNext = useCallback(() => {
+    setCurrentIndex((prev) => {
+      const next = (prev + 1) % safeMedia.length;
+      onIndexChange?.(next);
+      return next;
+    });
+  }, [safeMedia.length, onIndexChange]);
+
+  const handlePrev = useCallback(() => {
+    setCurrentIndex((prev) => {
+      const next = (prev - 1 + safeMedia.length) % safeMedia.length;
+      onIndexChange?.(next);
+      return next;
+    });
+  }, [safeMedia.length, onIndexChange]);
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
@@ -43,23 +59,7 @@ export default function ProductLightbox({
       document.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = originalOverflow;
     };
-  }, []);
-
-  const handleNext = () => {
-    setCurrentIndex((prev) => {
-      const next = (prev + 1) % safeMedia.length;
-      onIndexChange?.(next);
-      return next;
-    });
-  };
-
-  const handlePrev = () => {
-    setCurrentIndex((prev) => {
-      const next = (prev - 1 + safeMedia.length) % safeMedia.length;
-      onIndexChange?.(next);
-      return next;
-    });
-  };
+  }, [handleNext, handlePrev, onClose]);
 
   const currentItem = safeMedia[currentIndex];
   if (!currentItem) return null;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Alert from "@/components/shared/Alert";
 
 interface Review {
@@ -31,11 +31,7 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
     comment: "",
   });
 
-  useEffect(() => {
-    fetchReviews();
-  }, [productId]);
-
-  const fetchReviews = async () => {
+  const fetchReviews = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch(`/api/products/${productId}/reviews`);
@@ -48,13 +44,17 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [productId]);
+
+  useEffect(() => {
+    fetchReviews();
+  }, [fetchReviews]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!formData.author_name.trim()) {
-      setAlertMessage("Будь ласка, введіть ваше ім'я");
+      setAlertMessage("Будь ласка, введіть ваше ім&apos;я");
       setAlertType("warning");
       setTimeout(() => setAlertMessage(null), 3000);
       return;
@@ -165,7 +165,7 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-semibold text-gray-900 mb-2">
-                Ваше ім'я *
+                Ваше ім&apos;я *
               </label>
               <input
                 type="text"

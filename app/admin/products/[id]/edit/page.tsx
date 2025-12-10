@@ -496,7 +496,7 @@ export default function EditProductPage() {
                     />
                   </div>
                   <div>
-                    <Label>Об'єм</Label>
+                    <Label>Об&apos;єм</Label>
                     <Input
                       type="text"
                       value={formData.volume}

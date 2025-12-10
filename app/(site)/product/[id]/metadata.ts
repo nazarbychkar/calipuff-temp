@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       };
     }
 
-    const productImage = product.media[0]?.url || product.imageUrl || `${baseUrl}/images/hero-bg.png`;
+    const productImage = product.media[0]?.url || `${baseUrl}/images/hero-bg.png`;
     const fullImageUrl = productImage.startsWith('http') ? productImage : `${baseUrl}${productImage}`;
     
     const title = `${product.name} | ${BRAND.name} — Ароматичні девайси`;

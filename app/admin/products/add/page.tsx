@@ -396,7 +396,7 @@ export default function FormElements() {
                     />
                   </div>
                   <div>
-                    <Label>Об'єм</Label>
+                    <Label>Об&apos;єм</Label>
                     <Input
                       type="text"
                       value={volume}
