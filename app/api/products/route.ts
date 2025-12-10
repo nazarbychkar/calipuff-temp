@@ -86,15 +86,22 @@ export async function POST(req: Request) {
         top_sale = false,
         limited_ition,
         limited_edition = false,
-        color,
+        isPopular = false,
+        isRecommended = false,
+        hasStrongEffect = false,
         category_id = null,
         subcategory_id = null,
         // CBD-specific fields
         cbdContentMg = 0,
         thcContentMg,
-        potency,
-        imageUrl,
         stock = 0,
+        // Product specifications
+        effect,
+        inhalationCount,
+        volume,
+        composition,
+        deviceType,
+        manufacturer,
       } = body || {};
 
       const numericPrice = Number(price);
@@ -134,15 +141,22 @@ export async function POST(req: Request) {
           top_sale,
           limited_edition:
             typeof limited_ition === "boolean" ? limited_ition : limited_edition,
-          color,
+          isPopular,
+          isRecommended,
+          hasStrongEffect,
           category_id: categoryId,
           subcategory_id: subcategory_id ? Number(subcategory_id) : null,
           // CBD-specific fields
           cbdContentMg: Number(cbdContentMg || 0),
           thcContentMg: thcContentMg ? Number(thcContentMg) : null,
-          potency: potency || null,
-          imageUrl: imageUrl || null,
           stock: Number(stock || 0),
+          // Product specifications
+          effect: effect || null,
+          inhalationCount: inhalationCount || null,
+          volume: volume || null,
+          composition: composition || null,
+          deviceType: deviceType || null,
+          manufacturer: manufacturer || null,
           media: {
             create: Array.isArray(media)
               ? media.map((m: { type: string; url: string }) => ({
@@ -177,9 +191,14 @@ export async function POST(req: Request) {
     // CBD-specific fields
     const cbdContentMg = formData.get("cbdContentMg") ? Number(formData.get("cbdContentMg")) : 0;
     const thcContentMg = formData.get("thcContentMg") ? Number(formData.get("thcContentMg")) : null;
-    const potency = formData.get("potency")?.toString() || null;
-    const imageUrl = formData.get("imageUrl")?.toString() || null;
     const stock = formData.get("stock") ? Number(formData.get("stock")) : 0;
+    // Product specifications
+    const effect = formData.get("effect")?.toString() || null;
+    const inhalationCount = formData.get("inhalationCount")?.toString() || null;
+    const volume = formData.get("volume")?.toString() || null;
+    const composition = formData.get("composition")?.toString() || null;
+    const deviceType = formData.get("deviceType")?.toString() || null;
+    const manufacturer = formData.get("manufacturer")?.toString() || null;
 
     if (!name || !price) {
       return NextResponse.json(
@@ -233,9 +252,14 @@ export async function POST(req: Request) {
         // CBD-specific fields
         cbdContentMg,
         thcContentMg,
-        potency,
-        imageUrl,
         stock,
+        // Product specifications
+        effect,
+        inhalationCount,
+        volume,
+        composition,
+        deviceType,
+        manufacturer,
         media: {
           create: savedMedia.map((media) => ({
             type: media.type,

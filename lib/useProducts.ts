@@ -22,7 +22,6 @@ interface Product {
   // Vape/CBD-specific fields
   cbdContentMg?: number;
   thcContentMg?: number | null;
-  potency?: string | null;
   stock?: number;
   // Legacy clothing fields (kept for backward compatibility)
   has_lining?: boolean;

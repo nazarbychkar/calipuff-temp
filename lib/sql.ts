@@ -46,15 +46,22 @@ function normalizeProduct(product: ProductWithRelations) {
     priority: record.priority,
     top_sale: record.top_sale,
     limited_edition: record.limited_edition,
-    color: record.color,
+    isPopular: record.isPopular ?? false,
+    isRecommended: record.isRecommended ?? false,
+    hasStrongEffect: record.hasStrongEffect ?? false,
     category_id: record.category_id,
     subcategory_id: record.subcategory_id,
     // CBD-specific fields
     cbdContentMg: record.cbdContentMg ?? 0,
     thcContentMg: record.thcContentMg ?? null,
-    potency: record.potency ?? null,
-    imageUrl: record.imageUrl ?? null,
     stock: record.stock ?? 0,
+    // Product specifications
+    effect: record.effect ?? null,
+    inhalationCount: record.inhalationCount ?? null,
+    volume: record.volume ?? null,
+    composition: record.composition ?? null,
+    deviceType: record.deviceType ?? null,
+    manufacturer: record.manufacturer ?? null,
     created_at: record.created_at,
     updated_at: record.updated_at,
     category: record.category,
@@ -215,15 +222,22 @@ type UpsertProductInput = {
   priority?: number;
   top_sale?: boolean;
   limited_edition?: boolean;
-  color?: string | null;
+  isPopular?: boolean;
+  isRecommended?: boolean;
+  hasStrongEffect?: boolean;
   category_id: number;
   subcategory_id?: number | null;
   // CBD-specific fields
   cbdContentMg?: number;
   thcContentMg?: number | null;
-  potency?: string | null;
-  imageUrl?: string | null;
   stock?: number;
+  // Product specifications
+  effect?: string | null;
+  inhalationCount?: string | null;
+  volume?: string | null;
+  composition?: string | null;
+  deviceType?: string | null;
+  manufacturer?: string | null;
   media: { type: string; url: string }[];
   colors: { label: string; hex?: string | null }[];
 };
@@ -241,16 +255,22 @@ export async function sqlPutProduct(
     priority = 0,
     top_sale = false,
     limited_edition = false,
+    isPopular = false,
+    isRecommended = false,
+    hasStrongEffect = false,
     category_id,
     subcategory_id,
-    color,
     description,
     name,
     cbdContentMg = 0,
     thcContentMg,
-    potency,
-    imageUrl,
     stock = 0,
+    effect,
+    inhalationCount,
+    volume,
+    composition,
+    deviceType,
+    manufacturer,
   } = data;
 
   await prisma.$transaction(async (txRaw) => {
@@ -266,14 +286,20 @@ export async function sqlPutProduct(
         priority,
         top_sale,
         limited_edition,
-        color,
+        isPopular,
+        isRecommended,
+        hasStrongEffect,
         category_id,
         subcategory_id,
         cbdContentMg,
         thcContentMg,
-        potency,
-        imageUrl,
         stock,
+        effect,
+        inhalationCount,
+        volume,
+        composition,
+        deviceType,
+        manufacturer,
       },
     });
 

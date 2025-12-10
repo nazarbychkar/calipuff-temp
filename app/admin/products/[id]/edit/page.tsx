@@ -34,15 +34,23 @@ export default function EditProductPage() {
     media: [] as { type: string; url: string }[],
     topSale: false,
     limitedEdition: false,
+    isPopular: false,
+    isRecommended: false,
+    hasStrongEffect: false,
     color: "",
     categoryId: null as number | null,
     subcategoryId: null as number | null,
     // CBD-specific fields
     cbdContentMg: "0",
     thcContentMg: "",
-    potency: "",
-    imageUrl: "",
     stock: "0",
+    // Product specifications
+    effect: "",
+    inhalationCount: "",
+    volume: "",
+    composition: "",
+    deviceType: "",
+    manufacturer: "",
   });
 
   const [images, setImages] = useState<File[]>([]);
@@ -93,15 +101,23 @@ export default function EditProductPage() {
           media: productData.media || [],
           topSale: productData.top_sale || false,
           limitedEdition: productData.limited_edition || false,
+          isPopular: productData.isPopular || false,
+          isRecommended: productData.isRecommended || false,
+          hasStrongEffect: productData.hasStrongEffect || false,
           color: productData.color || "",
           categoryId: productData.category_id || null,
           subcategoryId: productData.subcategory_id || null,
           // CBD-specific fields
           cbdContentMg: String(productData.cbdContentMg ?? 0),
           thcContentMg: productData.thcContentMg != null ? String(productData.thcContentMg) : "",
-          potency: productData.potency || "",
-          imageUrl: productData.imageUrl || "",
           stock: String(productData.stock ?? 0),
+          // Product specifications
+          effect: productData.effect || "",
+          inhalationCount: productData.inhalationCount || "",
+          volume: productData.volume || "",
+          composition: productData.composition || "",
+          deviceType: productData.deviceType || "",
+          manufacturer: productData.manufacturer || "",
         });
 
         setCategoryOptions(categoryData);
@@ -292,6 +308,9 @@ export default function EditProductPage() {
           media: updatedMedia,
           top_sale: formData.topSale,
           limited_edition: formData.limitedEdition,
+          isPopular: formData.isPopular,
+          isRecommended: formData.isRecommended,
+          hasStrongEffect: formData.hasStrongEffect,
           color: formData.color,
           colors,
           category_id: formData.categoryId,
@@ -299,9 +318,14 @@ export default function EditProductPage() {
           // CBD-specific fields
           cbdContentMg: Number(formData.cbdContentMg || 0),
           thcContentMg: formData.thcContentMg ? Number(formData.thcContentMg) : null,
-          potency: formData.potency || null,
-          imageUrl: formData.imageUrl || null,
           stock: Number(formData.stock || 0),
+          // Product specifications
+          effect: formData.effect || null,
+          inhalationCount: formData.inhalationCount || null,
+          volume: formData.volume || null,
+          composition: formData.composition || null,
+          deviceType: formData.deviceType || null,
+          manufacturer: formData.manufacturer || null,
         }),
       });
 
@@ -440,30 +464,71 @@ export default function EditProductPage() {
                     />
                   </div>
                   <div>
-                    <Label>Потенція</Label>
-                    <Input
-                      type="text"
-                      value={formData.potency}
-                      onChange={(e) => handleChange("potency", e.target.value)}
-                      placeholder="Наприклад: 500mg, 1000mg"
-                    />
-                  </div>
-                  <div>
-                    <Label>URL зображення (опціонально)</Label>
-                    <Input
-                      type="text"
-                      value={formData.imageUrl}
-                      onChange={(e) => handleChange("imageUrl", e.target.value)}
-                      placeholder="https://example.com/image.jpg"
-                    />
-                  </div>
-                  <div>
                     <Label>Сток (кількість)</Label>
                     <Input
                       type="number"
                       value={formData.stock}
                       onChange={(e) => handleChange("stock", e.target.value)}
                       placeholder="0"
+                    />
+                  </div>
+                </div>
+
+                {/* Product Specifications */}
+                <div className="border rounded-lg p-4 space-y-4 bg-gray-50 dark:bg-gray-800/50">
+                  <h3 className="text-lg font-semibold mb-4">Характеристики продукту</h3>
+                  <div>
+                    <Label>Ефект</Label>
+                    <Input
+                      type="text"
+                      value={formData.effect}
+                      onChange={(e) => handleChange("effect", e.target.value)}
+                      placeholder="Опишіть ефект"
+                    />
+                  </div>
+                  <div>
+                    <Label>Кількість інгаляцій</Label>
+                    <Input
+                      type="text"
+                      value={formData.inhalationCount}
+                      onChange={(e) => handleChange("inhalationCount", e.target.value)}
+                      placeholder="Наприклад: 300"
+                    />
+                  </div>
+                  <div>
+                    <Label>Об'єм</Label>
+                    <Input
+                      type="text"
+                      value={formData.volume}
+                      onChange={(e) => handleChange("volume", e.target.value)}
+                      placeholder="Наприклад: 2ml, 10ml"
+                    />
+                  </div>
+                  <div>
+                    <Label>Склад</Label>
+                    <TextArea
+                      value={formData.composition}
+                      onChange={(value) => handleChange("composition", value)}
+                      rows={3}
+                      placeholder="Опишіть склад продукту"
+                    />
+                  </div>
+                  <div>
+                    <Label>Тип пристрою</Label>
+                    <Input
+                      type="text"
+                      value={formData.deviceType}
+                      onChange={(e) => handleChange("deviceType", e.target.value)}
+                      placeholder="Наприклад: Pod-система, Одноразовий"
+                    />
+                  </div>
+                  <div>
+                    <Label>Виробник</Label>
+                    <Input
+                      type="text"
+                      value={formData.manufacturer}
+                      onChange={(e) => handleChange("manufacturer", e.target.value)}
+                      placeholder="Назва виробника"
                     />
                   </div>
                 </div>
@@ -568,6 +633,30 @@ export default function EditProductPage() {
                       handleChange("limitedEdition", value)
                     }
                     label="Limited Edition"
+                  />
+                </div>
+                <div className="flex items-center justify-between mt-4">
+                  <Label className="mb-0">Популярний?</Label>
+                  <ToggleSwitch
+                    enabled={formData.isPopular}
+                    setEnabled={(value) => handleChange("isPopular", value)}
+                    label="Popular"
+                  />
+                </div>
+                <div className="flex items-center justify-between mt-4">
+                  <Label className="mb-0">Рекомендуємо?</Label>
+                  <ToggleSwitch
+                    enabled={formData.isRecommended}
+                    setEnabled={(value) => handleChange("isRecommended", value)}
+                    label="Recommended"
+                  />
+                </div>
+                <div className="flex items-center justify-between mt-4">
+                  <Label className="mb-0">Потужний ефект?</Label>
+                  <ToggleSwitch
+                    enabled={formData.hasStrongEffect}
+                    setEnabled={(value) => handleChange("hasStrongEffect", value)}
+                    label="Strong Effect"
                   />
                 </div>
               </ComponentCard>

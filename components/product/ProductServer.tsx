@@ -16,7 +16,17 @@ interface Product {
   // CBD-specific fields
   cbdContentMg?: number;
   thcContentMg?: number | null;
-  potency?: string | null;
+  // Product specifications
+  effect?: string | null;
+  inhalationCount?: string | null;
+  volume?: string | null;
+  composition?: string | null;
+  deviceType?: string | null;
+  manufacturer?: string | null;
+  // Boolean badges
+  isPopular?: boolean;
+  isRecommended?: boolean;
+  hasStrongEffect?: boolean;
 }
 
 async function getProduct(id: string): Promise<Product | null> {

@@ -63,11 +63,13 @@ export async function PUT(
 
     const topSale = body.top_sale === true;
     const limitedEdition = body.limited_edition === true;
+    const isPopular = body.isPopular === true;
+    const isRecommended = body.isRecommended === true;
+    const hasStrongEffect = body.hasStrongEffect === true;
     const categoryId = body.category_id ? Number(body.category_id) : null;
     const subcategoryId = body.subcategory_id
       ? Number(body.subcategory_id)
       : null;
-    const color = typeof body.color === "string" ? body.color : null;
     const oldPrice = body.old_price ? Number(body.old_price) : null;
     const discountPercentage = body.discount_percentage
       ? Number(body.discount_percentage)
@@ -76,9 +78,14 @@ export async function PUT(
     // CBD-specific fields
     const cbdContentMg = body.cbdContentMg ? Number(body.cbdContentMg) : 0;
     const thcContentMg = body.thcContentMg ? Number(body.thcContentMg) : null;
-    const potency = body.potency || null;
-    const imageUrl = body.imageUrl || null;
     const stock = body.stock ? Number(body.stock) : 0;
+    // Product specifications
+    const effect = body.effect || null;
+    const inhalationCount = body.inhalationCount || null;
+    const volume = body.volume || null;
+    const composition = body.composition || null;
+    const deviceType = body.deviceType || null;
+    const manufacturer = body.manufacturer || null;
 
     if (!categoryId) {
       return NextResponse.json(
@@ -96,15 +103,22 @@ export async function PUT(
       priority,
       top_sale: topSale,
       limited_edition: limitedEdition,
-      color,
+      isPopular,
+      isRecommended,
+      hasStrongEffect,
       category_id: categoryId,
       subcategory_id: subcategoryId,
       // CBD-specific fields
       cbdContentMg,
       thcContentMg,
-      potency,
-      imageUrl,
       stock,
+      // Product specifications
+      effect,
+      inhalationCount,
+      volume,
+      composition,
+      deviceType,
+      manufacturer,
       media: Array.isArray(body.media) ? body.media : [],
       colors: Array.isArray(body.colors)
         ? body.colors.map((c: { label: string; hex?: string | null }) => ({

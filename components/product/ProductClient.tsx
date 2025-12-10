@@ -56,7 +56,17 @@ interface ProductClientProps {
     // CBD-specific fields
     cbdContentMg?: number;
     thcContentMg?: number | null;
-    potency?: string | null;
+    // Product specifications
+    effect?: string | null;
+    inhalationCount?: string | null;
+    volume?: string | null;
+    composition?: string | null;
+    deviceType?: string | null;
+    manufacturer?: string | null;
+    // Boolean badges
+    isPopular?: boolean;
+    isRecommended?: boolean;
+    hasStrongEffect?: boolean;
   };
 }
 
@@ -313,6 +323,26 @@ export default function ProductClient({ product: initialProduct }: ProductClient
                         pointerEvents: 'auto'
                       }}
                     />
+                    {/* Badges */}
+                    {i === 0 && (
+                      <div className="absolute top-3 left-3 flex flex-col gap-2 z-10">
+                        {product.isPopular && (
+                          <span className="bg-blue-600 text-white text-xs font-semibold px-2 py-1 rounded shadow-md">
+                            Популярний
+                          </span>
+                        )}
+                        {product.isRecommended && (
+                          <span className="bg-green-600 text-white text-xs font-semibold px-2 py-1 rounded shadow-md">
+                            Рекомендуємо
+                          </span>
+                        )}
+                        {product.hasStrongEffect && (
+                          <span className="bg-orange-600 text-white text-xs font-semibold px-2 py-1 rounded shadow-md">
+                            Потужний ефект!
+                          </span>
+                        )}
+                      </div>
+                    )}
                     <button
                       type="button"
                       onClick={() => handleOpenLightbox(i)}
@@ -347,6 +377,26 @@ export default function ProductClient({ product: initialProduct }: ProductClient
                       }}
                       draggable={false}
                     />
+                    {/* Badges */}
+                    {i === 0 && (
+                      <div className="absolute top-3 left-3 flex flex-col gap-2 z-10">
+                        {product.isPopular && (
+                          <span className="bg-blue-600 text-white text-xs font-semibold px-2 py-1 rounded shadow-md">
+                            Популярний
+                          </span>
+                        )}
+                        {product.isRecommended && (
+                          <span className="bg-green-600 text-white text-xs font-semibold px-2 py-1 rounded shadow-md">
+                            Рекомендуємо
+                          </span>
+                        )}
+                        {product.hasStrongEffect && (
+                          <span className="bg-orange-600 text-white text-xs font-semibold px-2 py-1 rounded shadow-md">
+                            Потужний ефект!
+                          </span>
+                        )}
+                      </div>
+                    )}
                     <span className="absolute bottom-3 right-3 rounded-full bg-black/60 text-white text-xs px-3 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       Переглянути
                     </span>
@@ -530,6 +580,54 @@ export default function ProductClient({ product: initialProduct }: ProductClient
               </div>
               <div className="text-sm md:text-base text-gray-800 leading-relaxed">
                 {product.description}
+              </div>
+            </div>
+          )}
+
+          {/* Product Specifications Section */}
+          {(product.effect || product.inhalationCount || product.volume || 
+            product.composition || product.deviceType || product.manufacturer) && (
+            <div className="w-full mt-6 pt-6 border-t border-gray-400">
+              <div className="mb-4 text-lg font-semibold text-gray-900 uppercase tracking-tight">
+                Характеристики
+              </div>
+              <div className="space-y-3 text-sm md:text-base text-gray-800">
+                {product.effect && (
+                  <div>
+                    <span className="font-semibold">Ефект: </span>
+                    <span>{product.effect}</span>
+                  </div>
+                )}
+                {product.inhalationCount && (
+                  <div>
+                    <span className="font-semibold">Кількість інгаляцій: </span>
+                    <span>{product.inhalationCount}</span>
+                  </div>
+                )}
+                {product.volume && (
+                  <div>
+                    <span className="font-semibold">Об'єм: </span>
+                    <span>{product.volume}</span>
+                  </div>
+                )}
+                {product.composition && (
+                  <div>
+                    <span className="font-semibold">Склад: </span>
+                    <span className="whitespace-pre-line">{product.composition}</span>
+                  </div>
+                )}
+                {product.deviceType && (
+                  <div>
+                    <span className="font-semibold">Тип пристрою: </span>
+                    <span>{product.deviceType}</span>
+                  </div>
+                )}
+                {product.manufacturer && (
+                  <div>
+                    <span className="font-semibold">Виробник: </span>
+                    <span>{product.manufacturer}</span>
+                  </div>
+                )}
               </div>
             </div>
           )}

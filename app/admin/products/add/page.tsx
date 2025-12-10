@@ -25,6 +25,9 @@ export default function FormElements() {
 
   const [topSale, setTopSale] = useState(false);
   const [limitedEdition, setLimitedEdition] = useState(false);
+  const [isPopular, setIsPopular] = useState(false);
+  const [isRecommended, setIsRecommended] = useState(false);
+  const [hasStrongEffect, setHasStrongEffect] = useState(false);
 
   const [color, setColor] = useState("");
   const [colors, setColors] = useState<{ label: string; hex?: string }[]>([]);
@@ -42,9 +45,14 @@ export default function FormElements() {
   // CBD-specific fields
   const [cbdContentMg, setCbdContentMg] = useState("0");
   const [thcContentMg, setThcContentMg] = useState("");
-  const [potency, setPotency] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
   const [stock, setStock] = useState("0");
+  // Product specifications
+  const [effect, setEffect] = useState("");
+  const [inhalationCount, setInhalationCount] = useState("");
+  const [volume, setVolume] = useState("");
+  const [composition, setComposition] = useState("");
+  const [deviceType, setDeviceType] = useState("");
+  const [manufacturer, setManufacturer] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
@@ -174,15 +182,23 @@ export default function FormElements() {
           colors,
           top_sale: topSale,
           limited_edition: limitedEdition,
+          isPopular,
+          isRecommended,
+          hasStrongEffect,
           category_id: categoryId,
-          subcategory_id: subcategoryId,
+          subcategory_id: subcategoryId || null,
           media: uploadedMedia,
           // CBD-specific fields
           cbdContentMg: Number(cbdContentMg || 0),
           thcContentMg: thcContentMg ? Number(thcContentMg) : null,
-          potency: potency || null,
-          imageUrl: imageUrl || null,
           stock: Number(stock || 0),
+          // Product specifications
+          effect: effect || null,
+          inhalationCount: inhalationCount || null,
+          volume: volume || null,
+          composition: composition || null,
+          deviceType: deviceType || null,
+          manufacturer: manufacturer || null,
         }),
       });
 
@@ -209,9 +225,20 @@ export default function FormElements() {
       // Reset CBD fields
       setCbdContentMg("0");
       setThcContentMg("");
-      setPotency("");
-      setImageUrl("");
       setStock("0");
+      // Reset product specifications
+      setEffect("");
+      setInhalationCount("");
+      setVolume("");
+      setComposition("");
+      setDeviceType("");
+      setManufacturer("");
+      // Reset flags
+      setTopSale(false);
+      setLimitedEdition(false);
+      setIsPopular(false);
+      setIsRecommended(false);
+      setHasStrongEffect(false);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Помилка при створенні товару"
@@ -337,30 +364,71 @@ export default function FormElements() {
                     />
                   </div>
                   <div>
-                    <Label>Потенція</Label>
-                    <Input
-                      type="text"
-                      value={potency}
-                      onChange={(e) => setPotency(e.target.value)}
-                      placeholder="Наприклад: 500mg, 1000mg"
-                    />
-                  </div>
-                  <div>
-                    <Label>URL зображення (опціонально)</Label>
-                    <Input
-                      type="text"
-                      value={imageUrl}
-                      onChange={(e) => setImageUrl(e.target.value)}
-                      placeholder="https://example.com/image.jpg"
-                    />
-                  </div>
-                  <div>
                     <Label>Сток (кількість)</Label>
                     <Input
                       type="number"
                       value={stock}
                       onChange={(e) => setStock(e.target.value)}
                       placeholder="0"
+                    />
+                  </div>
+                </div>
+
+                {/* Product Specifications */}
+                <div className="border rounded-lg p-4 space-y-4 bg-gray-50 dark:bg-gray-800/50">
+                  <h3 className="text-lg font-semibold mb-4">Характеристики продукту</h3>
+                  <div>
+                    <Label>Ефект</Label>
+                    <Input
+                      type="text"
+                      value={effect}
+                      onChange={(e) => setEffect(e.target.value)}
+                      placeholder="Опишіть ефект"
+                    />
+                  </div>
+                  <div>
+                    <Label>Кількість інгаляцій</Label>
+                    <Input
+                      type="text"
+                      value={inhalationCount}
+                      onChange={(e) => setInhalationCount(e.target.value)}
+                      placeholder="Наприклад: 300"
+                    />
+                  </div>
+                  <div>
+                    <Label>Об'єм</Label>
+                    <Input
+                      type="text"
+                      value={volume}
+                      onChange={(e) => setVolume(e.target.value)}
+                      placeholder="Наприклад: 2ml, 10ml"
+                    />
+                  </div>
+                  <div>
+                    <Label>Склад</Label>
+                    <TextArea
+                      value={composition}
+                      onChange={setComposition}
+                      rows={3}
+                      placeholder="Опишіть склад продукту"
+                    />
+                  </div>
+                  <div>
+                    <Label>Тип пристрою</Label>
+                    <Input
+                      type="text"
+                      value={deviceType}
+                      onChange={(e) => setDeviceType(e.target.value)}
+                      placeholder="Наприклад: Pod-система, Одноразовий"
+                    />
+                  </div>
+                  <div>
+                    <Label>Виробник</Label>
+                    <Input
+                      type="text"
+                      value={manufacturer}
+                      onChange={(e) => setManufacturer(e.target.value)}
+                      placeholder="Назва виробника"
                     />
                   </div>
                 </div>
@@ -456,6 +524,30 @@ export default function FormElements() {
                     enabled={limitedEdition}
                     setEnabled={setLimitedEdition}
                     label="Limited Edition"
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <Label className="mb-0">Популярний?</Label>
+                  <ToggleSwitch
+                    enabled={isPopular}
+                    setEnabled={setIsPopular}
+                    label="Popular"
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <Label className="mb-0">Рекомендуємо?</Label>
+                  <ToggleSwitch
+                    enabled={isRecommended}
+                    setEnabled={setIsRecommended}
+                    label="Recommended"
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <Label className="mb-0">Потужний ефект?</Label>
+                  <ToggleSwitch
+                    enabled={hasStrongEffect}
+                    setEnabled={setHasStrongEffect}
+                    label="Strong Effect"
                   />
                 </div>
               </div>

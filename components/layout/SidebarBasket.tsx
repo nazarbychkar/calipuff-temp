@@ -138,7 +138,7 @@ export default function SidebarBasket({
                     />
                   </svg>
                   <p className="font-medium">
-                    Доставка в той самий день, якщо замовлення до 16-00
+                    Відправка в той самий день, якщо замовлення до 16-00
                   </p>
                 </div>
                 <Link

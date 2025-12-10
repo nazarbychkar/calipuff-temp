@@ -1,95 +1,101 @@
-datasource db {
-  provider = "postgresql"  // Ensure this is correct
-  url      = env("DATABASE_URL")
-}
-
 generator client {
   provider = "prisma-client-js"
 }
 
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
 model Category {
-  id             Int            @id @default(autoincrement())
-  name           String         @unique
-  priority       Int            @default(0)
-  created_at     DateTime       @default(now())
-  updated_at     DateTime       @updatedAt
-  products       Product[]      @relation("CategoryProducts")
-  subcategories  Subcategory[]
+  id            Int           @id @default(autoincrement())
+  name          String        @unique
+  priority      Int           @default(0)
+  created_at    DateTime      @default(now())
+  updated_at    DateTime      @updatedAt
+  products      Product[]     @relation("CategoryProducts")
+  subcategories Subcategory[]
+
   @@map("categories")
 }
 
 model Subcategory {
-  id                  Int       @id @default(autoincrement())
-  name                String
-  parent_category_id  Int
-  created_at          DateTime  @default(now())
-  updated_at          DateTime  @updatedAt
-  parent_category     Category  @relation(fields: [parent_category_id], references: [id])
-  products            Product[]
+  id                 Int       @id @default(autoincrement())
+  name               String
+  parent_category_id Int
+  created_at         DateTime  @default(now())
+  updated_at         DateTime  @updatedAt
+  products           Product[]
+  parent_category    Category  @relation(fields: [parent_category_id], references: [id])
 
   @@unique([name, parent_category_id])
   @@map("subcategories")
 }
 
 model Product {
-  id                  Int             @id @default(autoincrement())
+  id                  Int            @id @default(autoincrement())
   name                String
   description         String?
-  price               Decimal         @db.Decimal(10, 2)
-  old_price           Decimal?        @db.Decimal(10, 2)
+  price               Decimal        @db.Decimal(10, 2)
+  old_price           Decimal?       @db.Decimal(10, 2)
   discount_percentage Int?
-  priority            Int             @default(0)
-  top_sale            Boolean         @default(false)
-  limited_edition     Boolean         @default(false)
-  color               String?
+  priority            Int            @default(0)
+  top_sale            Boolean        @default(false)
+  limited_edition     Boolean        @default(false)
   category_id         Int
   subcategory_id      Int?
-  // CBD-specific fields
-  cbdContentMg        Int             @default(0)
+  cbdContentMg        Int            @default(0)
   thcContentMg        Int?
-  potency             String?
-  imageUrl            String?
-  stock               Int             @default(0)
-  created_at          DateTime        @default(now())
-  updated_at          DateTime        @updatedAt
-  category            Category        @relation("CategoryProducts", fields: [category_id], references: [id])
-  subcategory         Subcategory?    @relation(fields: [subcategory_id], references: [id])
-  media               ProductMedia[]
-  colors              ProductColor[]
+  stock               Int            @default(0)
+  effect              String?
+  inhalationCount     String?
+  volume              String?
+  composition         String?
+  deviceType          String?
+  manufacturer        String?
+  isPopular           Boolean        @default(false)
+  isRecommended       Boolean        @default(false)
+  hasStrongEffect     Boolean        @default(false)
+  created_at          DateTime       @default(now())
+  updated_at          DateTime       @updatedAt
   orderItems          OrderItem[]
-  favoritedBy         User[]          @relation("UserFavorites")
+  colors              ProductColor[]
+  media               ProductMedia[]
+  category            Category       @relation("CategoryProducts", fields: [category_id], references: [id])
+  subcategory         Subcategory?   @relation(fields: [subcategory_id], references: [id])
+  favoritedBy         User[]         @relation("UserFavorites")
 
   @@map("products")
 }
 
 model ProductMedia {
-  id          Int      @id @default(autoincrement())
-  url         String
-  type        String
-  product_id  Int
-  created_at  DateTime @default(now())
-  product     Product  @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  id         Int      @id @default(autoincrement())
+  url        String
+  type       String
+  product_id Int
+  created_at DateTime @default(now())
+  product    Product  @relation(fields: [product_id], references: [id], onDelete: Cascade)
 
   @@map("product_media")
 }
 
 model ProductColor {
-  id          Int      @id @default(autoincrement())
-  label       String
-  hex         String?
-  product_id  Int
-  created_at  DateTime @default(now())
-  product     Product  @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  id         Int      @id @default(autoincrement())
+  label      String
+  hex        String?
+  product_id Int
+  created_at DateTime @default(now())
+  product    Product  @relation(fields: [product_id], references: [id], onDelete: Cascade)
 
   @@map("product_colors")
 }
 
 model Color {
-  id          Int      @id @default(autoincrement())
-  color       String   @unique
-  hex         String?
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  id         Int      @id @default(autoincrement())
+  color      String   @unique
+  hex        String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   @@map("colors")
 }
@@ -108,7 +114,7 @@ model User {
 }
 
 model Order {
-  id              Int         @id @default(autoincrement())
+  id              Int      @id @default(autoincrement())
   userId          Int?
   customer_name   String
   phone_number    String
@@ -118,23 +124,22 @@ model Order {
   post_office     String
   comment         String?
   payment_type    String
-  status          String      @default("unpaid")
-  invoice_id      String?     @unique
-  items           Json        // Store order items as JSON for e-commerce flow
-  // Optional fields for future user-based orders
-  totalAmount     Decimal?    @db.Decimal(10, 2)
+  status          String   @default("unpaid")
+  invoice_id      String?  @unique
+  items           Json
+  totalAmount     Decimal? @db.Decimal(10, 2)
   shippingAddress String?
   paymentId       String?
-  user            User?       @relation(fields: [userId], references: [id])
-  created_at      DateTime    @default(now())
-  updated_at      DateTime    @updatedAt
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+  user            User?    @relation(fields: [userId], references: [id])
 
   @@map("orders")
 }
 
 model OrderItem {
   id        Int     @id @default(autoincrement())
-  orderId  Int
+  orderId   Int
   productId Int
   quantity  Int     @default(1)
   price     Decimal @db.Decimal(10, 2)
@@ -145,16 +150,16 @@ model OrderItem {
 }
 
 model BlogPost {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   title       String
-  slug        String   @unique
+  slug        String    @unique
   excerpt     String?
-  content     String   @db.Text
+  content     String
   imageUrl    String?
-  published   Boolean  @default(false)
+  published   Boolean   @default(false)
   publishedAt DateTime?
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
 
   @@map("blog_posts")
 }

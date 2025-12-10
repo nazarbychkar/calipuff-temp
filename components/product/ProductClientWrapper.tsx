@@ -17,7 +17,12 @@ interface ProductClientWrapperProps {
     // CBD-specific fields
     cbdContentMg?: number;
     thcContentMg?: number | null;
-    potency?: string | null;
+    // Product specifications
+    effect?: string | null;
+    inhalationsCount?: number | null;
+    volume?: string | null;
+    composition?: string | null;
+    deviceType?: string | null;
   };
 }
 

@@ -34,7 +34,7 @@ export default function Hero() {
             {BRAND.name}
           </p>
           <div className="space-y-5 max-w-4xl">
-            <h1 className="text-5xl sm:text-7xl lg:text-8xl font-bold leading-tight">
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold leading-tight">
               {BRAND.tagline}
             </h1>
             <p className="text-lg sm:text-xl lg:text-2xl max-w-2xl font-light opacity-95">
