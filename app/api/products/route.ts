@@ -186,6 +186,10 @@ export async function POST(req: Request) {
     const topSale = formData.get("top_sale") === "true";
     const limitedEdition = formData.get("limited_edition") === "true";
     const color = formData.get("color")?.toString();
+    const normalizedColors: { label: string; hex: string | null }[] =
+      color && color.trim()
+        ? [{ label: color.trim(), hex: null }]
+        : [];
     const categoryId = formData.get("category_id") ? Number(formData.get("category_id")) : null;
     const subcategoryId = formData.get("subcategory_id") ? Number(formData.get("subcategory_id")) : null;
     // CBD-specific fields
@@ -246,7 +250,6 @@ export async function POST(req: Request) {
         priority,
         top_sale: topSale,
         limited_edition: limitedEdition,
-        color,
         category_id: categoryId,
         subcategory_id: subcategoryId,
         // CBD-specific fields
@@ -266,6 +269,13 @@ export async function POST(req: Request) {
             url: media.url,
           })),
         },
+        ...(normalizedColors.length
+          ? {
+              colors: {
+                create: normalizedColors,
+              },
+            }
+          : {}),
       },
     });
 

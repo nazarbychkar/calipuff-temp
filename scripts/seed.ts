@@ -107,12 +107,10 @@ async function main() {
       priority: 10,
       top_sale: true,
       limited_edition: false,
-      color: "Sunset Orange",
       category_id: category1.id,
       subcategory_id: subcat1.id,
       cbdContentMg: 500,
       thcContentMg: null,
-      potency: "5%",
       stock: 50,
       media: {
         create: [
@@ -148,12 +146,10 @@ async function main() {
       priority: 9,
       top_sale: false,
       limited_edition: true,
-      color: "Beach Sand",
       category_id: category1.id,
       subcategory_id: subcat1.id,
       cbdContentMg: 700,
       thcContentMg: null,
-      potency: "7%",
       stock: 15,
       media: {
         create: [
@@ -184,12 +180,10 @@ async function main() {
       priority: 8,
       top_sale: true,
       limited_edition: false,
-      color: null,
       category_id: category2.id,
       subcategory_id: subcat3.id,
       cbdContentMg: 500,
       thcContentMg: null,
-      potency: "16.7mg/ml",
       stock: 30,
       media: {
         create: [
@@ -221,12 +215,10 @@ async function main() {
       priority: 7,
       top_sale: false,
       limited_edition: false,
-      color: "Mint Green",
       category_id: category3.id,
       subcategory_id: subcat5.id,
       cbdContentMg: 300,
       thcContentMg: null,
-      potency: "30%",
       stock: 100,
       media: {
         create: [
@@ -254,12 +246,10 @@ async function main() {
       priority: 6,
       top_sale: true,
       limited_edition: false,
-      color: "Sunset",
       category_id: category1.id,
       subcategory_id: subcat2.id,
       cbdContentMg: 0,
       thcContentMg: null,
-      potency: null,
       stock: 25,
       media: {
         create: [
@@ -289,12 +279,10 @@ async function main() {
       priority: 5,
       top_sale: false,
       limited_edition: false,
-      color: null,
       category_id: category2.id,
       subcategory_id: subcat4.id,
       cbdContentMg: 750,
       thcContentMg: null,
-      potency: "25mg/ml",
       stock: 40,
       media: {
         create: [
@@ -321,12 +309,10 @@ async function main() {
       priority: 4,
       top_sale: false,
       limited_edition: false,
-      color: "Blueberry",
       category_id: category3.id,
       subcategory_id: subcat6.id,
       cbdContentMg: 600,
       thcContentMg: null,
-      potency: "30%",
       stock: 60,
       media: {
         create: [
@@ -353,12 +339,10 @@ async function main() {
       priority: 3,
       top_sale: false,
       limited_edition: false,
-      color: null,
       category_id: category4.id,
       subcategory_id: null,
       cbdContentMg: 0,
       thcContentMg: null,
-      potency: null,
       stock: 200,
       media: {
         create: [
