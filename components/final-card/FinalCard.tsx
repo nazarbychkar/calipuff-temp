@@ -70,6 +70,10 @@ export default function FinalCard() {
 
   const [comment, setComment] = useState("");
   const [paymentType, setPaymentType] = useState("");
+  const [promoCode, setPromoCode] = useState("");
+  const [promoCodeDiscount, setPromoCodeDiscount] = useState<number | null>(null);
+  const [promoCodeError, setPromoCodeError] = useState<string | null>(null);
+  const [validatingPromoCode, setValidatingPromoCode] = useState(false);
   const [submittedOrder, setSubmittedOrder] = useState<{
     items: typeof items;
     customer: {
@@ -139,7 +143,7 @@ export default function FinalCard() {
       };
     });
 
-    // Підрахунок суми до оплати (з урахуванням знижки)
+    // Підрахунок суми до оплати (з урахуванням знижки товарів)
     const fullAmount = items.reduce((total: number, item) => {
       // Перетворюємо ціну в число
       const itemPrice = typeof item.price === 'string' ? parseFloat(item.price) : item.price;
@@ -153,6 +157,12 @@ export default function FinalCard() {
       return total + price * item.quantity;
     }, 0);
 
+    // Застосування знижки від промокоду
+    let finalAmount = fullAmount;
+    if (promoCodeDiscount && promoCode.trim()) {
+      finalAmount = fullAmount * (1 - promoCodeDiscount / 100);
+    }
+
     try {
       const requestBody = {
         customer_name: customerName,
@@ -163,8 +173,9 @@ export default function FinalCard() {
         post_office: postOffice,
         comment,
         payment_type: paymentType,
-        total_amount: fullAmount.toFixed(2),
+        total_amount: finalAmount.toFixed(2),
         items: apiItems,
+        promo_code: promoCode.trim() || null,
       };
       
       console.log("[FinalCard] Sending order request with:", JSON.stringify(requestBody, null, 2));
@@ -450,6 +461,72 @@ export default function FinalCard() {
   const handlePostOfficeSelect = (postOfficeOption: string) => {
     setPostOffice(postOfficeOption);
     setPostOfficeListVisible(false); // Hide the post office list after selecting an option
+  };
+
+  // Validate promo code
+  const validatePromoCode = async (code: string) => {
+    if (!code.trim()) {
+      setPromoCodeDiscount(null);
+      setPromoCodeError(null);
+      return;
+    }
+
+    setValidatingPromoCode(true);
+    setPromoCodeError(null);
+
+    try {
+      const response = await fetch(`/api/promo-codes/validate?code=${encodeURIComponent(code.toUpperCase())}`);
+      const data = await response.json();
+
+      if (data.valid) {
+        setPromoCodeDiscount(data.discount_percent);
+        setPromoCodeError(null);
+      } else {
+        setPromoCodeDiscount(null);
+        setPromoCodeError(data.error || "Невірний промокод");
+      }
+    } catch (error) {
+      setPromoCodeDiscount(null);
+      setPromoCodeError("Помилка валідації промокоду");
+    } finally {
+      setValidatingPromoCode(false);
+    }
+  };
+
+  // Debounce для валідації промокоду
+  const [promoCodeTimeout, setPromoCodeTimeout] = useState<NodeJS.Timeout | null>(null);
+
+  // Очищаємо таймер при розмонтуванні компонента
+  useEffect(() => {
+    return () => {
+      if (promoCodeTimeout) {
+        clearTimeout(promoCodeTimeout);
+      }
+    };
+  }, [promoCodeTimeout]);
+
+  const handlePromoCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const code = e.target.value;
+    setPromoCode(code);
+    
+    // Очищаємо попередній таймер
+    if (promoCodeTimeout) {
+      clearTimeout(promoCodeTimeout);
+    }
+    
+    // Якщо поле порожнє, одразу очищаємо помилки
+    if (!code.trim()) {
+      setPromoCodeDiscount(null);
+      setPromoCodeError(null);
+      return;
+    }
+    
+    // Валідуємо через 500ms після останнього введення
+    const timeout = setTimeout(() => {
+      validatePromoCode(code);
+    }, 500);
+    
+    setPromoCodeTimeout(timeout);
   };
 
   // STATE
@@ -869,6 +946,49 @@ export default function FinalCard() {
                 <option value="prepay">Передоплата 300 ₴</option>
               </select>
 
+              <label
+                htmlFor="promoCode"
+                className="text-xl sm:text-2xl font-normal font-['Arial']"
+              >
+                Промокод
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  id="promoCode"
+                  placeholder="Введіть промокод"
+                  className="border p-3 sm:p-5 text-lg sm:text-xl font-normal font-['Arial'] rounded flex-1"
+                  value={promoCode}
+                  onChange={handlePromoCodeChange}
+                  disabled={validatingPromoCode}
+                />
+              </div>
+              {validatingPromoCode && (
+                <div className="flex items-center gap-2 text-sm text-gray-500">
+                  <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  <span>Перевірка промокоду...</span>
+                </div>
+              )}
+              {promoCodeError && !validatingPromoCode && (
+                <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md p-3">
+                  <svg className="h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  <span>{promoCodeError}</span>
+                </div>
+              )}
+              {promoCodeDiscount && !promoCodeError && !validatingPromoCode && (
+                <div className="flex items-center gap-2 text-sm font-medium text-green-700 bg-green-50 border border-green-200 rounded-md p-3">
+                  <svg className="h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Промокод застосовано! Ваша знижка: <strong>{promoCodeDiscount}%</strong></span>
+                </div>
+              )}
+
               <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
                 Підтверджуючи замовлення, ви погоджуєтеся з{" "}
                 <Link href="/privacy-policy" className="underline">
@@ -878,11 +998,12 @@ export default function FinalCard() {
               </p>
 
               <button
-                className="bg-neutral-900 text-white p-4 sm:p-5 rounded mt-3 font-semibold hover:bg-neutral-800 transition-colors"
+                className="bg-neutral-900 !text-white p-4 sm:p-5 rounded mt-3 font-semibold hover:bg-neutral-800 transition-colors disabled:opacity-50"
                 type="submit"
                 disabled={loading}
+                style={{ color: 'white !important' }}
               >
-                {loading ? "Відправка..." : "Відправити"}
+                <span className="!text-white">{loading ? "Відправка..." : "Відправити"}</span>
               </button>
 
               {error && <p className="text-red-500 mt-2">{error}</p>}
@@ -993,19 +1114,46 @@ export default function FinalCard() {
               )}
 
               {/* Total price container */}
-              <div className="p-5 border-t flex justify-between text-base sm:text-2xl font-normal font-['Arial'] mt-4">
-                <div>Всього</div>
-                <div className="font-['Helvetica'] leading-relaxed tracking-wide">
-                  {items
-                    .reduce((total: number, item) => {
-                      const price = item.discount_percentage
-                        ? item.price * (1 - item.discount_percentage / 100)
-                        : item.price;
-                      return total + price * item.quantity;
-                    }, 0)
-                    .toFixed(2)}{" "}
-                  ₴
-                </div>
+              <div className="p-5 border-t space-y-2">
+                {(() => {
+                  const subtotal = items.reduce((total: number, item) => {
+                    const itemPrice = typeof item.price === 'string' ? parseFloat(item.price) : item.price;
+                    const discount = item.discount_percentage 
+                      ? (typeof item.discount_percentage === 'string' ? parseFloat(item.discount_percentage) : item.discount_percentage)
+                      : 0;
+                    const price = discount > 0
+                      ? itemPrice * (1 - discount / 100)
+                      : itemPrice;
+                    return total + price * item.quantity;
+                  }, 0);
+                  
+                  const discountAmount = promoCodeDiscount && promoCode.trim()
+                    ? subtotal * (promoCodeDiscount / 100)
+                    : 0;
+                  
+                  const finalTotal = subtotal - discountAmount;
+
+                  return (
+                    <>
+                      <div className="flex justify-between text-base sm:text-xl font-normal font-['Arial']">
+                        <div>Сума товарів</div>
+                        <div className="font-['Helvetica']">{subtotal.toFixed(2)} ₴</div>
+                      </div>
+                      {discountAmount > 0 && (
+                        <div className="flex justify-between text-base sm:text-xl font-normal font-['Arial'] text-green-600">
+                          <div>Знижка ({promoCodeDiscount}%)</div>
+                          <div className="font-['Helvetica']">-{discountAmount.toFixed(2)} ₴</div>
+                        </div>
+                      )}
+                      <div className="flex justify-between text-base sm:text-2xl font-normal font-['Arial'] pt-2 border-t">
+                        <div>Всього</div>
+                        <div className="font-['Helvetica'] leading-relaxed tracking-wide">
+                          {finalTotal.toFixed(2)} ₴
+                        </div>
+                      </div>
+                    </>
+                  );
+                })()}
               </div>
             </div>
           </div>

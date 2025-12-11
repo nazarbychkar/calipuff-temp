@@ -52,6 +52,11 @@ const navItems: NavItem[] = [
     icon: <PageIcon />,
     path: "/admin/blog",
   },
+  {
+    name: "Промокоди",
+    icon: <PageIcon />,
+    path: "/admin/promo-codes",
+  },
 ];
 
 // const othersItems: NavItem[] = [

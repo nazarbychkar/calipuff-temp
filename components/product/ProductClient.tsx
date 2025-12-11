@@ -363,14 +363,14 @@ export default function ProductClient({ product: initialProduct }: ProductClient
             {media.map((item, i) => (
               <SwiperSlide key={i} style={{ touchAction: 'pan-y pinch-zoom' }} className="overflow-hidden">
                 {item.type === "video" ? (
-                  <div 
+                <div 
                     className="relative flex justify-center items-center w-full aspect-[3/4] overflow-hidden bg-gray-50 rounded-lg"
-                    style={{ 
-                      WebkitUserSelect: 'none',
-                      userSelect: 'none',
-                      WebkitTouchCallout: 'none'
-                    }}
-                  >
+                  style={{ 
+                    WebkitUserSelect: 'none',
+                    userSelect: 'none',
+                    WebkitTouchCallout: 'none'
+                  }}
+                >
                     <video
                       className="object-cover w-full h-full"
                       src={getImageUrl(item.url)}
@@ -440,9 +440,9 @@ export default function ProductClient({ product: initialProduct }: ProductClient
                             pointerEvents: 'auto',
                             transformOrigin: 'center center',
                             zIndex: 50
-                          }}
-                          draggable={false}
-                        />
+                      }}
+                      draggable={false}
+                    />
                       </div>
                     {/* Badges */}
                     {i === 0 && (
@@ -461,8 +461,8 @@ export default function ProductClient({ product: initialProduct }: ProductClient
                           <span className="bg-orange-600 text-white text-xs font-semibold px-2 py-1 rounded shadow-md">
                             Потужний ефект!
                           </span>
-                        )}
-                      </div>
+                  )}
+                </div>
                     )}
                     <span className="absolute bottom-3 right-3 rounded-full bg-black/60 text-white text-xs px-3 py-1 opacity-0 group-hover:opacity-100 transition-opacity z-30">
                       Переглянути
@@ -703,7 +703,7 @@ export default function ProductClient({ product: initialProduct }: ProductClient
             </a>
           </nav>
         </div>
-      </div>
+              </div>
 
       {/* Sections */}
       <div className="max-w-[1920px] w-full mx-auto px-4 md:px-8 lg:px-12 py-8 md:py-12">
@@ -714,7 +714,7 @@ export default function ProductClient({ product: initialProduct }: ProductClient
           </h2>
           {product.description ? (
             <div className="text-sm md:text-base text-gray-800 leading-relaxed">
-              {product.description}
+                {product.description}
             </div>
           ) : (
             <p className="text-gray-600">Опис товару відсутній.</p>
@@ -758,27 +758,27 @@ export default function ProductClient({ product: initialProduct }: ProductClient
                 <div className="flex flex-col sm:flex-row sm:items-start gap-2 pb-3 border-b border-gray-200">
                   <span className="font-semibold min-w-[200px]">Тип пристрою:</span>
                   <span>{product.deviceType}</span>
-                </div>
+              </div>
               )}
               {product.manufacturer && (
                 <div className="flex flex-col sm:flex-row sm:items-start gap-2 pb-3 border-b border-gray-200">
                   <span className="font-semibold min-w-[200px]">Виробник:</span>
                   <span>{product.manufacturer}</span>
-                </div>
-              )}
+                  </div>
+                )}
               {product.cbdContentMg !== undefined && product.cbdContentMg > 0 && (
                 <div className="flex flex-col sm:flex-row sm:items-start gap-2 pb-3 border-b border-gray-200">
                   <span className="font-semibold min-w-[200px]">Вміст CBD:</span>
                   <span>{product.cbdContentMg} мг</span>
-                </div>
-              )}
+                  </div>
+                )}
               {product.thcContentMg !== undefined && product.thcContentMg !== null && (
                 <div className="flex flex-col sm:flex-row sm:items-start gap-2 pb-3 border-b border-gray-200">
                   <span className="font-semibold min-w-[200px]">Вміст THC:</span>
                   <span>{product.thcContentMg} мг</span>
-                </div>
-              )}
-            </div>
+                  </div>
+                )}
+              </div>
           ) : (
             <p className="text-gray-600">Характеристики товару відсутні.</p>
           )}
@@ -818,7 +818,7 @@ export default function ProductClient({ product: initialProduct }: ProductClient
                 або інші канали зв&apos;язку, вказані на сайті.
               </p>
             </div>
-          </div>
+        </div>
         </section>
 
         {/* Section 4: Відгуки */}

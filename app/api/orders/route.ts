@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { sqlGetAllOrders, sqlPostOrder } from "@/lib/sql";
+import { sqlGetAllOrders, sqlPostOrder, prisma } from "@/lib/sql";
 import crypto from "crypto";
 
 type IncomingOrderItem = {
@@ -59,6 +59,7 @@ export async function POST(req: NextRequest) {
       comment,
       payment_type, // "full" або "prepay"
       items,
+      promo_code, // Промокод
     } = body;
 
     console.log("[POST /api/orders] Extracted data:", {
@@ -143,14 +144,52 @@ export async function POST(req: NextRequest) {
       0
     );
 
-    const amountToPay = payment_type === "prepay" ? 300 : fullAmount;
+    // Валідація та застосування промокоду
+    let promoCodeId: number | null = null;
+    let discountAmount: number = 0;
+    let finalAmount = fullAmount;
+
+    if (promo_code) {
+      const promoCodeRecord = await prisma.promoCode.findUnique({
+        where: { code: promo_code.toUpperCase() },
+      });
+
+      if (promoCodeRecord && promoCodeRecord.is_active) {
+        if (promoCodeRecord.is_one_time && promoCodeRecord.usage_count > 0) {
+          return NextResponse.json(
+            { error: "Промокод вже використано" },
+            { status: 400 }
+          );
+        }
+
+        promoCodeId = promoCodeRecord.id;
+        discountAmount = (fullAmount * promoCodeRecord.discount_percent) / 100;
+        finalAmount = fullAmount - discountAmount;
+
+        // Оновлюємо usage_count промокоду
+        await prisma.promoCode.update({
+          where: { id: promoCodeId },
+          data: { usage_count: { increment: 1 } },
+        });
+      } else {
+        return NextResponse.json(
+          { error: "Невірний або неактивний промокод" },
+          { status: 400 }
+        );
+      }
+    }
+
+    const amountToPay = payment_type === "prepay" ? 300 : finalAmount;
     const amountInKopecks = Math.round(amountToPay * 100);
     
     console.log("[POST /api/orders] Amount calculation:", {
       fullAmount,
+      discountAmount,
+      finalAmount,
       amountToPay,
       amountInKopecks,
       payment_type,
+      promoCodeId,
     });
 
     const basketOrder = normalizedItems.map((item) => ({
@@ -255,6 +294,8 @@ export async function POST(req: NextRequest) {
           color,
         })
       ),
+      promo_code_id: promoCodeId,
+      discount_amount: discountAmount > 0 ? discountAmount : null,
     });
     console.log("[POST /api/orders] Order saved to database successfully");
 

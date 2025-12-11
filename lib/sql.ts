@@ -387,6 +387,8 @@ type CreateOrderInput = {
   invoice_id?: string | null;
   status?: string;
   items: NormalizedOrderItem[];
+  promo_code_id?: number | null;
+  discount_amount?: number | null;
 };
 
 export async function sqlGetAllOrders() {
@@ -410,7 +412,9 @@ export async function sqlPostOrder(data: CreateOrderInput) {
       invoice_id: data.invoice_id ?? null,
       status: data.status ?? "unpaid",
       items: data.items as Prisma.JsonArray,
-    },
+      promo_code_id: data.promo_code_id ?? null,
+      discount_amount: data.discount_amount ?? null,
+    } as Prisma.OrderUncheckedCreateInput,
   });
   return normalizeOrder(order);
 }

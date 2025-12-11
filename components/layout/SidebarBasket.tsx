@@ -157,9 +157,7 @@ export default function SidebarBasket({
                 </Link>
                 <Link
                   href="/final"
-                  className={`text-center py-3 rounded-md mt-4 ${
-                    isDark ? "bg-white text-black" : "bg-black text-white"
-                  }`}
+                  className="text-center py-3 rounded-md mt-4 bg-neutral-900 hover:bg-neutral-800 transition-colors !text-white"
                   onClick={(e) => {
                     e.preventDefault();
                     setIsOpen(false);
@@ -168,7 +166,7 @@ export default function SidebarBasket({
                     }, 100);
                   }}
                 >
-                  Оформити замовлення
+                  <span className="!text-white">Оформити замовлення</span>
                 </Link>
               </>
             )}

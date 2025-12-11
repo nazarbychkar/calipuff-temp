@@ -131,9 +131,12 @@ model Order {
   totalAmount     Decimal? @db.Decimal(10, 2)
   shippingAddress String?
   paymentId       String?
+  promo_code_id   Int?
+  discount_amount Decimal? @db.Decimal(10, 2) // Сума знижки
   created_at      DateTime @default(now())
   updated_at      DateTime @updatedAt
   user            User?    @relation(fields: [userId], references: [id])
+  promo_code      PromoCode? @relation(fields: [promo_code_id], references: [id])
 
   @@map("orders")
 }
@@ -176,4 +179,18 @@ model Review {
   product    Product  @relation(fields: [product_id], references: [id], onDelete: Cascade)
 
   @@map("reviews")
+}
+
+model PromoCode {
+  id              Int      @id @default(autoincrement())
+  code            String   @unique
+  discount_percent Int     // Відсоток знижки (1-100)
+  is_one_time     Boolean  @default(false) // true = одноразовий, false = багаторазовий
+  usage_count     Int      @default(0) // Кількість використань
+  is_active       Boolean  @default(true) // Активний чи ні
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+  orders          Order[]
+
+  @@map("promo_codes")
 }
