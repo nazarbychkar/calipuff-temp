@@ -22,7 +22,7 @@ async function checkAuth() {
       return true;
     }
     return false;
-  } catch (e) {
+  } catch {
     return false;
   }
 }

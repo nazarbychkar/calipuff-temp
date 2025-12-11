@@ -485,7 +485,7 @@ export default function FinalCard() {
         setPromoCodeDiscount(null);
         setPromoCodeError(data.error || "Невірний промокод");
       }
-    } catch (error) {
+    } catch {
       setPromoCodeDiscount(null);
       setPromoCodeError("Помилка валідації промокоду");
     } finally {

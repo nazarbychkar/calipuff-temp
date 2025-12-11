@@ -22,7 +22,7 @@ async function checkAuth() {
       return true;
     }
     return false;
-  } catch (e) {
+  } catch {
     return false;
   }
 }
@@ -66,7 +66,12 @@ export async function PUT(
       }
     }
 
-    const updateData: any = {};
+    const updateData: {
+      code?: string;
+      discount_percent?: number;
+      is_one_time?: boolean;
+      is_active?: boolean;
+    } = {};
     if (code !== undefined) updateData.code = code.toUpperCase();
     if (discount_percent !== undefined) updateData.discount_percent = Number(discount_percent);
     if (is_one_time !== undefined) updateData.is_one_time = Boolean(is_one_time);

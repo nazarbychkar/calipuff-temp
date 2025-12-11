@@ -8,7 +8,6 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import Link from "next/link";
 import Pagination from "./Pagination";
 import ComponentCard from "../ComponentCard";
 import Label from "../form/Label";
