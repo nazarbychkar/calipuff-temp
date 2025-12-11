@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
+import { getImageUrl } from "@/lib/getFirstProductImage";
 
 interface LightboxMedia {
   url: string;
@@ -100,13 +101,13 @@ export default function ProductLightbox({
         {currentItem.type === "video" ? (
           <video
             className="max-w-full max-h-full object-contain"
-            src={`/api/images/${currentItem.url}`}
+            src={getImageUrl(currentItem.url)}
             controls
             autoPlay
           />
         ) : (
           <Image
-            src={`/api/images/${currentItem.url}`}
+            src={getImageUrl(currentItem.url)}
             alt="Product media"
             fill
             className="object-contain"

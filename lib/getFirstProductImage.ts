@@ -29,6 +29,10 @@ export function getProductImageSrc(
 ): string {
   // Handle new optimized format (single first_media object)
   if (media && !Array.isArray(media) && 'url' in media) {
+    // If URL is already a full URL (starts with http:// or https://), return it directly
+    if (media.url.startsWith('http://') || media.url.startsWith('https://')) {
+      return media.url;
+    }
     return `/api/images/${media.url}`;
   }
   
@@ -36,7 +40,17 @@ export function getProductImageSrc(
   const imageUrl = getFirstProductImage(media as { url: string; type: string }[] | undefined);
   
   if (!imageUrl) {
+    // If fallback is a full URL (starts with http:// or https://), return it directly
+    // This handles placehold.co URLs with query strings
+    if (fallback.startsWith('http://') || fallback.startsWith('https://')) {
+      return fallback;
+    }
     return fallback;
+  }
+  
+  // If imageUrl is already a full URL, return it directly
+  if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+    return imageUrl;
   }
   
   return `/api/images/${imageUrl}`;
@@ -64,5 +78,24 @@ export function getFirstMedia(
   }
   
   return null;
+}
+
+/**
+ * Gets the proper image URL, handling both local and remote URLs
+ * @param url - Image URL (can be local filename or full URL)
+ * @returns Proper URL for Next.js Image component
+ */
+export function getImageUrl(url: string | undefined | null): string {
+  if (!url) {
+    return "https://placehold.co/400x600/cccccc/666666?text=No+Image";
+  }
+  
+  // If URL is already a full URL (starts with http:// or https://), return it directly
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+  
+  // Otherwise, treat it as a local file and prepend /api/images/
+  return `/api/images/${url}`;
 }
 

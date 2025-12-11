@@ -9,6 +9,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { Mousewheel } from "swiper/modules";
 import "swiper/css/scrollbar";
+import { getImageUrl } from "@/lib/getFirstProductImage";
 
 // interface Product {
 //   id: number;
@@ -488,7 +489,7 @@ export default function FinalCard() {
                     {item.imageUrl ? (
                       <div className="relative w-20 h-28">
                         <Image
-                          src={`/api/images/${item.imageUrl}`}
+                          src={getImageUrl(item.imageUrl)}
                           alt={item.name}
                           width={80}
                           height={112}
@@ -899,11 +900,7 @@ export default function FinalCard() {
                   >
                     <Image
                       className="w-24 h-32 sm:w-28 sm:h-40 object-cover rounded"
-                      src={
-                        item.imageUrl
-                          ? `/api/images/${item.imageUrl}`
-                          : "https://placehold.co/200x300/cccccc/666666?text=No+Image"
-                      }
+                      src={getImageUrl(item.imageUrl)}
                       alt={item.name}
                       width={112}
                       height={160}

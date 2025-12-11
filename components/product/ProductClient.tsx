@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useBasket } from "@/lib/BasketProvider";
 import Image from "next/image";
 import Alert from "@/components/shared/Alert";
-import { getFirstProductImage } from "@/lib/getFirstProductImage";
+import { getFirstProductImage, getImageUrl } from "@/lib/getFirstProductImage";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import { BRAND } from "@/lib/brand";
@@ -325,7 +325,7 @@ export default function ProductClient({ product: initialProduct }: ProductClient
       <div className="flex flex-col lg:flex-row justify-between p-4 md:p-8 lg:p-12 gap-8 lg:gap-16">
         <div 
           className={`relative w-full lg:w-1/2 flex justify-center transition-opacity duration-300 ${isLoading ? 'opacity-50' : 'opacity-100'}`}
-          style={{ touchAction: 'pan-y pinch-zoom' }}
+          style={{ touchAction: 'pan-y pinch-zoom', zIndex: 1, padding: '40px', overflow: 'visible' }}
         >
           {isLoading && (
             <div className="absolute inset-0 flex items-center justify-center z-10">
@@ -346,7 +346,7 @@ export default function ProductClient({ product: initialProduct }: ProductClient
                 setLightboxIndex(s.activeIndex);
               }
             }}
-            className="product-swiper w-full max-w-[510px]"
+            className="product-swiper w-full max-w-[360px] overflow-hidden"
             key={product.id}
             touchRatio={1}
             touchAngle={45}
@@ -361,7 +361,7 @@ export default function ProductClient({ product: initialProduct }: ProductClient
             cssMode={false}
           >
             {media.map((item, i) => (
-              <SwiperSlide key={i} style={{ touchAction: 'pan-y pinch-zoom' }}>
+              <SwiperSlide key={i} style={{ touchAction: 'pan-y pinch-zoom' }} className="overflow-hidden">
                 {item.type === "video" ? (
                   <div 
                     className="relative flex justify-center items-center w-full aspect-[3/4] overflow-hidden bg-gray-50 rounded-lg"
@@ -373,7 +373,7 @@ export default function ProductClient({ product: initialProduct }: ProductClient
                   >
                     <video
                       className="object-cover w-full h-full"
-                      src={`/api/images/${item.url}`}
+                      src={getImageUrl(item.url)}
                       autoPlay
                       loop
                       muted
@@ -387,7 +387,7 @@ export default function ProductClient({ product: initialProduct }: ProductClient
                     />
                     {/* Badges */}
                     {i === 0 && (
-                      <div className="absolute top-3 left-3 flex flex-col gap-2 z-10">
+                      <div className="absolute top-3 left-3 flex flex-col gap-2 z-30">
                         {product.isPopular && (
                           <span className="bg-blue-600 text-white text-xs font-semibold px-2 py-1 rounded shadow-md">
                             Популярний
@@ -408,40 +408,45 @@ export default function ProductClient({ product: initialProduct }: ProductClient
                     <button
                       type="button"
                       onClick={() => handleOpenLightbox(i)}
-                      className="absolute bottom-3 right-3 rounded-full bg-black/60 text-white text-xs px-3 py-1 hover:bg-black/80 transition-colors"
+                      className="absolute bottom-3 right-3 rounded-full bg-black/60 text-white text-xs px-3 py-1 hover:bg-black/80 transition-colors z-30"
                     >
                       Переглянути
                     </button>
                   </div>
                 ) : (
-                  <button
-                    type="button"
-                    onClick={() => handleOpenLightbox(i)}
-                    className="group relative flex justify-center items-center w-full aspect-[3/4] overflow-hidden bg-gray-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
-                    style={{ 
-                      WebkitUserSelect: 'none',
-                      userSelect: 'none',
-                      WebkitTouchCallout: 'none'
-                    }}
-                  >
-                    <Image
-                      src={`/api/images/${item.url}`}
-                      alt={`${product.name} - зображення ${i + 1}`}
-                      fill
-                      priority={i === activeImageIndex}
-                      quality={i === activeImageIndex ? 90 : 80}
-                      className="object-cover"
-                      sizes="(max-width: 1024px) 80vw, 50vw"
+                  <div className="relative w-full aspect-[3/4] p-6 overflow-visible">
+                    <button
+                      type="button"
+                      onClick={() => handleOpenLightbox(i)}
+                      className="group relative w-full h-full bg-gray-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 overflow-visible"
                       style={{ 
                         WebkitUserSelect: 'none',
                         userSelect: 'none',
-                        pointerEvents: 'auto'
+                        WebkitTouchCallout: 'none'
                       }}
-                      draggable={false}
-                    />
+                    >
+                      <div className="absolute inset-0 overflow-visible">
+                        <Image
+                          src={getImageUrl(item.url)}
+                          alt={`${product.name} - зображення ${i + 1}`}
+                          fill
+                          priority={i === activeImageIndex}
+                          quality={i === activeImageIndex ? 90 : 80}
+                          className="object-cover rounded-lg transition-transform duration-300 ease-out group-hover:scale-[1.25]"
+                          sizes="(max-width: 1024px) 80vw, 50vw"
+                          style={{ 
+                            WebkitUserSelect: 'none',
+                            userSelect: 'none',
+                            pointerEvents: 'auto',
+                            transformOrigin: 'center center',
+                            zIndex: 50
+                          }}
+                          draggable={false}
+                        />
+                      </div>
                     {/* Badges */}
                     {i === 0 && (
-                      <div className="absolute top-3 left-3 flex flex-col gap-2 z-10">
+                      <div className="absolute top-3 left-3 flex flex-col gap-2 z-30">
                         {product.isPopular && (
                           <span className="bg-blue-600 text-white text-xs font-semibold px-2 py-1 rounded shadow-md">
                             Популярний
@@ -459,10 +464,11 @@ export default function ProductClient({ product: initialProduct }: ProductClient
                         )}
                       </div>
                     )}
-                    <span className="absolute bottom-3 right-3 rounded-full bg-black/60 text-white text-xs px-3 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="absolute bottom-3 right-3 rounded-full bg-black/60 text-white text-xs px-3 py-1 opacity-0 group-hover:opacity-100 transition-opacity z-30">
                       Переглянути
                     </span>
                   </button>
+                  </div>
                 )}
               </SwiperSlide>
             ))}

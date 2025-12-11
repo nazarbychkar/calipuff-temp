@@ -7,7 +7,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { getProductImageSrc } from "@/lib/getFirstProductImage";
+import { getProductImageSrc, getImageUrl } from "@/lib/getFirstProductImage";
 import { useProducts } from "@/lib/useProducts";
 
 export default function TopSale() {
@@ -43,7 +43,7 @@ export default function TopSale() {
             <div className="aspect-[2/3] w-full max-h-[350px] sm:max-h-[400px] overflow-hidden relative">
               {product.first_media?.type === "video" ? (
                 <video
-                  src={`/api/images/${product.first_media.url}`}
+                  src={getImageUrl(product.first_media.url)}
                   className="object-cover group-hover:brightness-90 transition duration-300 w-full h-full"
                   loop
                   muted
@@ -88,7 +88,7 @@ export default function TopSale() {
                 <div className="relative w-full h-[300px] max-h-[300px]">
                   {product.first_media?.type === "video" ? (
                     <video
-                      src={`/api/images/${product.first_media.url}`}
+                      src={getImageUrl(product.first_media.url)}
                       className="object-cover group-hover:brightness-90 transition duration-300 w-full h-full"
                       loop
                       muted

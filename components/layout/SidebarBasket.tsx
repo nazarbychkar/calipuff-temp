@@ -3,6 +3,7 @@
 import { useBasket } from "@/lib/BasketProvider";
 import Link from "next/link";
 import Image from "next/image";
+import { getImageUrl } from "@/lib/getFirstProductImage";
 
 interface SidebarBasketProps {
   isOpen: boolean;
@@ -53,11 +54,7 @@ export default function SidebarBasket({
                 className="flex gap-4 border-b pb-4 last:border-none"
               >
                 <Image
-                  src={
-                    item.imageUrl
-                      ? `/api/images/${item.imageUrl}`
-                      : "https://placehold.co/100x150/cccccc/666666?text=No+Image"
-                  }
+                  src={getImageUrl(item.imageUrl)}
                   alt={item.name}
                   width={96}
                   height={128}

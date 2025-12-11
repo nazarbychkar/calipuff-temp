@@ -10,6 +10,7 @@ import Input from "@/components/admin/form/input/InputField";
 import TextArea from "@/components/admin/form/input/TextArea";
 import DropzoneComponent from "@/components/admin/form/form-elements/DropZone";
 import ToggleSwitch from "@/components/admin/form/ToggleSwitch";
+import { getImageUrl } from "@/lib/getFirstProductImage";
 
 type MediaFile = {
   id?: number; // for existing ones
@@ -669,13 +670,13 @@ export default function EditProductPage() {
                   <div key={`existing-${i}`} className="relative inline-block">
                     {item.type === "video" ? (
                       <video
-                        src={`/api/images/${item.url}`}
+                        src={getImageUrl(item.url)}
                         controls
                         className="w-32 h-32 object-cover rounded"
                       />
                     ) : (
                       <Image
-                        src={`/api/images/${item.url}`}
+                        src={getImageUrl(item.url)}
                         alt={`media-${i}`}
                         width={128}
                         height={128}

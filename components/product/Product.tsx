@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { useBasket } from "@/lib/BasketProvider";
 import Image from "next/image";
 import Alert from "@/components/shared/Alert";
-import { getFirstProductImage } from "@/lib/getFirstProductImage";
+import { getFirstProductImage, getImageUrl } from "@/lib/getFirstProductImage";
 import { useProduct } from "@/lib/useProducts";
 import { BRAND } from "@/lib/brand";
 
@@ -71,26 +71,32 @@ export default function Product() {
     <section className="max-w-[1920px] w-full mx-auto">
       <div className="flex flex-col lg:flex-row justify-around p-4 md:p-10 gap-10">
         {/* Media Section */}
-        <div className="relative flex justify-center w-full lg:w-1/2">
-          <div className="w-full max-w-[510px] aspect-[2/3] flex items-center justify-center overflow-hidden bg-gray-50 rounded-lg">
-            {media[activeImageIndex]?.type === "video" ? (
-              <video
-                className="w-full h-full object-cover"
-                src={`/api/images/${media[activeImageIndex]?.url}`}
-                autoPlay
-                loop
-                muted
-                playsInline
-              />
-            ) : (
-              <Image
-                className="object-cover w-full h-full"
-                src={`/api/images/${media[activeImageIndex]?.url}`}
-                alt={product.name}
-                fill
-                sizes="(max-width: 1024px) 100vw, 50vw"
-              />
-            )}
+          <div className="relative flex justify-center w-full lg:w-1/2" style={{ overflow: 'visible' }}>
+            <div className="relative w-full max-w-[360px] aspect-[2/3] bg-gray-50 rounded-lg group" style={{ overflow: 'visible' }}>
+              {media[activeImageIndex]?.type === "video" ? (
+                <video
+                  className="w-full h-full object-cover"
+                  src={getImageUrl(media[activeImageIndex]?.url)}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                />
+              ) : (
+                <div className="relative w-full h-full" style={{ overflow: 'visible' }}>
+                  <Image
+                    className="object-cover rounded-lg transition-transform duration-300 ease-out group-hover:scale-[1.25]"
+                    src={getImageUrl(media[activeImageIndex]?.url)}
+                    alt={product.name}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    style={{ 
+                      transformOrigin: 'center center',
+                      zIndex: 50
+                    }}
+                  />
+                </div>
+              )}
           </div>
 
           {media.length > 1 && (

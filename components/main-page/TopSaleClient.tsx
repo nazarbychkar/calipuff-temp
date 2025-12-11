@@ -7,7 +7,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { getProductImageSrc } from "@/lib/getFirstProductImage";
+import { getProductImageSrc, getImageUrl } from "@/lib/getFirstProductImage";
 
 // Video component with proper mobile autoplay
 function VideoWithAutoplay({ src, className }: { src: string; className?: string }) {
@@ -108,7 +108,7 @@ export default function TopSaleClient({ products }: TopSaleClientProps) {
             <div className="aspect-[2/3] w-full max-h-[350px] sm:max-h-[400px] overflow-hidden relative rounded-lg bg-gray-50">
               {product.first_media?.type === "video" ? (
                 <VideoWithAutoplay
-                  src={`/api/images/${product.first_media.url}`}
+                  src={getImageUrl(product.first_media.url)}
                   className="object-cover group-hover:scale-105 transition-transform duration-300 w-full h-full"
                 />
               ) : (
@@ -167,7 +167,7 @@ export default function TopSaleClient({ products }: TopSaleClientProps) {
                 <div className="relative w-full h-[300px] max-h-[300px]">
                   {product.first_media?.type === "video" ? (
                     <VideoWithAutoplay
-                      src={`/api/images/${product.first_media.url}`}
+                      src={getImageUrl(product.first_media.url)}
                       className="object-cover group-hover:brightness-90 transition duration-300 w-full h-full"
                     />
                   ) : (

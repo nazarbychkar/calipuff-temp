@@ -5,7 +5,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import Link from "next/link";
 import Image from "next/image";
-import { getProductImageSrc } from "@/lib/getFirstProductImage";
+import { getProductImageSrc, getImageUrl } from "@/lib/getFirstProductImage";
 import { useProducts } from "@/lib/useProducts";
 import { BRAND } from "@/lib/brand";
 
@@ -165,7 +165,7 @@ export default function LimitedEdition() {
             <div className="aspect-[2/3] w-full max-h-[350px] sm:max-h-[400px] overflow-hidden relative rounded-lg bg-gray-50">
               {product.first_media?.type === "video" ? (
                 <video
-                  src={`/api/images/${product.first_media.url}`}
+                  src={getImageUrl(product.first_media.url)}
                   className="object-cover group-hover:scale-105 transition-transform duration-300 w-full h-full"
                   loop
                   muted

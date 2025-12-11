@@ -7,7 +7,7 @@ import { useAppContext } from "@/lib/GeneralProvider";
 import SidebarMenu from "../layout/SidebarMenu";
 import Link from "next/link";
 import Image from "next/image";
-import { getProductImageSrc } from "@/lib/getFirstProductImage";
+import { getProductImageSrc, getImageUrl } from "@/lib/getFirstProductImage";
 
 interface Product {
   id: number;
@@ -118,7 +118,7 @@ export default function CatalogClient({
               <div className="relative w-full aspect-[2/3] max-h-[350px] sm:max-h-[400px] bg-gray-50 rounded-lg overflow-hidden">
                 {product.first_media?.type === "video" ? (
                   <video
-                    src={`/api/images/${product.first_media.url}`}
+                    src={getImageUrl(product.first_media.url)}
                     className="object-cover transition-transform duration-300 group-hover:scale-105 w-full h-full"
                     loop
                     muted

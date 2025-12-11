@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { getProductImageSrc } from "@/lib/getFirstProductImage";
+import { getProductImageSrc, getImageUrl } from "@/lib/getFirstProductImage";
 import { useProducts } from "@/lib/useProducts";
 
 export default function YouMightLike() {
@@ -40,7 +40,7 @@ export default function YouMightLike() {
                 <div className="relative w-full aspect-[2/3] max-h-[350px] sm:max-h-[400px] bg-gray-50 rounded-lg overflow-hidden">
                   {isVideo && product.first_media ? (
                     <video
-                      src={`/api/images/${product.first_media.url}`}
+                      src={getImageUrl(product.first_media.url)}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       loop
                       muted
