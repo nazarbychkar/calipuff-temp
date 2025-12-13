@@ -4,6 +4,7 @@ import SidebarMenu from "@/components/layout/SidebarMenu";
 import { useAppContext } from "@/lib/GeneralProvider";
 import { BRAND } from "@/lib/brand";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Hero() {
   const { isSidebarOpen, setIsSidebarOpen } = useAppContext();
@@ -27,6 +28,23 @@ export default function Hero() {
               fill="none"
             />
           </svg>
+        </div>
+        
+        {/* Background image on the right side with left gradient fade */}
+        <div 
+          className="absolute top-16 lg:top-20 right-0 w-3/4 h-[calc(100%-4rem)] lg:h-[calc(100%-5rem)]"
+          style={{
+            maskImage: 'linear-gradient(to right, transparent 0%, transparent 30%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,1) 70%, rgba(0,0,0,1) 100%)',
+            WebkitMaskImage: 'linear-gradient(to right, transparent 0%, transparent 30%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,1) 70%, rgba(0,0,0,1) 100%)'
+          }}
+        >
+          <Image
+            src="/images/calishops-bg.jpg"
+            alt="Background"
+            fill
+            className="object-cover object-right"
+            priority
+          />
         </div>
 
         <div className="relative z-10 flex flex-col justify-center h-full px-6 sm:px-10 lg:px-24 gap-8 text-white">
