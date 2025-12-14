@@ -13,14 +13,6 @@ import Image from "next/image";
 import Pagination from "./Pagination";
 import { getProductImageSrc } from "@/lib/getFirstProductImage";
 
-const SIZE_MAP: Record<string, string> = {
-  "1": "XL",
-  "2": "L",
-  "3": "M",
-  "4": "S",
-  "5": "XS",
-};
-
 const CACHE_KEY = "products_cache";
 const CACHE_EXPIRY_KEY = "products_cache_expiry";
 const CACHE_DURATION = 5 * 60 * 1000; // 5 хвилин

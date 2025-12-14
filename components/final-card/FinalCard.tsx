@@ -542,7 +542,7 @@ export default function FinalCard() {
             </p>
             <div className="mt-4 p-4 bg-white rounded-lg border border-green-200">
               <p className="text-base text-gray-800 leading-relaxed">
-                Ваше замовлення прийнято в обробку. Наш менеджер зв'яжеться з вами найближчим часом для підтвердження деталей та узгодження доставки.
+                Ваше замовлення прийнято в обробку. Наш менеджер зв&apos;яжеться з вами найближчим часом для підтвердження деталей та узгодження доставки.
               </p>
             </div>
           </div>
@@ -637,7 +637,7 @@ export default function FinalCard() {
             </div>
             <div className="space-y-3 text-lg">
               <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                <span className="font-semibold text-gray-700">Ім'я:</span>
+                <span className="font-semibold text-gray-700">Ім&apos;я:</span>
                 <span className="text-gray-900">{customer.name}</span>
               </div>
               {customer.email && (
@@ -722,7 +722,7 @@ export default function FinalCard() {
                     htmlFor="name"
                     className="block text-base font-semibold text-gray-900 mb-2"
                   >
-                    Ім'я та прізвище *
+                    Ім&apos;я та прізвище *
                   </label>
                   <input
                     type="text"
@@ -802,7 +802,7 @@ export default function FinalCard() {
                       Нова пошта — у поштомат
                     </option>
                     <option value="nova_poshta_courier">
-                      Нова пошта — кур'єром
+                      Нова пошта — кур&apos;єром
                     </option>
                     <option value="showroom_pickup">
                       Самовивіз з шоуруму (13:00–19:00)

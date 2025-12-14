@@ -623,7 +623,7 @@ export default function ProductClient({ product: initialProduct }: ProductClient
                 )}
                 {product.volume && (
                   <div className="flex flex-col sm:flex-row sm:justify-between gap-1 p-2 bg-gray-50 rounded-lg">
-                    <span className="font-semibold text-gray-600">Об'єм:</span>
+                    <span className="font-semibold text-gray-600">Об&apos;єм:</span>
                     <span className="font-medium text-gray-900">{product.volume}</span>
                   </div>
                 )}
