@@ -73,7 +73,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
         "product:price:amount": price.toString(),
         "product:price:currency": "UAH",
         ...(oldPrice && { "product:price:original_amount": oldPrice.toString() }),
-        // @ts-ignore - isAvailable exists in Product model but TypeScript doesn't infer it with include
+        // @ts-expect-error - isAvailable exists in Product model but TypeScript doesn't infer it with include
         "product:availability": product.isAvailable !== false ? "in stock" : "out of stock",
         "product:condition": "new",
         "product:brand": BRAND.name,
