@@ -302,7 +302,7 @@ export async function sqlPutProduct(
             },
         cbdContentMg,
         thcContentMg,
-        isAvailable,
+        isAvailable: isAvailable as any,
         effect,
         inhalationCount,
         volume,

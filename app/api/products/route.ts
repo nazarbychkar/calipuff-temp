@@ -168,7 +168,7 @@ export async function POST(req: Request) {
           colors: {
             create: normalizedColors,
           },
-        },
+        } as any,
       });
 
       return NextResponse.json(product, { status: 201 });
@@ -276,8 +276,8 @@ export async function POST(req: Request) {
               },
             }
           : {}),
-      },
-    });
+      } as any,
+      });
 
     return NextResponse.json(product, { status: 201 });
   } catch (error) {

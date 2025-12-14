@@ -111,7 +111,6 @@ async function main() {
       subcategory_id: subcat1.id,
       cbdContentMg: 500,
       thcContentMg: null,
-      // @ts-ignore - isAvailable exists in ProductUncheckedCreateInput
       isAvailable: true,
       media: {
         create: [
@@ -132,7 +131,7 @@ async function main() {
           { label: "Tide Blue", hex: "#40E0D0" },
         ],
       },
-    },
+    } as any,
   });
 
   // Товар 2 - Лімітована серія
@@ -151,7 +150,6 @@ async function main() {
       subcategory_id: subcat1.id,
       cbdContentMg: 700,
       thcContentMg: null,
-      // @ts-ignore - isAvailable exists in ProductUncheckedCreateInput
       isAvailable: true,
       media: {
         create: [
@@ -167,7 +165,7 @@ async function main() {
           { label: "Ocean Blue", hex: "#40E0D0" },
         ],
       },
-    },
+    } as any,
   });
 
   // Товар 3 - Ліквід
@@ -186,7 +184,6 @@ async function main() {
       subcategory_id: subcat3.id,
       cbdContentMg: 500,
       thcContentMg: null,
-      // @ts-ignore - isAvailable exists in ProductUncheckedCreateInput
       isAvailable: true,
       media: {
         create: [
@@ -203,7 +200,7 @@ async function main() {
           { label: "Pineapple", hex: "#FFD700" },
         ],
       },
-    },
+    } as any,
   });
 
   // Товар 4 - Картридж
@@ -222,7 +219,6 @@ async function main() {
       subcategory_id: subcat5.id,
       cbdContentMg: 300,
       thcContentMg: null,
-      // @ts-ignore - isAvailable exists in ProductUncheckedCreateInput
       isAvailable: true,
       media: {
         create: [
@@ -235,7 +231,7 @@ async function main() {
       colors: {
         create: [{ label: "Mint Green", hex: "#90EE90" }],
       },
-    },
+    } as any,
   });
 
   // Товар 5 - Більше товарів
@@ -254,7 +250,6 @@ async function main() {
       subcategory_id: subcat2.id,
       cbdContentMg: 0,
       thcContentMg: null,
-      // @ts-ignore - isAvailable exists in ProductUncheckedCreateInput
       isAvailable: true,
       media: {
         create: [
@@ -270,7 +265,7 @@ async function main() {
           { label: "Ocean", hex: "#40E0D0" },
         ],
       },
-    },
+    } as any,
   });
 
   const product6 = await prisma.product.create({
@@ -288,7 +283,6 @@ async function main() {
       subcategory_id: subcat4.id,
       cbdContentMg: 750,
       thcContentMg: null,
-      // @ts-ignore - isAvailable exists in ProductUncheckedCreateInput
       isAvailable: true,
       media: {
         create: [
@@ -301,7 +295,7 @@ async function main() {
       colors: {
         create: [{ label: "Strawberry Red", hex: "#FF69B4" }],
       },
-    },
+    } as any,
   });
 
   const product7 = await prisma.product.create({
@@ -319,7 +313,6 @@ async function main() {
       subcategory_id: subcat6.id,
       cbdContentMg: 600,
       thcContentMg: null,
-      // @ts-ignore - isAvailable exists in ProductUncheckedCreateInput
       isAvailable: true,
       media: {
         create: [
@@ -332,7 +325,7 @@ async function main() {
       colors: {
         create: [{ label: "Blueberry", hex: "#8A2BE2" }],
       },
-    },
+    } as any,
   });
 
   const product8 = await prisma.product.create({
@@ -350,7 +343,6 @@ async function main() {
       subcategory_id: null,
       cbdContentMg: 0,
       thcContentMg: null,
-      // @ts-ignore - isAvailable exists in ProductUncheckedCreateInput
       isAvailable: true,
       media: {
         create: [
@@ -363,7 +355,7 @@ async function main() {
       colors: {
         create: [{ label: "Black", hex: "#000000" }],
       },
-    },
+    } as any,
   });
 }
 
