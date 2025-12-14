@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma, sqlGetProducts } from "@/lib/sql"; // Make sure to import Prisma client
+import { Prisma } from "@prisma/client";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import crypto from "crypto";
@@ -168,7 +169,7 @@ export async function POST(req: Request) {
           colors: {
             create: normalizedColors,
           },
-        } as any,
+        } as Prisma.ProductUncheckedCreateInput,
       });
 
       return NextResponse.json(product, { status: 201 });
@@ -276,7 +277,7 @@ export async function POST(req: Request) {
               },
             }
           : {}),
-      } as any,
+      } as Prisma.ProductUncheckedCreateInput,
       });
 
     return NextResponse.json(product, { status: 201 });

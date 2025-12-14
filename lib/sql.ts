@@ -54,7 +54,7 @@ function normalizeProduct(product: ProductWithRelations) {
     // CBD-specific fields
     cbdContentMg: record.cbdContentMg ?? 0,
     thcContentMg: record.thcContentMg ?? null,
-    isAvailable: record.isAvailable ?? true,
+    isAvailable: (('isAvailable' in record ? (record as { isAvailable?: boolean }).isAvailable : undefined) ?? true) as boolean,
     // Product specifications
     effect: record.effect ?? null,
     inhalationCount: record.inhalationCount ?? null,
@@ -79,7 +79,7 @@ function normalizeProduct(product: ProductWithRelations) {
       id: color.id,
       label: color.label,
       hex: color.hex,
-      isAvailable: color.isAvailable ?? true,
+      isAvailable: (('isAvailable' in color ? (color as { isAvailable?: boolean }).isAvailable : undefined) ?? true) as boolean,
     })),
   };
 }
@@ -302,14 +302,14 @@ export async function sqlPutProduct(
             },
         cbdContentMg,
         thcContentMg,
-        isAvailable: isAvailable as any,
+        isAvailable,
         effect,
         inhalationCount,
         volume,
         composition,
         deviceType,
         manufacturer,
-      },
+      } as Prisma.ProductUncheckedUpdateInput,
     });
 
     await tx.productMedia.deleteMany({ where: { product_id: id } });
