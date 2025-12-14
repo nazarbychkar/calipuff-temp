@@ -1,13 +1,34 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/sql";
 
+type HomePageContentType = {
+  id: number;
+  section: string;
+  hero_title?: string | null;
+  hero_subtitle?: string | null;
+  hero_description?: string | null;
+  hero_background_image?: string | null;
+  hero_button_text?: string | null;
+  hero_button_link?: string | null;
+  about_title?: string | null;
+  about_description?: string | null;
+  about_mission?: unknown;
+  why_title?: string | null;
+  why_description?: string | null;
+  why_items?: unknown;
+  content?: unknown;
+  images?: unknown;
+  created_at: Date;
+  updated_at: Date;
+};
+
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ section: string }> }
 ) {
   try {
     const { section } = await params;
-    const content = await (prisma as any).homePageContent.findUnique({
+    const content = await (prisma as unknown as { homePageContent: { findUnique: (args: { where: { section: string } }) => Promise<HomePageContentType | null> } }).homePageContent.findUnique({
       where: { section },
     });
 
@@ -36,7 +57,7 @@ export async function PUT(
     const { section } = await params;
     const data = await request.json();
 
-    const content = await (prisma as any).homePageContent.upsert({
+    const content = await (prisma as unknown as { homePageContent: { upsert: (args: { where: { section: string }; update: Record<string, unknown>; create: Record<string, unknown> }) => Promise<HomePageContentType> } }).homePageContent.upsert({
       where: { section },
       update: data,
       create: {
@@ -61,7 +82,7 @@ export async function DELETE(
 ) {
   try {
     const { section } = await params;
-    await (prisma as any).homePageContent.delete({
+    await (prisma as unknown as { homePageContent: { delete: (args: { where: { section: string } }) => Promise<HomePageContentType> } }).homePageContent.delete({
       where: { section },
     });
 

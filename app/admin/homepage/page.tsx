@@ -10,6 +10,9 @@ import DropzoneComponent from "@/components/admin/form/form-elements/DropZone";
 import Image from "next/image";
 import { BRAND } from "@/lib/brand";
 
+type MissionPoint = { text: string; image?: string };
+type WhyItem = { title: string; text: string; accent: string };
+
 interface HomePageContent {
   id?: number;
   section: string;
@@ -21,12 +24,12 @@ interface HomePageContent {
   hero_button_link?: string | null;
   about_title?: string | null;
   about_description?: string | null;
-  about_mission?: any;
+  about_mission?: MissionPoint[] | string[];
   why_title?: string | null;
   why_description?: string | null;
-  why_items?: any;
-  content?: any;
-  images?: any;
+  why_items?: WhyItem[];
+  content?: Record<string, unknown>;
+  images?: string[];
 }
 
 export default function HomePageEditor() {
@@ -258,7 +261,21 @@ export default function HomePageEditor() {
   const saveSection = async () => {
     setSaving(true);
     try {
-      let data: any = { section: activeSection };
+      let data: {
+        section: string;
+        hero_title?: string;
+        hero_subtitle?: string;
+        hero_description?: string;
+        hero_background_image?: string;
+        hero_button_text?: string;
+        hero_button_link?: string;
+        about_title?: string;
+        about_description?: string;
+        about_mission?: MissionPoint[];
+        why_title?: string;
+        why_description?: string;
+        why_items?: WhyItem[];
+      } = { section: activeSection };
 
       if (activeSection === "hero") {
         // Convert /api/images/filename.webp to just filename.webp for storage
