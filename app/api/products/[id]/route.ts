@@ -78,7 +78,7 @@ export async function PUT(
     // CBD-specific fields
     const cbdContentMg = body.cbdContentMg ? Number(body.cbdContentMg) : 0;
     const thcContentMg = body.thcContentMg ? Number(body.thcContentMg) : null;
-    const stock = body.stock ? Number(body.stock) : 0;
+    const isAvailable = body.isAvailable !== undefined ? body.isAvailable : true;
     // Product specifications
     const effect = body.effect || null;
     const inhalationCount = body.inhalationCount || null;
@@ -111,7 +111,7 @@ export async function PUT(
       // CBD-specific fields
       cbdContentMg,
       thcContentMg,
-      stock,
+      isAvailable,
       // Product specifications
       effect,
       inhalationCount,
@@ -121,9 +121,10 @@ export async function PUT(
       manufacturer,
       media: Array.isArray(body.media) ? body.media : [],
       colors: Array.isArray(body.colors)
-        ? body.colors.map((c: { label: string; hex?: string | null }) => ({
+        ? body.colors.map((c: { label: string; hex?: string | null; isAvailable?: boolean }) => ({
             label: c.label,
             hex: c.hex || null,
+            isAvailable: c.isAvailable !== false,
           }))
         : [],
     });

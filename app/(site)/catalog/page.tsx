@@ -11,7 +11,7 @@ interface PageProps {
   }>;
 }
 
-export const revalidate = 300; // ISR every 5 minutes
+export const revalidate = 60; // ISR every 1 minute
 
 export default async function Page({ searchParams }: PageProps) {
     const params = await searchParams;

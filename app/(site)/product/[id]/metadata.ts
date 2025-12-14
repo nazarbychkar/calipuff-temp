@@ -73,7 +73,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
         "product:price:amount": price.toString(),
         "product:price:currency": "UAH",
         ...(oldPrice && { "product:price:original_amount": oldPrice.toString() }),
-        "product:availability": product.stock > 0 ? "in stock" : "out of stock",
+        "product:availability": product.isAvailable ? "in stock" : "out of stock",
         "product:condition": "new",
         "product:brand": BRAND.name,
       },

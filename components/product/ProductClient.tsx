@@ -54,7 +54,7 @@ interface ProductClientProps {
     discount_percentage?: number | null;
     description?: string | null;
     media?: { url: string; type: string }[];
-    colors?: { label: string; hex?: string | null }[];
+    colors?: { label: string; hex?: string | null; isAvailable?: boolean }[];
     // CBD-specific fields
     cbdContentMg?: number;
     thcContentMg?: number | null;
@@ -81,7 +81,6 @@ interface RelatedProduct {
 }
 
 export default function ProductClient({ product: initialProduct }: ProductClientProps) {
-  const quantity = 1;
   const [relatedProducts, setRelatedProducts] = useState<RelatedProduct[]>([]);
   const [product, setProduct] = useState(initialProduct);
   const [isLoading, setIsLoading] = useState(false);
@@ -109,11 +108,18 @@ export default function ProductClient({ product: initialProduct }: ProductClient
   >("info");
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState<string>("overview");
+  const [quantity, setQuantity] = useState(1);
 
-  // Auto-select first color if available
+  // Auto-select first available color if available
   useEffect(() => {
     if (product?.colors && product.colors.length > 0 && !selectedColor) {
+      const firstAvailable = product.colors.find(c => c.isAvailable !== false);
+      if (firstAvailable) {
+        setSelectedColor(firstAvailable.label);
+      } else if (product.colors[0]) {
+        // If no available colors, select first one anyway (for display)
       setSelectedColor(product.colors[0].label);
+      }
     }
   }, [product, selectedColor]);
 
@@ -194,6 +200,16 @@ export default function ProductClient({ product: initialProduct }: ProductClient
       setTimeout(() => setAlertMessage(null), 3000);
       return;
     }
+    // Check if selected color is available
+    if (selectedColor) {
+      const selectedColorData = product?.colors?.find(c => c.label === selectedColor);
+      if (selectedColorData && selectedColorData.isAvailable === false) {
+        setAlertMessage("Цей смак зараз недоступний");
+        setAlertType("warning");
+        setTimeout(() => setAlertMessage(null), 3000);
+        return;
+      }
+    }
     if (!product) {
       setAlertMessage("Товар не завантажений");
       setAlertType("error");
@@ -211,7 +227,7 @@ export default function ProductClient({ product: initialProduct }: ProductClient
       id: product.id,
       name: product.name,
       price: product.price,
-      quantity,
+      quantity: quantity,
       imageUrl: getFirstProductImage(media),
       color: selectedColor || undefined,
       discount_percentage: product.discount_percentage ?? undefined,
@@ -516,104 +532,308 @@ export default function ProductClient({ product: initialProduct }: ProductClient
             {product.name}
           </div>
 
+          {/* Availability Status & Price Row */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4 border-b-2 border-gray-300">
+            {/* Availability Status */}
+            {(() => {
+              const hasAvailableColors = product.colors?.some(c => c.isAvailable !== false);
+              const isAvailable = !product.colors || product.colors.length === 0 || hasAvailableColors;
+              
+              return (
+                <div className="flex items-center gap-2">
+                  {isAvailable ? (
+                    <span className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 text-green-800 rounded-lg text-sm font-bold shadow-sm">
+                      <span className="w-2.5 h-2.5 bg-green-600 rounded-full animate-pulse"></span>
+                      В наявності
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-2 px-4 py-2 bg-red-100 text-red-800 rounded-lg text-sm font-bold shadow-sm">
+                      <span className="w-2.5 h-2.5 bg-red-600 rounded-full"></span>
+                      Немає в наявності
+                    </span>
+                  )}
+                </div>
+              );
+            })()}
+
           {/* Price */}
-          <div className="flex items-baseline gap-3 pb-4 border-b border-gray-400">
+            <div className="flex items-baseline gap-3">
             {product.discount_percentage && product.old_price ? (
               <>
-                <span className="text-2xl md:text-3xl font-bold text-[#FFA500]">
+                  <span className="text-3xl md:text-4xl font-bold text-[#FFA500]">
                   {Math.round(product.price * (1 - product.discount_percentage / 100))} ₴
                 </span>
-                <span className="text-lg text-gray-600 line-through">
+                  <span className="text-xl text-gray-500 line-through">
                   {product.price} ₴
                   </span>
-                <span className="text-sm font-semibold text-green-700 bg-green-100 px-2 py-1 rounded">
+                  <span className="text-sm font-bold text-white bg-green-600 px-3 py-1 rounded-full shadow-sm">
                     -{product.discount_percentage}%
                   </span>
               </>
               ) : (
-              <span className="text-2xl md:text-3xl font-bold text-[#FFA500]">
+                <span className="text-3xl md:text-4xl font-bold text-[#FFA500]">
                 {product.price} ₴
               </span>
               )}
+            </div>
           </div>
+
+          {/* Short Description */}
+          {product.description && (
+            <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-5 border border-gray-200">
+              <div className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-2">
+                Опис
+              </div>
+              <div className="text-sm md:text-base text-gray-800 leading-relaxed">
+                {(() => {
+                  // Беремо перші 2-3 речення або перші 200 символів
+                  const sentences = product.description.split(/[.!?]+/).filter(s => s.trim().length > 0);
+                  if (sentences.length >= 2) {
+                    const shortDesc = sentences.slice(0, 3).join('. ').trim();
+                    return shortDesc ? shortDesc + '.' : product.description.substring(0, 200);
+                  }
+                  return product.description.length > 200 
+                    ? product.description.substring(0, 200) + '...' 
+                    : product.description;
+                })()}
+              </div>
+            </div>
+          )}
+
+          {/* Effect */}
+          {product.effect && (
+            <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl p-5 border-2 border-orange-200">
+              <div className="text-sm font-bold text-orange-900 uppercase tracking-wide mb-2">Ефект</div>
+              <div className="text-base md:text-lg text-gray-900 font-medium">{product.effect}</div>
+            </div>
+          )}
+
+          {/* Characteristics - Compact View */}
+          {(product.inhalationCount || product.volume || product.composition || 
+            product.deviceType || product.manufacturer || 
+            product.cbdContentMg || product.thcContentMg) && (
+            <div className="bg-white rounded-xl p-5 border-2 border-gray-200 shadow-sm">
+              <div className="text-base font-bold text-gray-900 mb-4 uppercase tracking-wide">Характеристики</div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                {product.inhalationCount && (
+                  <div className="flex flex-col sm:flex-row sm:justify-between gap-1 p-2 bg-gray-50 rounded-lg">
+                    <span className="font-semibold text-gray-600">Інгаляції:</span>
+                    <span className="font-medium text-gray-900">{product.inhalationCount}</span>
+                  </div>
+                )}
+                {product.volume && (
+                  <div className="flex flex-col sm:flex-row sm:justify-between gap-1 p-2 bg-gray-50 rounded-lg">
+                    <span className="font-semibold text-gray-600">Об'єм:</span>
+                    <span className="font-medium text-gray-900">{product.volume}</span>
+                  </div>
+                )}
+                {product.deviceType && (
+                  <div className="flex flex-col sm:flex-row sm:justify-between gap-1 p-2 bg-gray-50 rounded-lg">
+                    <span className="font-semibold text-gray-600">Тип:</span>
+                    <span className="font-medium text-gray-900">{product.deviceType}</span>
+                  </div>
+                )}
+                {product.manufacturer && (
+                  <div className="flex flex-col sm:flex-row sm:justify-between gap-1 p-2 bg-gray-50 rounded-lg">
+                    <span className="font-semibold text-gray-600">Виробник:</span>
+                    <span className="font-medium text-gray-900">{product.manufacturer}</span>
+                  </div>
+                )}
+                {product.cbdContentMg !== undefined && product.cbdContentMg > 0 && (
+                  <div className="flex flex-col sm:flex-row sm:justify-between gap-1 p-2 bg-gray-50 rounded-lg">
+                    <span className="font-semibold text-gray-600">CBD:</span>
+                    <span className="font-medium text-gray-900">{product.cbdContentMg} мг</span>
+                  </div>
+                )}
+                {product.thcContentMg !== undefined && product.thcContentMg !== null && (
+                  <div className="flex flex-col sm:flex-row sm:justify-between gap-1 p-2 bg-gray-50 rounded-lg">
+                    <span className="font-semibold text-gray-600">THC:</span>
+                    <span className="font-medium text-gray-900">{product.thcContentMg} мг</span>
+                  </div>
+                )}
+                {product.composition && (
+                  <div className="col-span-1 sm:col-span-2 pt-3 border-t-2 border-gray-200">
+                    <div className="font-semibold text-gray-600 mb-2">Склад:</div>
+                    <div className="text-sm leading-relaxed text-gray-700 bg-gray-50 p-3 rounded-lg">{product.composition}</div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Flavor Picker */}
           {(product.colors && product.colors.length > 0) || relatedProducts.length > 0 ? (
-            <div className="flex flex-col gap-3">
-              <div className="text-sm md:text-base font-semibold text-gray-900 uppercase tracking-tight">
-                Смак
+            <div className="flex flex-col gap-4">
+              <div className="text-base md:text-lg font-bold text-gray-900">
+                Доступні смаки
               </div>
               
-              <div className="flex flex-wrap items-center gap-3 md:gap-4">
-                {/* Current product colors */}
-                {product.colors && product.colors.length > 0 && 
-                  product.colors.map((c, idx) => {
-                    const isActive = selectedColor === c.label;
-                    return (
-                      <button
-                        key={`current-${c.label}-${idx}`}
-                        type="button"
-                        onClick={() => setSelectedColor(c.label)}
-                        className={`relative w-10 h-10 md:w-11 md:h-11 rounded-full border-2 transition-all duration-200 ${
-                          isActive
-                            ? "border-gray-900 scale-110 shadow-md"
-                            : "border-gray-500 hover:border-gray-700"
-                        }`}
-                        aria-label={c.label}
-                        title={c.label}
-                        style={{ 
-                          backgroundColor: c.hex || "#ffffff",
-                        }}
-                      >
-                        {isActive && (
-                          <div className="absolute inset-0 rounded-full border-2 border-gray-900"></div>
-                        )}
-                      </button>
-                    );
-                  })
+              {/* Collect all flavors from current product and related products */}
+              {(() => {
+                const allFlavors: Array<{
+                  label: string;
+                  hex?: string | null;
+                  isAvailable: boolean;
+                  isCurrentProduct: boolean;
+                  productId?: number;
+                }> = [];
+
+                // Add current product flavors
+                if (product.colors && product.colors.length > 0) {
+                  product.colors.forEach((c) => {
+                    allFlavors.push({
+                      label: c.label,
+                      hex: c.hex,
+                      isAvailable: c.isAvailable !== false,
+                      isCurrentProduct: true,
+                    });
+                  });
                 }
 
-                {/* Related products colors */}
-                {relatedProducts.map((relatedProduct) => {
-                  if (!relatedProduct.first_color) return null;
-                  
+                // Add related products flavors (only if not already in list)
+                relatedProducts.forEach((relatedProduct) => {
+                  if (relatedProduct.first_color) {
                   const color = relatedProduct.first_color;
-                  
+                    const exists = allFlavors.some(f => f.label === color.label);
+                    if (!exists) {
+                      allFlavors.push({
+                        label: color.label,
+                        hex: color.hex,
+                        isAvailable: true, // Related products are clickable, so assume available
+                        isCurrentProduct: false,
+                        productId: relatedProduct.id,
+                      });
+                    }
+                  }
+                });
+
+                // Separate available and unavailable
+                const availableFlavors = allFlavors.filter(f => f.isAvailable);
+                const unavailableFlavors = allFlavors.filter(f => !f.isAvailable);
+
+                return (
+                  <div className="space-y-4">
+                    {/* Available Flavors */}
+                    {availableFlavors.length > 0 && (
+                      <div className="space-y-2">
+                        <div className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+                          В наявності ({availableFlavors.length})
+                        </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                          {availableFlavors.map((flavor, idx) => {
+                            const isActive = selectedColor === flavor.label;
                   return (
                     <button
-                      key={`related-${relatedProduct.id}`}
+                                key={`available-${flavor.label}-${idx}`}
                       type="button"
-                      onClick={() => handleColorVariantChange(relatedProduct.id)}
-                      disabled={isLoading}
-                      className={`relative w-10 h-10 md:w-11 md:h-11 rounded-full border-2 border-gray-500 transition-all duration-200 hover:border-gray-700 cursor-pointer ${
-                        isLoading ? 'opacity-50 cursor-wait' : ''
-                      }`}
-                      aria-label={`Переглянути ${color.label}`}
-                      title={color.label}
-                      style={{ 
-                        backgroundColor: color.hex || "#ffffff",
-                        opacity: 0.7
-                      }}
-                    />
+                                onClick={() => {
+                                  if (flavor.isCurrentProduct) {
+                                    setSelectedColor(flavor.label);
+                                  } else if (flavor.productId) {
+                                    handleColorVariantChange(flavor.productId);
+                                  }
+                                }}
+                                disabled={isLoading && !flavor.isCurrentProduct}
+                                className={`relative flex items-center gap-2 px-3 py-2 rounded-lg border-2 transition-all duration-200 ${
+                                  isActive
+                                    ? "border-[#FFA500] bg-orange-50 shadow-md"
+                                    : "border-gray-300 hover:border-gray-400 bg-white hover:bg-gray-50"
+                                } ${isLoading && !flavor.isCurrentProduct ? 'opacity-50 cursor-wait' : 'cursor-pointer'}`}
+                              >
+                                <span
+                                  className="w-6 h-6 rounded-full border border-gray-300 flex-shrink-0"
+                                  style={{ backgroundColor: flavor.hex || "#ffffff" }}
+                                />
+                                <span className={`text-sm font-medium flex-1 text-left ${
+                                  isActive ? "text-gray-900" : "text-gray-700"
+                                }`}>
+                                  {flavor.label}
+                                </span>
+                                {isActive && (
+                                  <span className="text-[#FFA500] text-xs">✓</span>
+                                )}
+                              </button>
                   );
                 })}
               </div>
-              
-              {selectedColor && (
-                <div className="text-sm font-medium text-gray-900 tracking-wide">
-                  {selectedColor}
+                      </div>
+                    )}
+
+                    {/* Unavailable Flavors */}
+                    {unavailableFlavors.length > 0 && (
+                      <div className="space-y-2">
+                        <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                          Немає в наявності ({unavailableFlavors.length})
+                        </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                          {unavailableFlavors.map((flavor, idx) => (
+                            <div
+                              key={`unavailable-${flavor.label}-${idx}`}
+                              className="flex items-center gap-2 px-3 py-2 rounded-lg border-2 border-gray-200 bg-gray-50 opacity-60"
+                            >
+                              <span
+                                className="w-6 h-6 rounded-full border border-gray-300 flex-shrink-0"
+                                style={{ backgroundColor: flavor.hex || "#ffffff" }}
+                              />
+                              <span className="text-sm font-medium text-gray-500 line-through">
+                                {flavor.label}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
                 </div>
               )}
+                  </div>
+                );
+              })()}
             </div>
           ) : null}
 
+          {/* Quantity Selector */}
+          <div className="bg-white rounded-xl p-5 border-2 border-gray-200 shadow-sm">
+            <div className="text-base font-bold text-gray-900 mb-3 uppercase tracking-wide">
+              Кількість
+            </div>
+            <div className="flex items-center gap-4">
+              <button
+                type="button"
+                onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                className="w-12 h-12 rounded-lg border-2 border-gray-300 hover:border-gray-500 hover:bg-gray-50 flex items-center justify-center text-xl font-bold text-gray-700 transition-all shadow-sm"
+              >
+                −
+              </button>
+              <span className="w-20 text-center text-2xl font-bold text-gray-900">{quantity}</span>
+              <button
+                type="button"
+                onClick={() => setQuantity(Math.min(3, quantity + 1))}
+                className="w-12 h-12 rounded-lg border-2 border-gray-300 hover:border-gray-500 hover:bg-gray-50 flex items-center justify-center text-xl font-bold text-gray-700 transition-all shadow-sm"
+              >
+                +
+              </button>
+            </div>
+          </div>
+
           {/* Add to Cart Button */}
+          {(() => {
+            const selectedColorData = product?.colors?.find(c => c.label === selectedColor);
+            const isSelectedColorAvailable = !selectedColor || !selectedColorData || selectedColorData.isAvailable !== false;
+            const hasColors = product?.colors && product.colors.length > 0;
+            const canAddToCart = !hasColors || (selectedColor && isSelectedColorAvailable);
+            
+            return (
           <button
             onClick={handleAddToCart}
-            className="w-full text-center rounded-lg bg-[#FFA500] text-white hover:bg-[#ff8c00] py-4 px-6 text-base md:text-lg font-semibold uppercase tracking-wide transition-all duration-200 cursor-pointer hover:scale-[1.03] hover:shadow-xl active:scale-[0.98]"
-          >
-            Додати до кошика
+                disabled={!canAddToCart}
+                className={`w-full text-center rounded-xl py-5 px-6 text-lg md:text-xl font-bold uppercase tracking-wide transition-all duration-200 shadow-lg ${
+                  canAddToCart
+                    ? "bg-gradient-to-r from-[#FFA500] to-[#ff8c00] text-white hover:from-[#ff8c00] hover:to-[#FFA500] cursor-pointer hover:scale-[1.02] hover:shadow-2xl active:scale-[0.98] transform"
+                    : "bg-gray-300 text-gray-500 cursor-not-allowed opacity-50"
+                }`}
+              >
+                {canAddToCart ? "Додати до кошика" : "Оберіть доступний смак"}
           </button>
+            );
+          })()}
 
           {/* Telegram Manager Link */}
           <a

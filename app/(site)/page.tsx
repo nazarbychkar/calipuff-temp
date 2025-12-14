@@ -53,7 +53,7 @@ const Reviews = dynamic(() => import("@/components/main-page/Reviews"), {
   loading: () => <div className="h-96 animate-pulse bg-gray-100" />
 });
 
-export const revalidate = 300; // ISR every 5 minutes
+export const revalidate = 60; // ISR every 1 minute
 
 export default function Home() {
   return (

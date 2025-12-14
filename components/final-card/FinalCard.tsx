@@ -198,18 +198,6 @@ export default function FinalCard() {
         const data = await response.json();
         console.log("[FinalCard] Success response:", data);
         
-        const { invoiceUrl, invoiceId } = data;
-        
-        console.log("[FinalCard] Invoice URL:", invoiceUrl);
-        console.log("[FinalCard] Invoice ID:", invoiceId);
-
-        if (!invoiceUrl) {
-          console.error("[FinalCard] No invoice URL received!");
-          setError("Не вдалося отримати посилання на оплату.");
-          return;
-        }
-
-
         // Track Purchase event for Meta Pixel
         if (typeof window !== 'undefined' && window.fbq) {
           const totalValue = items.reduce((total: number, item) => {
@@ -243,19 +231,17 @@ export default function FinalCard() {
               comment,
               paymentType,
             },
-            invoiceId,
+            orderId: data.orderId,
           })
         );
 
-        setSuccess("Замовлення успішно створено! Переходимо до оплати...");
+        setSuccess("Замовлення підтверджено!");
         clearBasket();
-
-        console.log("[FinalCard] Redirecting to invoice URL in 2 seconds...");
-        // Перехід на сторінку оплати через 2 сек
+        
+        // Redirect to success page after 1 second
         setTimeout(() => {
-          console.log("[FinalCard] Redirecting to:", invoiceUrl);
-          window.location.href = invoiceUrl;
-        }, 2000);
+          window.location.href = "/final";
+        }, 1000);
       }
     } catch (error) {
       console.error("[FinalCard] Network error:", error);
@@ -540,12 +526,33 @@ export default function FinalCard() {
 
     return (
       <section className="max-w-[1280px] w-full mx-auto p-6 flex flex-col items-center gap-10">
+        {/* Success Message */}
+        <div className="w-full max-w-2xl bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-8 border-2 border-green-200 shadow-lg">
+          <div className="flex flex-col items-center gap-4 text-center">
+            <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center">
+              <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 leading-tight">
+              Замовлення підтверджено!
+            </h1>
+            <p className="text-xl text-gray-700 mt-2">
+              Дякуємо за ваше замовлення
+            </p>
+            <div className="mt-4 p-4 bg-white rounded-lg border border-green-200">
+              <p className="text-base text-gray-800 leading-relaxed">
+                Ваше замовлення прийнято в обробку. Наш менеджер зв'яжеться з вами найближчим часом для підтвердження деталей та узгодження доставки.
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Heading */}
         <div className="text-center">
-          <h1 className="text-5xl sm:text-6xl font-normal leading-tight">
-            <span className="text-stone-500">Дякуємо за </span>
-            <span className="">ваше замовлення!</span>
-          </h1>
+          <h2 className="text-3xl sm:text-4xl font-semibold text-gray-900">
+            Ваше замовлення
+          </h2>
         </div>
 
         {/* Layout container */}
@@ -581,9 +588,6 @@ export default function FinalCard() {
                     <div className="flex flex-col flex-1 gap-1">
                       <div className="text-base font-['Inter'] ">
                         {item.name}
-                      </div>
-                      <div className="text-base  font-['Helvetica']">
-                        {item.size}
                       </div>
                       {item.color && (
                         <div className="text-base font-['Helvetica']">
@@ -627,49 +631,46 @@ export default function FinalCard() {
           </div>
 
           {/* Customer Info */}
-          {/* Title */}
-          <div className="flex flex-col justify-between gap-3">
-            <div className="text-3xl  font-normal text-center">
+          <div className="flex flex-col justify-between gap-6 bg-white rounded-xl p-6 border-2 border-gray-200 shadow-sm">
+            <div className="text-2xl font-bold text-gray-900 text-center mb-4">
               Дані клієнта
             </div>
-            <div className="text-xl font-normal leading-loose w-full md:w-1/3 text-left">
-              <p className="flex justify-start gap-3">
-                <span className="">Ім’я: </span>
-                <span className="text-neutral-400">{customer.name}</span>
-              </p>
+            <div className="space-y-3 text-lg">
+              <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                <span className="font-semibold text-gray-700">Ім'я:</span>
+                <span className="text-gray-900">{customer.name}</span>
+              </div>
               {customer.email && (
-                <p className="flex justify-start gap-3">
-                  <span className="">Email: </span>
-                  <span className="text-neutral-400">{customer.email}</span>
-                </p>
+                <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                  <span className="font-semibold text-gray-700">Email:</span>
+                  <span className="text-gray-900">{customer.email}</span>
+                </div>
               )}
-              <p className="flex justify-start gap-3">
-                <span className="">Телефон: </span>
-                <span className="text-neutral-400">{customer.phone}</span>
-              </p>
-              <p className="flex justify-start gap-3">
-                <span className="">Місто: </span>
-                <span className="text-neutral-400">{customer.city}</span>
-              </p>
-              <p className="flex justify-start gap-3">
-                <span className="">Відділення: </span>
-                <span className="text-neutral-400">{customer.postOffice}</span>
-              </p>
+              <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                <span className="font-semibold text-gray-700">Телефон:</span>
+                <span className="text-gray-900">{customer.phone}</span>
+              </div>
+              <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                <span className="font-semibold text-gray-700">Місто:</span>
+                <span className="text-gray-900">{customer.city}</span>
+              </div>
+              <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                <span className="font-semibold text-gray-700">Відділення:</span>
+                <span className="text-gray-900 text-right max-w-xs">{customer.postOffice}</span>
+              </div>
               {customer.comment && (
-                <p className="flex justify-start gap-3">
-                  <span className="">Коментар: </span>
-                  <span className="text-neutral-400">{customer.comment}</span>
-                </p>
+                <div className="flex flex-col gap-2 py-2">
+                  <span className="font-semibold text-gray-700">Коментар:</span>
+                  <span className="text-gray-900">{customer.comment}</span>
+                </div>
               )}
             </div>
             {/* Back to home */}
             <Link
               href="/"
-              className="w-80 h-16 bg-stone-900 text-white inline-flex justify-center items-center gap-2.5 p-2.5 rounded"
+              className="w-full mt-6 h-14 bg-gradient-to-r from-[#FFA500] to-[#ff8c00] text-white inline-flex justify-center items-center gap-2.5 rounded-xl font-semibold text-lg hover:from-[#ff8c00] hover:to-[#FFA500] transition-all shadow-lg hover:shadow-xl"
             >
-              <span className=" text-xl font-medium font-['Inter'] tracking-tight leading-snug">
-                На головну
-              </span>
+              На головну
             </Link>
           </div>
         </div>
@@ -699,149 +700,166 @@ export default function FinalCard() {
         </div>
       ) : (
         <>
-          <div className="flex flex-col sm:flex-row justify-center gap-10 sm:gap-50">
-            <div className="mt-10 text-center sm:text-left text-3xl sm:text-6xl font-normal font-['Inter'] leading-snug sm:leading-[64.93px] mb-5">
-              Заповніть всі поля
+          <div className="max-w-7xl mx-auto py-8">
+            <div className="text-center mb-8">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-4">
+                Оформлення замовлення
+              </h1>
+              <p className="text-lg text-gray-600">
+                Заповніть форму нижче для завершення замовлення
+              </p>
             </div>
 
-            <div className="w-full sm:w-1/4"></div>
-          </div>
-
-          <div className="flex flex-col sm:flex-row justify-center gap-10 sm:gap-50">
+          <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
             <form
               onSubmit={handleSubmit}
-              className="flex flex-col gap-5 w-full sm:w-1/3"
+              className="flex flex-col gap-6 w-full lg:w-2/3 bg-white rounded-2xl p-6 md:p-8 border-2 border-gray-200 shadow-lg"
               noValidate
             >
-              <label
-                htmlFor="name"
-                className="text-xl sm:text-2xl font-normal font-['Arial']"
-              >
-                Ім’я та прізвище *
-              </label>
-              <input
-                type="text"
-                id="name"
-                placeholder="Ваше імʼя та прізвище"
-                className="border p-3 sm:p-5 text-lg sm:text-xl font-normal font-['Arial'] rounded"
-                value={customerName}
-                onChange={(e) => setCustomerName(e.target.value)}
-                required
-                autoComplete="name"
-              />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="md:col-span-2">
+                  <label
+                    htmlFor="name"
+                    className="block text-base font-semibold text-gray-900 mb-2"
+                  >
+                    Ім'я та прізвище *
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    placeholder="Ваше імʼя та прізвище"
+                    className="w-full border-2 border-gray-300 rounded-lg p-4 text-base focus:outline-none focus:border-[#FFA500] transition-colors"
+                    value={customerName}
+                    onChange={(e) => setCustomerName(e.target.value)}
+                    required
+                    autoComplete="name"
+                  />
+                </div>
 
-              <label
-                htmlFor="email"
-                className="text-xl sm:text-2xl font-normal font-['Arial']"
-              >
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                placeholder="Ваш Email"
-                className="border p-3 sm:p-5 text-lg sm:text-xl font-normal font-['Arial'] rounded"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                autoComplete="email"
-              />
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="block text-base font-semibold text-gray-900 mb-2"
+                  >
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    placeholder="Ваш Email"
+                    className="w-full border-2 border-gray-300 rounded-lg p-4 text-base focus:outline-none focus:border-[#FFA500] transition-colors"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    autoComplete="email"
+                  />
+                </div>
 
-              <label
-                htmlFor="phone"
-                className="text-xl sm:text-2xl font-normal font-['Arial']"
-              >
-                Телефон *
-              </label>
-              <input
-                type="tel"
-                id="phone"
-                placeholder="Ваш телефон"
-                pattern="^\+?\d{10,15}$"
-                title="Введіть номер телефону у форматі +380xxxxxxxxx"
-                className="border p-3 sm:p-5 text-lg sm:text-xl font-normal font-['Arial'] rounded"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                required
-                autoComplete="tel"
-              />
+                <div>
+                  <label
+                    htmlFor="phone"
+                    className="block text-base font-semibold text-gray-900 mb-2"
+                  >
+                    Телефон *
+                  </label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    placeholder="+380XXXXXXXXX"
+                    pattern="^\+?\d{10,15}$"
+                    title="Введіть номер телефону у форматі +380xxxxxxxxx"
+                    className="w-full border-2 border-gray-300 rounded-lg p-4 text-base focus:outline-none focus:border-[#FFA500] transition-colors"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    required
+                    autoComplete="tel"
+                  />
+                </div>
+              </div>
 
-              {/* Add delivery method, city, and post office fields */}
-              <label
-                htmlFor="deliveryMethod"
-                className="text-xl sm:text-2xl font-normal font-['Arial']"
-              >
-                Спосіб доставки *
-              </label>
-              <select
-                id="deliveryMethod"
-                className="border p-3 sm:p-5 text-lg sm:text-xl font-normal font-['Arial'] rounded"
-                value={deliveryMethod}
-                onChange={(e) => setDeliveryMethod(e.target.value)}
-                required
-              >
-                <option value="">Оберіть спосіб доставки</option>
-                <option value="nova_poshta_branch">
-                  Нова пошта — у відділення
-                </option>
-                <option value="nova_poshta_locker">
-                  Нова пошта — у поштомат
-                </option>
-                <option value="nova_poshta_courier">
-                  Нова пошта — кур’єром
-                </option>
-                {/* <option value="ukrposhta">Укрпошта</option> */}
-                <option value="showroom_pickup">
-                  Самовивіз з шоуруму (13:00–19:00)
-                </option>
-              </select>
+              {/* Delivery Section */}
+              <div className="border-t-2 border-gray-200 pt-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Доставка</h3>
+                
+                <div className="mb-6">
+                  <label
+                    htmlFor="deliveryMethod"
+                    className="block text-base font-semibold text-gray-900 mb-2"
+                  >
+                    Спосіб доставки *
+                  </label>
+                  <select
+                    id="deliveryMethod"
+                    className="w-full border-2 border-gray-300 rounded-lg p-4 text-base focus:outline-none focus:border-[#FFA500] transition-colors bg-white"
+                    value={deliveryMethod}
+                    onChange={(e) => setDeliveryMethod(e.target.value)}
+                    required
+                  >
+                    <option value="">Оберіть спосіб доставки</option>
+                    <option value="nova_poshta_branch">
+                      Нова пошта — у відділення
+                    </option>
+                    <option value="nova_poshta_locker">
+                      Нова пошта — у поштомат
+                    </option>
+                    <option value="nova_poshta_courier">
+                      Нова пошта — кур'єром
+                    </option>
+                    <option value="showroom_pickup">
+                      Самовивіз з шоуруму (13:00–19:00)
+                    </option>
+                  </select>
+                </div>
 
               {deliveryMethod.startsWith("nova_poshta") && (
                 <>
-                  <div className="flex flex-col">
+                  <div className="mb-6">
                     <label
                       htmlFor="city"
-                      className="text-xl sm:text-2xl font-normal font-['Arial']"
+                      className="block text-base font-semibold text-gray-900 mb-2"
                     >
                       {deliveryMethod === "nova_poshta_courier"
-                        ? "Місто для доставки кур’єром *"
+                        ? "Місто для доставки кур'єром *"
                         : "Місто *"}
                     </label>
-                    <input
-                      type="text"
-                      id="city"
-                      value={city}
-                      onChange={handleCityChange} // Update city on input change
-                      placeholder="Введіть назву міста"
-                      className="border p-3 sm:p-5 text-lg sm:text-xl font-normal font-['Arial'] rounded"
-                      required
-                    />
-                    {loadingCities ? (
-                      <p>Завантаження міст...</p>
-                    ) : (
-                      cityListVisible && (
-                        <div className="max-h-40 overflow-y-auto shadow-lg rounded border mt-2">
-                          <ul className="list-none p-0">
-                            {filteredCities.map((cityOption, idx) => (
-                              <li
-                                key={idx}
-                                className="p-3 cursor-pointer hover:bg-gray-200"
-                                onClick={() => handleCitySelect(cityOption)} // Set city on click
-                              >
-                                {cityOption}
-                              </li>
-                            ))}
-                          </ul>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        id="city"
+                        value={city}
+                        onChange={handleCityChange}
+                        placeholder="Введіть назву міста"
+                        className="w-full border-2 border-gray-300 rounded-lg p-4 text-base focus:outline-none focus:border-[#FFA500] transition-colors"
+                        required
+                      />
+                      {loadingCities && (
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                          <div className="w-5 h-5 border-2 border-gray-300 border-t-[#FFA500] rounded-full animate-spin"></div>
                         </div>
-                      )
+                      )}
+                    </div>
+                    {!loadingCities && cityListVisible && filteredCities.length > 0 && (
+                      <div className="max-h-48 overflow-y-auto shadow-lg rounded-lg border-2 border-gray-200 mt-2 bg-white z-10">
+                        <ul className="list-none p-0">
+                          {filteredCities.map((cityOption, idx) => (
+                            <li
+                              key={idx}
+                              className="p-3 cursor-pointer hover:bg-orange-50 border-b border-gray-100 last:border-b-0 transition-colors"
+                              onClick={() => handleCitySelect(cityOption)}
+                            >
+                              {cityOption}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     )}
                   </div>
 
                   {/* Post Office Input with Autocomplete */}
                   {deliveryMethod === "nova_poshta_courier" ? (
-                    <div className="flex flex-col">
+                    <div className="mb-6">
                       <label
                         htmlFor="postOffice"
-                        className="text-xl sm:text-2xl font-normal font-['Arial']"
+                        className="block text-base font-semibold text-gray-900 mb-2"
                       >
                         Адреса доставки (вулиця, будинок, квартира) *
                       </label>
@@ -851,55 +869,58 @@ export default function FinalCard() {
                         value={postOffice}
                         onChange={(e) => setPostOffice(e.target.value)}
                         placeholder="Напр.: вул. Січових Стрільців, 10, кв. 25"
-                        className="border p-3 sm:p-5 text-lg sm:text-xl font-normal font-['Arial'] rounded"
+                        className="w-full border-2 border-gray-300 rounded-lg p-4 text-base focus:outline-none focus:border-[#FFA500] transition-colors"
                         required
                       />
                     </div>
                   ) : (
-                    <div className="flex flex-col">
+                    <div className="mb-6">
                       <label
                         htmlFor="postOffice"
-                        className="text-xl sm:text-2xl font-normal font-['Arial']"
+                        className="block text-base font-semibold text-gray-900 mb-2"
                       >
                         {deliveryMethod === "nova_poshta_locker"
                           ? "Поштомат *"
                           : "Відділення *"}
                       </label>
-                      <input
-                        type="text"
-                        id="postOffice"
-                        value={postOffice}
-                        onChange={handlePostOfficeChange}
-                        placeholder={
-                          deliveryMethod === "nova_poshta_locker"
-                            ? "Введіть назву поштомата"
-                            : "Введіть назву відділення"
-                        }
-                        className="border p-3 sm:p-5 text-lg sm:text-xl font-normal font-['Arial'] rounded"
-                        required
-                      />
-                      {loadingPostOffices ? (
-                        <p>Завантаження відділень...</p>
-                      ) : (
-                        postOfficeListVisible && (
-                          <div className="max-h-40 overflow-y-auto shadow-lg rounded border mt-2">
-                            <ul className="list-none p-0">
-                              {filteredPostOffices.map(
-                                (postOfficeOption, idx) => (
-                                  <li
-                                    key={idx}
-                                    className="p-3 cursor-pointer hover:bg-gray-200"
-                                    onClick={() =>
-                                      handlePostOfficeSelect(postOfficeOption)
-                                    }
-                                  >
-                                    {postOfficeOption}
-                                  </li>
-                                )
-                              )}
-                            </ul>
+                      <div className="relative">
+                        <input
+                          type="text"
+                          id="postOffice"
+                          value={postOffice}
+                          onChange={handlePostOfficeChange}
+                          placeholder={
+                            deliveryMethod === "nova_poshta_locker"
+                              ? "Введіть назву поштомата"
+                              : "Введіть назву відділення"
+                          }
+                          className="w-full border-2 border-gray-300 rounded-lg p-4 text-base focus:outline-none focus:border-[#FFA500] transition-colors"
+                          required
+                        />
+                        {loadingPostOffices && (
+                          <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                            <div className="w-5 h-5 border-2 border-gray-300 border-t-[#FFA500] rounded-full animate-spin"></div>
                           </div>
-                        )
+                        )}
+                      </div>
+                      {!loadingPostOffices && postOfficeListVisible && filteredPostOffices.length > 0 && (
+                        <div className="max-h-48 overflow-y-auto shadow-lg rounded-lg border-2 border-gray-200 mt-2 bg-white z-10">
+                          <ul className="list-none p-0">
+                            {filteredPostOffices.map(
+                              (postOfficeOption, idx) => (
+                                <li
+                                  key={idx}
+                                  className="p-3 cursor-pointer hover:bg-orange-50 border-b border-gray-100 last:border-b-0 transition-colors"
+                                  onClick={() =>
+                                    handlePostOfficeSelect(postOfficeOption)
+                                  }
+                                >
+                                  {postOfficeOption}
+                                </li>
+                              )
+                            )}
+                          </ul>
+                        </div>
                       )}
                     </div>
                   )}
@@ -907,256 +928,289 @@ export default function FinalCard() {
               )}
 
               {deliveryMethod === "showroom_pickup" && (
-                <div className="text-base sm:text-lg text-gray-700">
-                  Самовивіз з шоуруму з 13:00 до 19:00, Київ, вул.
-                  Костянтинівська, 21
+                <div className="mb-6 p-4 bg-blue-50 border-2 border-blue-200 rounded-lg">
+                  <p className="text-base text-gray-800 font-medium">
+                    📍 Самовивіз з шоуруму з 13:00 до 19:00
+                  </p>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Київ, вул. Костянтинівська, 21
+                  </p>
                 </div>
               )}
+              </div>
 
-              <label
-                htmlFor="comment"
-                className="text-xl sm:text-2xl font-normal font-['Arial']"
-              >
-                Коментар
-              </label>
-              <input
-                type="text"
-                id="comment"
-                placeholder="Ваш коментар"
-                className="border p-3 sm:p-5 text-lg sm:text-xl font-normal font-['Arial'] rounded"
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-              />
+              {/* Payment & Promo Section */}
+              <div className="border-t-2 border-gray-200 pt-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Оплата</h3>
+                
+                <div className="mb-6">
+                  <label
+                    htmlFor="paymentType"
+                    className="block text-base font-semibold text-gray-900 mb-2"
+                  >
+                    Спосіб оплати *
+                  </label>
+                  <select
+                    id="paymentType"
+                    className="w-full border-2 border-gray-300 rounded-lg p-4 text-base focus:outline-none focus:border-[#FFA500] transition-colors bg-white"
+                    value={paymentType}
+                    onChange={(e) => setPaymentType(e.target.value)}
+                    required
+                  >
+                    <option value="">Оберіть спосіб оплати</option>
+                    <option value="full">Повна оплата при отриманні</option>
+                    <option value="prepay">Передоплата 300 ₴</option>
+                    <option value="crypto">Криптовалюта</option>
+                  </select>
+                </div>
 
-              <label
-                htmlFor="paymentType"
-                className="text-xl sm:text-2xl font-normal font-['Arial']"
-              >
-                Спосіб оплати *
-              </label>
-              <select
-                id="paymentType"
-                className="border p-3 sm:p-5 text-lg sm:text-xl font-normal font-['Arial'] rounded"
-                value={paymentType}
-                onChange={(e) => setPaymentType(e.target.value)}
-                required
-              >
-                <option value="">Оберіть спосіб оплати</option>
-                <option value="full">Повна оплата</option>
-                <option value="prepay">Передоплата 300 ₴</option>
-              </select>
+                <div className="mb-6">
+                  <label
+                    htmlFor="promoCode"
+                    className="block text-base font-semibold text-gray-900 mb-2"
+                  >
+                    Промокод
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      id="promoCode"
+                      placeholder="Введіть промокод"
+                      className="flex-1 border-2 border-gray-300 rounded-lg p-4 text-base focus:outline-none focus:border-[#FFA500] transition-colors uppercase"
+                      value={promoCode}
+                      onChange={handlePromoCodeChange}
+                      disabled={validatingPromoCode}
+                    />
+                  </div>
+                  {validatingPromoCode && (
+                    <div className="flex items-center gap-2 text-sm text-gray-500 mt-2">
+                      <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      <span>Перевірка промокоду...</span>
+                    </div>
+                  )}
+                  {promoCodeError && !validatingPromoCode && (
+                    <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3 mt-2">
+                      <svg className="h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                      <span>{promoCodeError}</span>
+                    </div>
+                  )}
+                  {promoCodeDiscount && !promoCodeError && !validatingPromoCode && (
+                    <div className="flex items-center gap-2 text-sm font-medium text-green-700 bg-green-50 border border-green-200 rounded-lg p-3 mt-2">
+                      <svg className="h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span>Промокод застосовано! Ваша знижка: <strong>{promoCodeDiscount}%</strong></span>
+                    </div>
+                  )}
+                </div>
+              </div>
 
-              <label
-                htmlFor="promoCode"
-                className="text-xl sm:text-2xl font-normal font-['Arial']"
-              >
-                Промокод
-              </label>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  id="promoCode"
-                  placeholder="Введіть промокод"
-                  className="border p-3 sm:p-5 text-lg sm:text-xl font-normal font-['Arial'] rounded flex-1"
-                  value={promoCode}
-                  onChange={handlePromoCodeChange}
-                  disabled={validatingPromoCode}
+              <div className="mb-6">
+                <label
+                  htmlFor="comment"
+                  className="block text-base font-semibold text-gray-900 mb-2"
+                >
+                  Коментар до замовлення
+                </label>
+                <textarea
+                  id="comment"
+                  placeholder="Ваш коментар (опціонально)"
+                  rows={3}
+                  className="w-full border-2 border-gray-300 rounded-lg p-4 text-base focus:outline-none focus:border-[#FFA500] transition-colors resize-none"
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
                 />
               </div>
-              {validatingPromoCode && (
-                <div className="flex items-center gap-2 text-sm text-gray-500">
-                  <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  <span>Перевірка промокоду...</span>
-                </div>
-              )}
-              {promoCodeError && !validatingPromoCode && (
-                <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md p-3">
-                  <svg className="h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                  <span>{promoCodeError}</span>
-                </div>
-              )}
-              {promoCodeDiscount && !promoCodeError && !validatingPromoCode && (
-                <div className="flex items-center gap-2 text-sm font-medium text-green-700 bg-green-50 border border-green-200 rounded-md p-3">
-                  <svg className="h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span>Промокод застосовано! Ваша знижка: <strong>{promoCodeDiscount}%</strong></span>
-                </div>
-              )}
 
-              <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
-                Підтверджуючи замовлення, ви погоджуєтеся з{" "}
-                <Link href="/privacy-policy" className="underline">
-                  політикою повернення, доставки та офертою Calishops
-                </Link>
-                .
-              </p>
+              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  Підтверджуючи замовлення, ви погоджуєтеся з{" "}
+                  <Link href="/privacy-policy" className="text-[#FFA500] hover:underline font-medium">
+                    політикою повернення, доставки та офертою
+                  </Link>
+                  .
+                </p>
+              </div>
 
               <button
-                className="bg-neutral-900 !text-white p-4 sm:p-5 rounded mt-3 font-semibold hover:bg-neutral-800 transition-colors disabled:opacity-50"
+                className="w-full bg-gradient-to-r from-[#FFA500] to-[#ff8c00] text-white p-5 rounded-xl font-bold text-lg uppercase tracking-wide hover:from-[#ff8c00] hover:to-[#FFA500] transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]"
                 type="submit"
                 disabled={loading}
-                style={{ color: 'white !important' }}
               >
-                <span className="!text-white">{loading ? "Відправка..." : "Відправити"}</span>
+                {loading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Відправка...
+                  </span>
+                ) : (
+                  "Підтвердити замовлення"
+                )}
               </button>
 
-              {error && <p className="text-red-500 mt-2">{error}</p>}
-              {success && <p className="text-green-600 mt-2">{success}</p>}
+              {error && (
+                <div className="bg-red-50 border-2 border-red-200 rounded-lg p-4">
+                  <p className="text-red-700 font-medium">{error}</p>
+                </div>
+              )}
+              {success && (
+                <div className="bg-green-50 border-2 border-green-200 rounded-lg p-4">
+                  <p className="text-green-700 font-medium">{success}</p>
+                </div>
+              )}
             </form>
 
-            <div className="w-full sm:w-1/4 px-4 sm:px-0 flex flex-col gap-4">
-              {items.length === 0 ? (
-                <p>Ваш кошик порожній</p>
-              ) : (
-                items.map((item) => (
-                  <div
-                    key={`${item.id}-${item.size}`}
-                    className="w-full rounded p-4 flex flex-col sm:flex-row gap-4 sm:gap-3 items-center"
-                  >
-                    <Image
-                      className="w-24 h-32 sm:w-28 sm:h-40 object-cover rounded"
-                      src={getImageUrl(item.imageUrl)}
-                      alt={item.name}
-                      width={112}
-                      height={160}
-                    />
-                    <div className="flex flex-col flex-1 gap-1">
-                      <div className="text-base font-normal font-['Inter'] leading-normal">
-                        {item.name}
-                      </div>
-                      <div className="text-zinc-600 text-base font-normal font-['Helvetica'] leading-relaxed tracking-wide">
-                        {item.discount_percentage ? (
-                          <div className="flex items-center gap-2">
-                            {/* Discounted price */}
-                            <span className="font-medium text-red-600">
-                              {(
-                                item.price *
-                                (1 - item.discount_percentage / 100)
-                              ).toFixed(2)}
-                              ₴
-                            </span>
-
-                            {/* Original (crossed-out) price */}
-                            <span className="text-gray-500 line-through">
-                              {item.price}₴
-                            </span>
-
-                            {/* Optional: show discount percentage */}
-                            <span className="text-green-600 text-sm">
-                              -{item.discount_percentage}%
-                            </span>
+            {/* Order Summary */}
+            <div className="w-full lg:w-1/3">
+              <div className="bg-white rounded-2xl p-6 border-2 border-gray-200 shadow-lg sticky top-4">
+                <h3 className="text-2xl font-bold text-gray-900 mb-6">Ваше замовлення</h3>
+                
+                <div className="space-y-4 mb-6 max-h-[400px] overflow-y-auto">
+                  {items.length === 0 ? (
+                    <p className="text-gray-500 text-center py-8">Ваш кошик порожній</p>
+                  ) : (
+                    items.map((item) => (
+                      <div
+                        key={`${item.id}-${item.size}`}
+                        className="flex gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200"
+                      >
+                        <Image
+                          className="w-20 h-28 object-cover rounded-lg flex-shrink-0"
+                          src={getImageUrl(item.imageUrl)}
+                          alt={item.name}
+                          width={80}
+                          height={112}
+                        />
+                        <div className="flex flex-col flex-1 gap-2 min-w-0">
+                          <div className="text-base font-semibold text-gray-900 leading-tight">
+                            {item.name}
                           </div>
-                        ) : (
-                          <span className="font-medium">{item.price}₴</span>
-                        )}
-                      </div>
-                      <div className="text-base font-normal font-['Helvetica'] leading-relaxed tracking-wide">
-                        {item.size}
-                      </div>
-                      {item.color && (
-                        <div className="text-base font-normal font-['Helvetica'] leading-relaxed tracking-wide">
-                          Колір: {item.color}
-                        </div>
-                      )}
-
-                      <div className="flex justify-start items-center gap-3 mt-auto">
-                        <div className="w-20 h-9 border border-neutral-400/60 flex justify-around items-center rounded">
-                          <button
-                            className="text-zinc-500 text-base font-normal font-['Inter'] leading-normal"
-                            onClick={() =>
-                              updateQuantity(
-                                item.id,
-                                item.size,
-                                item.quantity + 1
-                              )
-                            }
-                          >
-                            +
-                          </button>
-                          <div className="text-base font-normal font-['Inter'] leading-normal">
-                            {item.quantity}
+                          {item.color && (
+                            <div className="text-sm text-gray-600">
+                              Смак: {item.color}
+                            </div>
+                          )}
+                          <div className="flex items-center justify-between mt-auto">
+                            <div className="text-base font-bold text-gray-900">
+                              {item.discount_percentage ? (
+                                <div className="flex items-center gap-2">
+                                  <span className="text-[#FFA500]">
+                                    {(
+                                      item.price *
+                                      (1 - item.discount_percentage / 100)
+                                    ).toFixed(2)} ₴
+                                  </span>
+                                  <span className="text-gray-400 line-through text-sm">
+                                    {item.price}₴
+                                  </span>
+                                  <span className="text-green-600 text-xs font-semibold">
+                                    -{item.discount_percentage}%
+                                  </span>
+                                </div>
+                              ) : (
+                                <span>{item.price}₴</span>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <div className="flex items-center gap-2 border-2 border-gray-300 rounded-lg">
+                                <button
+                                  className="w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-200 transition-colors"
+                                  onClick={() =>
+                                    updateQuantity(
+                                      item.id,
+                                      item.size,
+                                      item.quantity - 1
+                                    )
+                                  }
+                                  disabled={item.quantity <= 1}
+                                >
+                                  −
+                                </button>
+                                <span className="w-8 text-center font-semibold">{item.quantity}</span>
+                                <button
+                                  className="w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-200 transition-colors"
+                                  onClick={() =>
+                                    updateQuantity(
+                                      item.id,
+                                      item.size,
+                                      item.quantity + 1
+                                    )
+                                  }
+                                >
+                                  +
+                                </button>
+                              </div>
+                              <button
+                                className="text-red-500 hover:text-red-700 transition-colors"
+                                onClick={() => removeItem(item.id, item.size)}
+                                title="Видалити"
+                              >
+                                <Image
+                                  src={"/images/trashcan.svg"}
+                                  width={24}
+                                  height={24}
+                                  alt="Видалити"
+                                />
+                              </button>
+                            </div>
                           </div>
-                          <button
-                            className="text-zinc-500 text-base font-normal font-['Inter'] leading-normal"
-                            onClick={() =>
-                              updateQuantity(
-                                item.id,
-                                item.size,
-                                item.quantity - 1
-                              )
-                            }
-                            disabled={item.quantity <= 1}
-                          >
-                            -
-                          </button>
                         </div>
-                        <button
-                          className="text-red-500 font-semibold"
-                          onClick={() => removeItem(item.id, item.size)}
-                        >
-                          <Image
-                            src={"/images/trashcan.svg"}
-                            width={30}
-                            height={30}
-                            alt={""}
-                          ></Image>
-                        </button>
                       </div>
-                    </div>
-                  </div>
-                ))
-              )}
+                    ))
+                  )}
+                </div>
 
-              {/* Total price container */}
-              <div className="p-5 border-t space-y-2">
-                {(() => {
-                  const subtotal = items.reduce((total: number, item) => {
-                    const itemPrice = typeof item.price === 'string' ? parseFloat(item.price) : item.price;
-                    const discount = item.discount_percentage 
-                      ? (typeof item.discount_percentage === 'string' ? parseFloat(item.discount_percentage) : item.discount_percentage)
+                {/* Total price container */}
+                <div className="border-t-2 border-gray-300 pt-4 space-y-3">
+                  {(() => {
+                    const subtotal = items.reduce((total: number, item) => {
+                      const itemPrice = typeof item.price === 'string' ? parseFloat(item.price) : item.price;
+                      const discount = item.discount_percentage 
+                        ? (typeof item.discount_percentage === 'string' ? parseFloat(item.discount_percentage) : item.discount_percentage)
+                        : 0;
+                      const price = discount > 0
+                        ? itemPrice * (1 - discount / 100)
+                        : itemPrice;
+                      return total + price * item.quantity;
+                    }, 0);
+                    
+                    const discountAmount = promoCodeDiscount && promoCode.trim()
+                      ? subtotal * (promoCodeDiscount / 100)
                       : 0;
-                    const price = discount > 0
-                      ? itemPrice * (1 - discount / 100)
-                      : itemPrice;
-                    return total + price * item.quantity;
-                  }, 0);
-                  
-                  const discountAmount = promoCodeDiscount && promoCode.trim()
-                    ? subtotal * (promoCodeDiscount / 100)
-                    : 0;
-                  
-                  const finalTotal = subtotal - discountAmount;
+                    
+                    const finalTotal = subtotal - discountAmount;
 
-                  return (
-                    <>
-                      <div className="flex justify-between text-base sm:text-xl font-normal font-['Arial']">
-                        <div>Сума товарів</div>
-                        <div className="font-['Helvetica']">{subtotal.toFixed(2)} ₴</div>
-                      </div>
-                      {discountAmount > 0 && (
-                        <div className="flex justify-between text-base sm:text-xl font-normal font-['Arial'] text-green-600">
-                          <div>Знижка ({promoCodeDiscount}%)</div>
-                          <div className="font-['Helvetica']">-{discountAmount.toFixed(2)} ₴</div>
+                    return (
+                      <>
+                        <div className="flex justify-between text-base font-medium text-gray-700">
+                          <span>Сума товарів</span>
+                          <span>{subtotal.toFixed(2)} ₴</span>
                         </div>
-                      )}
-                      <div className="flex justify-between text-base sm:text-2xl font-normal font-['Arial'] pt-2 border-t">
-                        <div>Всього</div>
-                        <div className="font-['Helvetica'] leading-relaxed tracking-wide">
-                          {finalTotal.toFixed(2)} ₴
+                        {discountAmount > 0 && (
+                          <div className="flex justify-between text-base font-medium text-green-600">
+                            <span>Знижка ({promoCodeDiscount}%)</span>
+                            <span>-{discountAmount.toFixed(2)} ₴</span>
+                          </div>
+                        )}
+                        <div className="flex justify-between text-2xl font-bold text-gray-900 pt-3 border-t-2 border-gray-300">
+                          <span>Всього</span>
+                          <span className="text-[#FFA500]">{finalTotal.toFixed(2)} ₴</span>
                         </div>
-                      </div>
-                    </>
-                  );
-                })()}
+                      </>
+                    );
+                  })()}
+                </div>
               </div>
             </div>
           </div>
+        </div>
         </>
       )}
     </section>

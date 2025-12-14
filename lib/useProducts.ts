@@ -14,7 +14,7 @@ interface Product {
   first_media?: { url: string; type: string } | null;
   sizes?: { size: string; stock: number }[];
   color?: string;
-  colors?: { label: string; hex?: string | null }[];
+  colors?: { label: string; hex?: string | null; isAvailable?: boolean }[];
   top_sale?: boolean;
   limited_edition?: boolean;
   category_name?: string;
@@ -22,7 +22,7 @@ interface Product {
   // Vape/CBD-specific fields
   cbdContentMg?: number;
   thcContentMg?: number | null;
-  stock?: number;
+  isAvailable?: boolean;
   // Legacy clothing fields (kept for backward compatibility)
   has_lining?: boolean;
   lining_description?: string;

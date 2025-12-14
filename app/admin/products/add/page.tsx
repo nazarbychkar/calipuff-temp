@@ -30,7 +30,7 @@ export default function FormElements() {
   const [hasStrongEffect, setHasStrongEffect] = useState(false);
 
   const [color, setColor] = useState("");
-  const [colors, setColors] = useState<{ label: string; hex?: string }[]>([]);
+  const [colors, setColors] = useState<{ label: string; hex?: string; isAvailable?: boolean }[]>([]);
   const [customColorLabel, setCustomColorLabel] = useState("");
   const [customColorHex, setCustomColorHex] = useState("#000000");
   const [availableColors, setAvailableColors] = useState<
@@ -45,7 +45,7 @@ export default function FormElements() {
   // CBD-specific fields
   const [cbdContentMg, setCbdContentMg] = useState("0");
   const [thcContentMg, setThcContentMg] = useState("");
-  const [stock, setStock] = useState("0");
+  const [isAvailable, setIsAvailable] = useState(true);
   // Product specifications
   const [effect, setEffect] = useState("");
   const [inhalationCount, setInhalationCount] = useState("");
@@ -191,7 +191,7 @@ export default function FormElements() {
           // CBD-specific fields
           cbdContentMg: Number(cbdContentMg || 0),
           thcContentMg: thcContentMg ? Number(thcContentMg) : null,
-          stock: Number(stock || 0),
+          isAvailable,
           // Product specifications
           effect: effect || null,
           inhalationCount: inhalationCount || null,
@@ -225,7 +225,7 @@ export default function FormElements() {
       // Reset CBD fields
       setCbdContentMg("0");
       setThcContentMg("");
-      setStock("0");
+      setIsAvailable(true);
       // Reset product specifications
       setEffect("");
       setInhalationCount("");
@@ -300,21 +300,28 @@ export default function FormElements() {
                     placeholder="Наприклад: 20"
                   />
                 </div>
-                <div>
-                  <Label>Пріоритет показу</Label>
-                  <Input
-                    type="number"
-                    value={priority}
-                    onChange={(e) => setPriority(e.target.value)}
-                    placeholder="0 - звичайний, 1 - високий"
-                  />
+                {/* Availability - moved up for better visibility */}
+                <div className="border-2 border-blue-200 rounded-lg p-4 bg-blue-50 dark:bg-blue-900/20">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-1">Наявність товару</h3>
+                      <p className="text-xs text-gray-600 dark:text-gray-400">Відображати товар на сайті</p>
+                    </div>
+                    <ToggleSwitch
+                      label=""
+                      enabled={isAvailable}
+                      setEnabled={setIsAvailable}
+                    />
+                  </div>
                 </div>
+
                 <div>
-                  <Label>Категорія</Label>
+                  <Label>Категорія *</Label>
                   <select
                     value={categoryId ?? ""}
                     onChange={(e) => setCategoryId(Number(e.target.value))}
-                    className="w-full border rounded px-3 py-2 text-sm dark:bg-gray-800 dark:text-white"
+                    className="w-full border rounded px-3 py-2 text-sm dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    required
                   >
                     <option value="">Виберіть категорію</option>
                     {categories.map((cat) => (
@@ -330,7 +337,7 @@ export default function FormElements() {
                     <select
                       value={subcategoryId ?? ""}
                       onChange={(e) => setSubcategoryId(Number(e.target.value))}
-                      className="w-full border rounded px-3 py-2 text-sm dark:bg-gray-800 dark:text-white"
+                      className="w-full border rounded px-3 py-2 text-sm dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     >
                       <option value="">Виберіть підкатегорію</option>
                       {subcategories.map((sub) => (
@@ -342,9 +349,21 @@ export default function FormElements() {
                   </div>
                 )}
 
+                <div>
+                  <Label>Пріоритет показу</Label>
+                  <Input
+                    type="number"
+                    value={priority}
+                    onChange={(e) => setPriority(e.target.value)}
+                    placeholder="0 - звичайний, 1 - високий"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Високий пріоритет = товар показується першим</p>
+                </div>
+
                 {/* CBD-specific fields */}
                 <div className="border rounded-lg p-4 space-y-4 bg-gray-50 dark:bg-gray-800/50">
                   <h3 className="text-lg font-semibold mb-4">CBD Параметри</h3>
+                  <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label>CBD вміст (мг)</Label>
                     <Input
@@ -355,7 +374,7 @@ export default function FormElements() {
                     />
                   </div>
                   <div>
-                    <Label>THC вміст (мг) - опціонально</Label>
+                      <Label>THC вміст (мг)</Label>
                     <Input
                       type="number"
                       value={thcContentMg}
@@ -363,14 +382,6 @@ export default function FormElements() {
                       placeholder="0"
                     />
                   </div>
-                  <div>
-                    <Label>Сток (кількість)</Label>
-                    <Input
-                      type="number"
-                      value={stock}
-                      onChange={(e) => setStock(e.target.value)}
-                      placeholder="0"
-                    />
                   </div>
                 </div>
 
@@ -435,22 +446,40 @@ export default function FormElements() {
 
                 <div className="space-y-2">
                   <Label>Cмаки</Label>
-                  <div className="flex gap-2 flex-wrap">
+                  <div className="space-y-2">
                     {colors.map((c, idx) => (
+                      <div key={`${c.label}-${idx}`} className="flex items-center gap-2 p-2 border rounded">
                       <button
                         type="button"
-                        key={`${c.label}-${idx}`}
-                        className="relative w-8 h-8 rounded-full border"
+                          className="relative w-8 h-8 rounded-full border flex-shrink-0"
                         style={{ backgroundColor: c.hex || "#fff" }}
                         title={c.label}
+                        />
+                        <span className="flex-1 text-sm">{c.label}</span>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={c.isAvailable !== false}
+                            onChange={(e) => {
+                              const updated = [...colors];
+                              updated[idx] = { ...updated[idx], isAvailable: e.target.checked };
+                              setColors(updated);
+                            }}
+                            className="w-4 h-4"
+                          />
+                          <span className="text-xs text-gray-600">В наявності</span>
+                        </label>
+                        <button
+                          type="button"
                         onClick={() =>
                           setColors(colors.filter((_, i) => i !== idx))
                         }
+                          className="text-red-600 hover:text-red-800 px-2"
+                          title="Видалити"
                       >
-                        <span className="absolute -top-1 -right-1 bg-red-600 text-white rounded-full w-4 h-4 text-[10px] flex items-center justify-center">
                           ×
-                        </span>
                       </button>
+                      </div>
                     ))}
                   </div>
                   {/* Removed dropdown; using swatch list below */}
@@ -463,7 +492,7 @@ export default function FormElements() {
                         onClick={() =>
                           setColors((prev) => [
                             ...prev,
-                            { label: c.color, hex: c.hex },
+                            { label: c.color, hex: c.hex, isAvailable: true },
                           ])
                         }
                         title={c.color}
@@ -498,6 +527,7 @@ export default function FormElements() {
                           {
                             label: customColorLabel.trim(),
                             hex: customColorHex,
+                            isAvailable: true,
                           },
                         ]);
                         setCustomColorLabel("");

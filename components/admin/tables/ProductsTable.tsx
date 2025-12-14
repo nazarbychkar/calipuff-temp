@@ -197,12 +197,6 @@ export default function ProductsTable() {
                   isHeader
                   className="px-5 py-3 text-left text-sm font-semibold text-gray-600 dark:text-gray-300"
                 >
-                  Розміри
-                </TableCell>
-                <TableCell
-                  isHeader
-                  className="px-5 py-3 text-left text-sm font-semibold text-gray-600 dark:text-gray-300"
-                >
                   Категорія
                 </TableCell>
                 <TableCell
@@ -288,13 +282,6 @@ export default function ProductsTable() {
                     </TableCell>
                     <TableCell className="px-5 py-4 text-sm text-gray-600 dark:text-gray-400">
                       {product.price} ₴
-                    </TableCell>
-                    <TableCell className="px-5 py-4 text-sm text-gray-600 dark:text-gray-400">
-                      {product.sizes && product.sizes.length > 0
-                        ? product.sizes
-                            .map((s) => SIZE_MAP[s.size] || s.size)
-                            .join(", ")
-                        : "—"}
                     </TableCell>
                     <TableCell className="px-5 py-4 text-sm text-gray-600 dark:text-gray-400">
                       {product.category_name || "—"}

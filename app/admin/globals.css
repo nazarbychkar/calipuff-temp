@@ -217,7 +217,7 @@
 }
 
 @utility menu-item-text {
-  @apply text-white;
+  @apply text-gray-900 dark:text-gray-100;
 }
 
 @utility menu-item-arrow {

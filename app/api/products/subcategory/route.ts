@@ -16,7 +16,7 @@ export async function GET(request: Request) {
     const products = await sqlGetProductsBySubcategoryName(subcategory);
     return NextResponse.json(products, {
       headers: {
-        "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
+        "Cache-Control": "public, s-maxage=60, stale-while-revalidate=120",
       },
     });
   } catch {
@@ -28,4 +28,4 @@ export async function GET(request: Request) {
 }
 
 // Enable revalidation every 5 minutes
-export const revalidate = 300;
+export const revalidate = 60; // 1 minute
