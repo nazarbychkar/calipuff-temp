@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import Hero from "@/components/main-page/Hero";
+import HeroServer from "@/components/main-page/HeroServer";
 import TopSaleServer from "@/components/main-page/TopSaleServer";
 import StructuredData from "@/components/shared/StructuredData";
 import ProductDisclaimer from "@/components/shared/ProductDisclaimer";
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
 };
 
 // Lazy load components that are below the fold
-const AboutUs = dynamic(() => import("@/components/main-page/AboutUs"), {
+const AboutUsServer = dynamic(() => import("@/components/main-page/AboutUsServer"), {
   loading: () => <div className="h-96 animate-pulse bg-gray-100" />
 });
 const LimitedEdition = dynamic(() => import("@/components/main-page/LimitedEdition"), {
@@ -59,12 +59,12 @@ export default function Home() {
   return (
     <>
       <StructuredData type="website" />
-      <Hero />
+      <HeroServer />
       <ProductDisclaimer />
       <Suspense fallback={<div className="text-center py-20 text-lg">Завантаження топових товарів...</div>}>
         <TopSaleServer />
       </Suspense>
-      <AboutUs />
+      <AboutUsServer />
       <WhyChooseUs />
       <SocialMedia />
       <LimitedEdition />

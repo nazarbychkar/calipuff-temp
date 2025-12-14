@@ -804,9 +804,6 @@ export default function FinalCard() {
                     <option value="nova_poshta_courier">
                       Нова пошта — кур&apos;єром
                     </option>
-                    <option value="showroom_pickup">
-                      Самовивіз з шоуруму (13:00–19:00)
-                    </option>
                   </select>
                 </div>
 
@@ -927,16 +924,7 @@ export default function FinalCard() {
                 </>
               )}
 
-              {deliveryMethod === "showroom_pickup" && (
-                <div className="mb-6 p-4 bg-blue-50 border-2 border-blue-200 rounded-lg">
-                  <p className="text-base text-gray-800 font-medium">
-                    📍 Самовивіз з шоуруму з 13:00 до 19:00
-                  </p>
-                  <p className="text-sm text-gray-600 mt-1">
-                    Київ, вул. Костянтинівська, 21
-                  </p>
-                </div>
-              )}
+            
               </div>
 
               {/* Payment & Promo Section */}

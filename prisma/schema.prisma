@@ -195,3 +195,35 @@ model PromoCode {
 
   @@map("promo_codes")
 }
+
+model HomePageContent {
+  id                Int      @id @default(autoincrement())
+  section           String   @unique // 'hero', 'about', 'why-choose-us', etc.
+  
+  // Hero section
+  hero_title        String?
+  hero_subtitle     String?
+  hero_description  String?
+  hero_background_image String? // URL to background image
+  hero_button_text  String?
+  hero_button_link  String?
+  
+  // About section
+  about_title       String?
+  about_description String?
+  about_mission     Json? // Array of mission points
+  
+  // Why Choose Us section
+  why_title         String?
+  why_description   String?
+  why_items         Json? // Array of why items
+  
+  // General content
+  content           Json? // Flexible JSON for any additional content
+  images            Json? // Array of image URLs
+  
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+
+  @@map("home_page_content")
+}
