@@ -25,10 +25,16 @@ export default function Product() {
   >("info");
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
 
-  // Auto-select first color if available
+  // Auto-select first available color if available
   useEffect(() => {
     if (product?.colors && product.colors.length > 0 && !selectedColor) {
+      const firstAvailable = product.colors.find(c => c.isAvailable !== false);
+      if (firstAvailable) {
+        setSelectedColor(firstAvailable.label);
+      } else if (product.colors[0]) {
+        // If no available colors, select first one anyway (for display)
       setSelectedColor(product.colors[0].label);
+      }
     }
   }, [product, selectedColor]);
 
@@ -39,6 +45,16 @@ export default function Product() {
       setAlertType("warning");
       setTimeout(() => setAlertMessage(null), 3000);
       return;
+    }
+    // Check if selected color is available
+    if (selectedColor) {
+      const selectedColorData = product?.colors?.find(c => c.label === selectedColor);
+      if (selectedColorData && selectedColorData.isAvailable === false) {
+        setAlertMessage("Цей смак зараз недоступний");
+        setAlertType("warning");
+        setTimeout(() => setAlertMessage(null), 3000);
+        return;
+      }
     }
     if (!product) {
       setAlertMessage("Товар не завантажений");
@@ -65,7 +81,7 @@ export default function Product() {
     return <div className="p-10">Error: {error || "Product not found"}</div>;
 
   const media = product.media || [];
-  const outOfStock = product.stock === 0;
+  const outOfStock = product.isAvailable === false;
 
   return (
     <section className="max-w-[1920px] w-full mx-auto">
@@ -177,6 +193,7 @@ export default function Product() {
               <div className="flex items-end gap-4">
                 {product.colors.map((c, idx) => {
                   const isActive = selectedColor === c.label;
+                  const isAvailable = c.isAvailable !== false;
                   return (
                     <div
                       key={`${c.label}-${idx}`}
@@ -184,21 +201,31 @@ export default function Product() {
                     >
                       <button
                         type="button"
-                        onClick={() => setSelectedColor(c.label)}
+                        onClick={() => isAvailable && setSelectedColor(c.label)}
+                        disabled={!isAvailable}
                         className={`relative flex items-center justify-center w-7 h-7 md:w-8 md:h-8 rounded-full border transition ${
                           isActive
                             ? "border-gray-700"
-                            : "border-gray-300 hover:border-gray-500"
+                            : isAvailable
+                            ? "border-gray-300 hover:border-gray-500"
+                            : "border-gray-200 opacity-50 cursor-not-allowed"
                         }`}
                         aria-label={c.label}
-                        title={c.label}
+                        title={isAvailable ? c.label : `${c.label} (немає в наявності)`}
                         style={{ backgroundColor: c.hex || "#ffffff" }}
-                      />
+                      >
+                        {!isAvailable && (
+                          <span className="absolute text-gray-400 text-xs">×</span>
+                        )}
+                      </button>
                       <div
                         className={`mt-1 h-[2px] rounded-full ${
                           isActive ? "w-6 bg-neutral-900" : "w-0 bg-transparent"
                         }`}
                       />
+                      {!isAvailable && (
+                        <span className="text-xs text-gray-400 mt-1">Немає</span>
+                      )}
                     </div>
                   );
                 })}
@@ -212,16 +239,25 @@ export default function Product() {
           )}
 
           {/* Add to Cart Button */}
-          <div
-            onClick={outOfStock ? undefined : handleAddToCart}
-            className={`w-full text-center bg-neutral-900 hover:bg-neutral-800 p-3 text-lg md:text-xl font-medium font-['Inter'] uppercase tracking-tight transition-all duration-200 text-white ${
-              outOfStock
-                ? "opacity-50 cursor-not-allowed"
-                : "cursor-pointer hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]"
+          {(() => {
+            const selectedColorData = product?.colors?.find(c => c.label === selectedColor);
+            const isSelectedColorAvailable = !selectedColor || !selectedColorData || selectedColorData.isAvailable !== false;
+            const hasColors = product?.colors && product.colors.length > 0;
+            const canAddToCart = !outOfStock && (!hasColors || (selectedColor && isSelectedColorAvailable));
+            
+            return (
+              <div
+                onClick={canAddToCart ? handleAddToCart : undefined}
+                className={`w-full text-center bg-neutral-900 p-3 text-lg md:text-xl font-medium font-['Inter'] uppercase tracking-tight transition-all duration-200 text-white ${
+                  canAddToCart
+                    ? "hover:bg-neutral-800 cursor-pointer hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]"
+                    : "opacity-50 cursor-not-allowed"
             }`}
           >
-            в кошик
+                {canAddToCart ? "в кошик" : hasColors && !isSelectedColorAvailable ? "Оберіть доступний смак" : "Немає в наявності"}
           </div>
+            );
+          })()}
 
           {/* Telegram Manager Link */}
           <a
@@ -260,9 +296,9 @@ export default function Product() {
           </div>
 
           {/* Stock Information */}
-          {product.stock !== undefined && product.stock > 0 && (
+          {product.isAvailable && (
             <div className="text-sm md:text-base font-['Poppins'] text-gray-700">
-              В наявності: <span className="font-semibold text-gray-900">{product.stock}</span> шт.
+              <span className="font-semibold text-gray-900">В наявності</span>
             </div>
           )}
         </div>

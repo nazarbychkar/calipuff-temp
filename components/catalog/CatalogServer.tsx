@@ -9,7 +9,6 @@ interface Product {
   name: string;
   price: number;
   first_media?: { url: string; type: string } | null;
-  sizes?: { size: string; stock: number }[];
   color?: string | null;
 }
 

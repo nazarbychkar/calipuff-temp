@@ -10,7 +10,7 @@ interface Product {
   old_price?: number | null;
   discount_percentage?: number | null;
   description?: string | null;
-  stock?: number;
+  isAvailable?: boolean;
   media?: { url: string; type: string }[];
   colors?: { label: string; hex?: string | null }[];
   // CBD-specific fields
@@ -90,7 +90,7 @@ export default async function ProductServer({ id }: ProductServerProps) {
           price: product.price,
           image: fullImageUrl,
           sku: id.toString(),
-          availability: product.stock && product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+          availability: product.isAvailable !== false ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
         }}
       />
       <StructuredData type="breadcrumb" breadcrumbs={breadcrumbs} />

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma, sqlGetProducts } from "@/lib/sql"; // Make sure to import Prisma client
+import { Prisma } from "@prisma/client";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import crypto from "crypto";
@@ -55,7 +56,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json(products, {
       headers: {
-        "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
+        "Cache-Control": "public, s-maxage=60, stale-while-revalidate=120",
       },
     });
   } catch (error) {
@@ -94,7 +95,7 @@ export async function POST(req: Request) {
         // CBD-specific fields
         cbdContentMg = 0,
         thcContentMg,
-        stock = 0,
+        isAvailable = true,
         // Product specifications
         effect,
         inhalationCount,
@@ -121,10 +122,10 @@ export async function POST(req: Request) {
       }
 
       const normalizedColors = Array.isArray(colors)
-        ? colors.map((c: string | { label: string; hex?: string | null }) =>
+        ? colors.map((c: string | { label: string; hex?: string | null; isAvailable?: boolean }) =>
             typeof c === "string"
-              ? { label: c, hex: null }
-              : { label: c.label, hex: c.hex ?? null }
+              ? { label: c, hex: null, isAvailable: true }
+              : { label: c.label, hex: c.hex ?? null, isAvailable: c.isAvailable !== false }
           )
         : [];
 
@@ -149,7 +150,7 @@ export async function POST(req: Request) {
           // CBD-specific fields
           cbdContentMg: Number(cbdContentMg || 0),
           thcContentMg: thcContentMg ? Number(thcContentMg) : null,
-          stock: Number(stock || 0),
+          isAvailable: isAvailable !== undefined ? isAvailable : true,
           // Product specifications
           effect: effect || null,
           inhalationCount: inhalationCount || null,
@@ -168,7 +169,7 @@ export async function POST(req: Request) {
           colors: {
             create: normalizedColors,
           },
-        },
+        } as Prisma.ProductUncheckedCreateInput,
       });
 
       return NextResponse.json(product, { status: 201 });
@@ -195,7 +196,7 @@ export async function POST(req: Request) {
     // CBD-specific fields
     const cbdContentMg = formData.get("cbdContentMg") ? Number(formData.get("cbdContentMg")) : 0;
     const thcContentMg = formData.get("thcContentMg") ? Number(formData.get("thcContentMg")) : null;
-    const stock = formData.get("stock") ? Number(formData.get("stock")) : 0;
+    const isAvailable = formData.get("isAvailable") === "true" || formData.get("isAvailable") === null;
     // Product specifications
     const effect = formData.get("effect")?.toString() || null;
     const inhalationCount = formData.get("inhalationCount")?.toString() || null;
@@ -255,7 +256,7 @@ export async function POST(req: Request) {
         // CBD-specific fields
         cbdContentMg,
         thcContentMg,
-        stock,
+        isAvailable,
         // Product specifications
         effect,
         inhalationCount,
@@ -276,8 +277,8 @@ export async function POST(req: Request) {
               },
             }
           : {}),
-      },
-    });
+      } as Prisma.ProductUncheckedCreateInput,
+      });
 
     return NextResponse.json(product, { status: 201 });
   } catch (error) {
@@ -290,4 +291,4 @@ export async function POST(req: Request) {
 }
 
 // Enable revalidation every 5 minutes
-export const revalidate = 300;
+export const revalidate = 60; // 1 minute

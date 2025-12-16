@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sqlGetAllOrders, sqlPostOrder, prisma } from "@/lib/sql";
-import crypto from "crypto";
 
 type IncomingOrderItem = {
   product_id?: number | string;
@@ -179,102 +178,17 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const amountToPay = payment_type === "prepay" ? 300 : finalAmount;
-    const amountInKopecks = Math.round(amountToPay * 100);
-    
     console.log("[POST /api/orders] Amount calculation:", {
       fullAmount,
       discountAmount,
       finalAmount,
-      amountToPay,
-      amountInKopecks,
       payment_type,
       promoCodeId,
     });
 
-    const basketOrder = normalizedItems.map((item) => ({
-      name: item.color ? `${item.product_name} (${item.color})` : item.product_name,
-      qty: item.quantity,
-      sum: Math.round(item.price * item.quantity * 100),
-      total: Math.round(item.price * item.quantity * 100),
-      unit: "шт.",
-      code: item.color
-        ? `${item.product_id}-${item.size}-${item.color}`
-        : `${item.product_id}-${item.size}`,
-    }));
-
-    const reference = crypto.randomUUID();
-    console.log("[POST /api/orders] Generated reference:", reference);
-
-    // ✅ Створення інвойсу Monobank
-
-    // NOTE: Monobank webhooks must be able to reach your server from the public internet.
-    // If you use "localhost" in webHookUrl, Monobank cannot call it unless you tunnel (e.g. with ngrok).
-    // Use your public domain or a tunnel URL for webHookUrl and redirectUrl.
-
-    // For local development, set up a tunnel (e.g. ngrok) and use its URL here:
-    // const PUBLIC_URL = process.env.NEXT_PUBLIC_PUBLIC_URL || "http://localhost:3000";
-    // Example: "https://abc123.ngrok.app"
-
-    const PUBLIC_URL =
-      process.env.NEXT_PUBLIC_PUBLIC_URL || "http://localhost:3000";
-    
-    console.log("[POST /api/orders] PUBLIC_URL:", PUBLIC_URL);
-    console.log("[POST /api/orders] MONO_TOKEN exists:", !!process.env.NEXT_PUBLIC_MONO_TOKEN);
-
-    const invoicePayload = {
-      amount: amountInKopecks,
-      ccy: 980,
-      merchantPaymInfo: {
-        reference,
-        destination: "Оплата замовлення",
-        comment: comment || "Оплата замовлення",
-        basketOrder,
-      },
-      redirectUrl: `${PUBLIC_URL}/final`,
-      webHookUrl: `${PUBLIC_URL}/api/mono-webhook`,
-      validity: 3600,
-      paymentType: "debit",
-    };
-    
-    console.log("[POST /api/orders] Creating invoice with payload:", JSON.stringify(invoicePayload, null, 2));
-
-    const monoRes = await fetch(
-      "https://api.monobank.ua/api/merchant/invoice/create",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Token": process.env.NEXT_PUBLIC_MONO_TOKEN!,
-        },
-        body: JSON.stringify(invoicePayload),
-      }
-    );
-    
-    console.log("[POST /api/orders] Monobank response status:", monoRes.status);
-    console.log("[POST /api/orders] Monobank response ok:", monoRes.ok);
-
-    const invoiceData = await monoRes.json();
-    console.log("[POST /api/orders] Invoice data response:", JSON.stringify(invoiceData, null, 2));
-    
-    if (!monoRes.ok) {
-      console.error("[POST /api/orders] Monobank error:", invoiceData);
-      return NextResponse.json(
-        { error: "Не вдалося створити рахунок", details: invoiceData },
-        { status: 500 }
-      );
-    }
-
-    const { invoiceId, pageUrl } = invoiceData;
-    console.log(invoiceData)
-    console.log("[POST /api/orders] Extracted from invoice data:", {
-      invoiceId,
-      pageUrl,
-    });
-
-    // ✅ Зберігання замовлення у БД (статус "pending" - ще не оплачено)
+    // ✅ Зберігання замовлення у БД
     console.log("[POST /api/orders] Saving order to database...");
-    await sqlPostOrder({
+    const savedOrder = await sqlPostOrder({
       customer_name,
       phone_number,
       email,
@@ -283,8 +197,8 @@ export async function POST(req: NextRequest) {
       post_office,
       comment,
       payment_type,
-      invoice_id: invoiceId,
-      status: "unpaid", // замовлення створено, але ще не оплачено
+      invoice_id: null,
+      status: "pending", // замовлення створено, очікує підтвердження
       items: normalizedItems.map(
         ({ product_id, size, quantity, price, color }) => ({
           product_id,
@@ -297,20 +211,74 @@ export async function POST(req: NextRequest) {
       promo_code_id: promoCodeId,
       discount_amount: discountAmount > 0 ? discountAmount : null,
     });
-    console.log("[POST /api/orders] Order saved to database successfully");
+    console.log("[POST /api/orders] Order saved to database successfully, order ID:", savedOrder.id);
 
-    // ✅ НЕ відправляємо в Telegram поки не оплачено
-    // Telegram повідомлення буде відправлено в webhook після успішної оплати
+    // ✅ Відправка в Telegram
+    const BOT_TOKEN = process.env.BOT_TOKEN;
+    const CHAT_ID = process.env.CHAT_ID;
+
+    if (BOT_TOKEN && CHAT_ID) {
+      try {
+        const orderMessage = `
+🛒 <b>Нове замовлення</b>
+
+👤 <b>Ім'я:</b> ${customer_name}
+📱 <b>Тел:</b> ${phone_number}
+📧 <b>Email:</b> ${email || "—"}
+🚚 <b>Доставка:</b> ${delivery_method}
+🏙️ <b>Місто:</b> ${city}
+🏤 <b>Відділення:</b> ${post_office}
+📝 <b>Коментар:</b> ${comment || "—"}
+💰 <b>Оплата:</b> ${
+          payment_type === "prepay"
+            ? "Передплата (300 грн)"
+            : payment_type === "crypto"
+            ? "Криптовалюта"
+            : "Повна оплата при отриманні"
+        }
+🧾 <b>Сума:</b> ${finalAmount.toFixed(2)} грн
+${discountAmount > 0 ? `🎁 <b>Знижка:</b> -${discountAmount.toFixed(2)} грн (промокод)\n` : ""}
+📦 <b>Товари:</b>
+${normalizedItems
+  .map(
+    (item, i) => {
+      const sizePart = item.size && item.size !== "undefined" && item.size !== "null" ? ` | ${item.size}` : "";
+      const colorPart = item.color ? ` (${item.color})` : "";
+      return `${i + 1}. ${item.product_name}${colorPart}${sizePart} | x${item.quantity} | ${(item.price * item.quantity).toFixed(2)} грн`;
+    }
+  )
+  .join("\n")}
+
+🆔 <b>ID замовлення:</b> ${savedOrder.id}
+        `;
+
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: CHAT_ID,
+            text: orderMessage,
+            parse_mode: "HTML",
+          }),
+        });
+
+        console.log("[POST /api/orders] Telegram notification sent successfully");
+      } catch (telegramError) {
+        console.error("[POST /api/orders] Failed to send Telegram notification:", telegramError);
+        // Не блокуємо створення замовлення, якщо Telegram не працює
+      }
+    } else {
+      console.warn("[POST /api/orders] BOT_TOKEN or CHAT_ID not configured, skipping Telegram notification");
+    }
     
-    console.log("[POST /api/orders] Returning response with:", {
-      invoiceUrl: pageUrl,
-      invoiceId: invoiceId,
-    });
-
     console.log("[POST /api/orders] Successfully completed order creation");
     console.log("=".repeat(50));
     
-    return NextResponse.json({ invoiceUrl: pageUrl, invoiceId: invoiceId });
+    return NextResponse.json({ 
+      success: true, 
+      orderId: savedOrder.id,
+      message: "Замовлення успішно створено"
+    });
   } catch (error) {
     console.error("[POST /api/orders] ERROR occurred:", error);
     console.error("[POST /api/orders] Error details:", {

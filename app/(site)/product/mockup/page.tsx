@@ -10,7 +10,7 @@ const mockProduct = {
   old_price: 1799,
   discount_percentage: 28,
   description: "Високоякісний вейп з натуральним екстрактом CBD та ароматом свіжої чорниці. Ідеальний для розслаблення та відновлення після навантаження. Містить 500 мг CBD на 1 мл рідини. Без шкідливих добавок та ГМО.",
-  stock: 15,
+  isAvailable: true,
   // Mock media - images will show placeholder if files don't exist
   // Replace these with actual product image filenames from your product-images folder
   media: [

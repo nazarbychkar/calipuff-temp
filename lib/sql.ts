@@ -54,7 +54,7 @@ function normalizeProduct(product: ProductWithRelations) {
     // CBD-specific fields
     cbdContentMg: record.cbdContentMg ?? 0,
     thcContentMg: record.thcContentMg ?? null,
-    stock: record.stock ?? 0,
+    isAvailable: (('isAvailable' in record ? (record as { isAvailable?: boolean }).isAvailable : undefined) ?? true) as boolean,
     // Product specifications
     effect: record.effect ?? null,
     inhalationCount: record.inhalationCount ?? null,
@@ -79,6 +79,7 @@ function normalizeProduct(product: ProductWithRelations) {
       id: color.id,
       label: color.label,
       hex: color.hex,
+      isAvailable: (('isAvailable' in color ? (color as { isAvailable?: boolean }).isAvailable : undefined) ?? true) as boolean,
     })),
   };
 }
@@ -230,7 +231,7 @@ type UpsertProductInput = {
   // CBD-specific fields
   cbdContentMg?: number;
   thcContentMg?: number | null;
-  stock?: number;
+  isAvailable?: boolean;
   // Product specifications
   effect?: string | null;
   inhalationCount?: string | null;
@@ -239,7 +240,7 @@ type UpsertProductInput = {
   deviceType?: string | null;
   manufacturer?: string | null;
   media: { type: string; url: string }[];
-  colors: { label: string; hex?: string | null }[];
+  colors: { label: string; hex?: string | null; isAvailable?: boolean }[];
 };
 
 export async function sqlPutProduct(
@@ -264,7 +265,7 @@ export async function sqlPutProduct(
     name,
     cbdContentMg = 0,
     thcContentMg,
-    stock = 0,
+    isAvailable = true,
     effect,
     inhalationCount,
     volume,
@@ -289,18 +290,26 @@ export async function sqlPutProduct(
         isPopular,
         isRecommended,
         hasStrongEffect,
-        category_id,
-        subcategory_id,
+        category: {
+          connect: { id: category_id },
+        },
+        subcategory: subcategory_id
+          ? {
+              connect: { id: subcategory_id },
+            }
+          : {
+              disconnect: true,
+            },
         cbdContentMg,
         thcContentMg,
-        stock,
+        isAvailable,
         effect,
         inhalationCount,
         volume,
         composition,
         deviceType,
         manufacturer,
-      },
+      } as Prisma.ProductUncheckedUpdateInput,
     });
 
     await tx.productMedia.deleteMany({ where: { product_id: id } });
@@ -321,6 +330,7 @@ export async function sqlPutProduct(
           product_id: id,
           label: item.label,
           hex: item.hex,
+          isAvailable: item.isAvailable !== false,
         })),
       });
     }

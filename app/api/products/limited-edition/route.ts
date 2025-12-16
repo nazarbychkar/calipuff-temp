@@ -6,7 +6,7 @@ export async function GET() {
     const products = await sqlGetLimitedEditionProducts();
     return NextResponse.json(products, {
       headers: {
-        "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
+        "Cache-Control": "public, s-maxage=60, stale-while-revalidate=120",
       },
     });
   } catch (error) {
@@ -18,5 +18,5 @@ export async function GET() {
   }
 }
 
-export const revalidate = 300;
+export const revalidate = 60; // 1 minute
 

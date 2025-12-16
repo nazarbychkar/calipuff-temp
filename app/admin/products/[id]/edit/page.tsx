@@ -44,7 +44,7 @@ export default function EditProductPage() {
     // CBD-specific fields
     cbdContentMg: "0",
     thcContentMg: "",
-    stock: "0",
+    isAvailable: true,
     // Product specifications
     effect: "",
     inhalationCount: "",
@@ -72,7 +72,7 @@ export default function EditProductPage() {
   >([]);
   const [customColorLabel, setCustomColorLabel] = useState("");
   const [customColorHex, setCustomColorHex] = useState("#000000");
-  const [colors, setColors] = useState<{ label: string; hex?: string }[]>([]);
+  const [colors, setColors] = useState<{ label: string; hex?: string; isAvailable?: boolean }[]>([]);
 
   useEffect(() => {
     async function fetchData() {
@@ -111,7 +111,7 @@ export default function EditProductPage() {
           // CBD-specific fields
           cbdContentMg: String(productData.cbdContentMg ?? 0),
           thcContentMg: productData.thcContentMg != null ? String(productData.thcContentMg) : "",
-          stock: String(productData.stock ?? 0),
+          isAvailable: productData.isAvailable !== undefined ? productData.isAvailable : true,
           // Product specifications
           effect: productData.effect || "",
           inhalationCount: productData.inhalationCount || "",
@@ -319,7 +319,7 @@ export default function EditProductPage() {
           // CBD-specific fields
           cbdContentMg: Number(formData.cbdContentMg || 0),
           thcContentMg: formData.thcContentMg ? Number(formData.thcContentMg) : null,
-          stock: Number(formData.stock || 0),
+          isAvailable: formData.isAvailable,
           // Product specifications
           effect: formData.effect || null,
           inhalationCount: formData.inhalationCount || null,
@@ -400,7 +400,6 @@ export default function EditProductPage() {
                   placeholder="0 - звичайний, 1 - високий"
                 />
 
-                <Label>Розміри</Label>
                 <Label>Категорія</Label>
                 <select
                   value={formData.categoryId ?? ""}
@@ -464,13 +463,17 @@ export default function EditProductPage() {
                       placeholder="0"
                     />
                   </div>
-                  <div>
-                    <Label>Сток (кількість)</Label>
-                    <Input
-                      type="number"
-                      value={formData.stock}
-                      onChange={(e) => handleChange("stock", e.target.value)}
-                      placeholder="0"
+                </div>
+
+                {/* Availability */}
+                <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-800/50">
+                  <h3 className="text-lg font-semibold mb-4">Наявність товару</h3>
+                  <div className="flex items-center justify-between">
+                    <Label className="mb-0">Товар в наявності</Label>
+                    <ToggleSwitch
+                      label=""
+                      enabled={formData.isAvailable}
+                      setEnabled={(value) => handleChange("isAvailable", value)}
                     />
                   </div>
                 </div>
@@ -536,27 +539,37 @@ export default function EditProductPage() {
 
                 <div className="space-y-2">
                   <Label>Cмаки</Label>
-                  <div className="flex gap-2 flex-wrap">
+                  <div className="space-y-2">
                     {colors.map((c, idx) => (
-                      <span
-                        key={idx}
-                        className="inline-flex items-center gap-2 border rounded-full px-3 py-1 text-xs"
-                      >
+                      <div key={idx} className="flex items-center gap-2 p-2 border rounded">
                         <span
-                          className="w-4 h-4 rounded-full border"
+                          className="w-8 h-8 rounded-full border flex-shrink-0"
                           style={{ backgroundColor: c.hex || "#fff" }}
                         />
-                        {c.label}
+                        <span className="flex-1 text-sm">{c.label}</span>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={c.isAvailable !== false}
+                            onChange={(e) => {
+                              const updated = [...colors];
+                              updated[idx] = { ...updated[idx], isAvailable: e.target.checked };
+                              setColors(updated);
+                            }}
+                            className="w-4 h-4"
+                          />
+                          <span className="text-xs text-gray-600">В наявності</span>
+                        </label>
                         <button
                           type="button"
-                          className="ml-1 text-red-600"
+                          className="text-red-600 hover:text-red-800 px-2"
                           onClick={() =>
                             setColors(colors.filter((_, i) => i !== idx))
                           }
                         >
                           ×
                         </button>
-                      </span>
+                      </div>
                     ))}
                   </div>
                   {/* Removed dropdown; using swatch list below */}
@@ -569,7 +582,7 @@ export default function EditProductPage() {
                         onClick={() =>
                           setColors((prev) => [
                             ...prev,
-                            { label: c.color, hex: c.hex },
+                            { label: c.color, hex: c.hex, isAvailable: true },
                           ])
                         }
                         title={c.color}
@@ -604,6 +617,7 @@ export default function EditProductPage() {
                           {
                             label: customColorLabel.trim(),
                             hex: customColorHex,
+                            isAvailable: true,
                           },
                         ]);
                         setCustomColorLabel("");

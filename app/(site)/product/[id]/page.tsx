@@ -13,7 +13,7 @@ interface PageProps {
 // Allow dynamic rendering as fallback if static generation fails
 // This ensures the route works even if generateStaticParams returns empty array
 export const dynamicParams = true;
-export const revalidate = 300; // ISR every 5 minutes
+export const revalidate = 60; // ISR every 1 minute
 export const runtime = 'nodejs'; // Ensure Node.js runtime for database access
 
 // Generate static params for popular products

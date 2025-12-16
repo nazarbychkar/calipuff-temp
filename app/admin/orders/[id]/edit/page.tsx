@@ -208,10 +208,7 @@ export default function EditOrderPage() {
                     <th className="px-4 py-3 text-left font-semibold">
                       Назва продукту
                     </th>
-                    <th className="px-4 py-3 text-left font-semibold">
-                      Розмір
-                    </th>
-                    <th className="px-4 py-3 text-left font-semibold">Колір</th>
+                    <th className="px-4 py-3 text-left font-semibold">Смак</th>
                     <th className="px-4 py-3 text-left font-semibold">
                       Кількість
                     </th>
@@ -241,9 +238,6 @@ export default function EditOrderPage() {
                           {item.product_name}
                         </td>
                         <td className="px-4 py-3 text-gray-600 dark:text-gray-300">
-                          {item.size}
-                        </td>
-                        <td className="px-4 py-3 text-gray-600 dark:text-gray-300">
                           {item.color || "—"}
                         </td>
                         <td className="px-4 py-3 text-gray-600 dark:text-gray-300">
@@ -262,7 +256,7 @@ export default function EditOrderPage() {
                 <tfoot>
                   <tr className="bg-gray-50 dark:bg-gray-900">
                     <td
-                      colSpan={5}
+                      colSpan={4}
                       className="px-4 py-3 text-right font-semibold text-gray-800 dark:text-gray-200"
                     >
                       Загальна сума:
@@ -274,7 +268,7 @@ export default function EditOrderPage() {
                   {formData.payment_type && (
                     <tr className="bg-gray-100 dark:bg-gray-800">
                       <td
-                        colSpan={5}
+                        colSpan={4}
                         className="px-4 py-3 text-right font-semibold text-gray-800 dark:text-gray-200"
                       >
                         Залишок до оплати:

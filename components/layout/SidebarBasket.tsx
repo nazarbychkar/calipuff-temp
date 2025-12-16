@@ -82,7 +82,9 @@ export default function SidebarBasket({
                         <span className="font-medium">{item.price}₴</span>
                       )}
                     </div>
-                    <p className="text-stone-900 mt-1">Розмір: {item.size}</p>
+                    {item.color && (
+                      <p className="text-stone-900 mt-1">Смак: {item.color}</p>
+                    )}
                   </div>
 
                   <div className="flex items-center justify-between mt-2">

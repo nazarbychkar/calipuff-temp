@@ -13,7 +13,7 @@ interface ProductClientWrapperProps {
     description?: string | null;
     stock?: number;
     media?: { url: string; type: string }[];
-    colors?: { label: string; hex?: string | null }[];
+    colors?: { label: string; hex?: string | null; isAvailable?: boolean }[];
     // CBD-specific fields
     cbdContentMg?: number;
     thcContentMg?: number | null;
