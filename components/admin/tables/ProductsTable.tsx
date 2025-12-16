@@ -99,6 +99,25 @@ export default function ProductsTable() {
     }
   }
 
+  async function handleCopy(productId: number) {
+    if (!confirm("Створити копію цього продукту?")) return;
+    try {
+      const res = await fetch(`/api/products/${productId}/copy`, {
+        method: "POST",
+      });
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Failed to copy product");
+      }
+
+      // Очищаємо кеш та перезавантажуємо дані
+      clearCache();
+    } catch (error) {
+      console.error("Error copying product:", error);
+      alert(`Помилка при копіюванні продукту: ${error instanceof Error ? error.message : "Невідома помилка"}`);
+    }
+  }
+
   useEffect(() => {
     async function fetchProducts() {
       try {
@@ -318,6 +337,13 @@ export default function ProductsTable() {
                       >
                         Редагувати
                       </Link>
+                      <button
+                        onClick={() => handleCopy(product.id)}
+                        className="inline-block rounded-md bg-purple-400 px-3 py-1 text-white text-sm hover:bg-purple-600 transition"
+                        title="Створити копію продукту"
+                      >
+                        Копіювати
+                      </button>
                       <button
                         onClick={() => handleDelete(product.id)}
                         className="inline-block rounded-md bg-red-400 px-3 py-1 text-white text-sm hover:bg-red-600 transition"
