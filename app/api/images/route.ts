@@ -60,7 +60,29 @@ function getFileType(mimeType: string, filename: string): "photo" | "video" {
 
 export async function POST(req: NextRequest) {
   try {
-    const formData = await req.formData();
+    // Check content type to ensure it's multipart/form-data
+    const contentType = req.headers.get("content-type");
+    if (!contentType || !contentType.includes("multipart/form-data")) {
+      return NextResponse.json(
+        { error: "Content-Type must be multipart/form-data" },
+        { status: 400 }
+      );
+    }
+
+    let formData: FormData;
+    try {
+      formData = await req.formData();
+    } catch (error) {
+      console.error("[POST /api/images] Failed to parse FormData:", error);
+      return NextResponse.json(
+        { 
+          error: "Failed to parse request body as FormData. The request body may be too large or malformed.",
+          details: error instanceof Error ? error.message : String(error)
+        },
+        { status: 400 }
+      );
+    }
+
     const files = formData.getAll("images") as File[];
 
     if (!files || files.length === 0) {

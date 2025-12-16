@@ -38,8 +38,8 @@ export function middleware(request: NextRequest) {
     return response;
   }
 
-  // Allow access to API routes
-  if (pathname.startsWith("/api/auth/")) {
+  // Allow access to API routes (skip body processing for file uploads)
+  if (pathname.startsWith("/api/auth/") || pathname.startsWith("/api/images")) {
     return response;
   }
 

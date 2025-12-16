@@ -36,6 +36,8 @@ const nextConfig: NextConfig = {
     serverActions: {
       bodySizeLimit: "100mb", // for images, videos
     },
+    // Increase middleware body size limit for file uploads
+    middlewareClientMaxBodySize: "100mb",
     // Enable optimized package imports with tree shaking
     optimizePackageImports: [
       "@react-jvectormap/core", 
