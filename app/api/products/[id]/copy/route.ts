@@ -63,7 +63,7 @@ export async function POST(
         // CBD-specific fields
         cbdContentMg: originalProduct.cbdContentMg || 0,
         thcContentMg: originalProduct.thcContentMg || null,
-        stock: originalProduct.stock || 0,
+        isAvailable: originalProduct.isAvailable !== undefined ? originalProduct.isAvailable : true,
         // Product specifications
         effect: originalProduct.effect || null,
         inhalationCount: originalProduct.inhalationCount || null,
