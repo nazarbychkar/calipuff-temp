@@ -32,7 +32,7 @@ export default function Hero() {
         
         {/* Background image on the right side with left gradient fade */}
         <div 
-          className="absolute top-16 lg:top-20 right-0 w-3/4 h-[calc(100%-4rem)] lg:h-[calc(100%-5rem)]"
+          className="hidden md:block absolute top-16 lg:top-20 right-0 w-3/4 h-[calc(100%-4rem)] lg:h-[calc(100%-5rem)]"
           style={{
             maskImage: 'linear-gradient(to right, transparent 0%, transparent 30%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,1) 70%, rgba(0,0,0,1) 100%)',
             WebkitMaskImage: 'linear-gradient(to right, transparent 0%, transparent 30%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,1) 70%, rgba(0,0,0,1) 100%)'
