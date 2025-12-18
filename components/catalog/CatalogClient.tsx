@@ -182,6 +182,7 @@ export default function CatalogClient({
             <button
               onClick={() => setVisibleCount((prev) => prev + 12)}
               className="cursor-pointer px-6 py-3 bg-stone-900 text-white hover:bg-stone-800 transition-colors"
+              style={{ color: '#ffffff' }}
             >
               Показати ще
             </button>
