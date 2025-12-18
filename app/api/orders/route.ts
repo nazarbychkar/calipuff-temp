@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { sqlGetAllOrders, sqlPostOrder, prisma } from "@/lib/sql";
+import { sqlGetAllOrders, sqlPostOrder, sqlGetProduct, prisma } from "@/lib/sql";
 
 type IncomingOrderItem = {
   product_id?: number | string;
@@ -219,6 +219,108 @@ export async function POST(req: NextRequest) {
 
     if (BOT_TOKEN && CHAT_ID) {
       try {
+        // Отримуємо базовий URL для посилання на адмінку
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
+          (() => {
+            try {
+              const url = new URL(req.url);
+              return `${url.protocol}//${url.host}`;
+            } catch {
+              return 'https://calipuff.ua';
+            }
+          })();
+        
+        const adminOrderUrl = `${baseUrl}/admin/orders/${savedOrder.id}/edit`;
+
+        // Отримуємо повну інформацію про кожен товар
+        const productsDetails = await Promise.all(
+          normalizedItems.map(async (item) => {
+            const product = await sqlGetProduct(item.product_id);
+            return {
+              ...item,
+              productDetails: product,
+            };
+          })
+        );
+
+        // Формуємо детальне повідомлення про товари
+        const itemsMessage = productsDetails
+          .map((item, i) => {
+            const product = item.productDetails;
+            const details: string[] = [];
+
+            // Основна інформація
+            details.push(`<b>${i + 1}. ${item.product_name}</b>`);
+            
+            // Розмір
+            if (item.size && item.size !== "undefined" && item.size !== "null") {
+              details.push(`📏 <b>Розмір:</b> ${item.size}`);
+            }
+            
+            // Колір
+            if (item.color) {
+              details.push(`🎨 <b>Колір:</b> ${item.color}`);
+            }
+            
+            // Смак (effect)
+            if (product?.effect) {
+              details.push(`🍃 <b>Смак:</b> ${product.effect}`);
+            }
+            
+            // Мілілітри (volume)
+            if (product?.volume) {
+              details.push(`💧 <b>Об'єм:</b> ${product.volume}`);
+            }
+            
+            // CBD контент
+            if (product?.cbdContentMg && product.cbdContentMg > 0) {
+              details.push(`🌿 <b>CBD:</b> ${product.cbdContentMg} мг`);
+            }
+            
+            // THC контент
+            if (product?.thcContentMg && product.thcContentMg > 0) {
+              details.push(`🍀 <b>THC:</b> ${product.thcContentMg} мг`);
+            }
+            
+            // Кількість вдихів
+            if (product?.inhalationCount) {
+              details.push(`💨 <b>Кількість вдихів:</b> ${product.inhalationCount}`);
+            }
+            
+            // Склад
+            if (product?.composition) {
+              details.push(`🧪 <b>Склад:</b> ${product.composition}`);
+            }
+            
+            // Тип пристрою
+            if (product?.deviceType) {
+              details.push(`🔧 <b>Тип пристрою:</b> ${product.deviceType}`);
+            }
+            
+            // Виробник
+            if (product?.manufacturer) {
+              details.push(`🏭 <b>Виробник:</b> ${product.manufacturer}`);
+            }
+            
+            // Категорія
+            if (product?.category?.name) {
+              details.push(`📂 <b>Категорія:</b> ${product.category.name}`);
+            }
+            
+            // Підкатегорія
+            if (product?.subcategory?.name) {
+              details.push(`📁 <b>Підкатегорія:</b> ${product.subcategory.name}`);
+            }
+            
+            // Кількість та ціна
+            details.push(`📦 <b>Кількість:</b> ${item.quantity} шт`);
+            details.push(`💰 <b>Ціна за одиницю:</b> ${item.price.toFixed(2)} грн`);
+            details.push(`💵 <b>Сума:</b> ${(item.price * item.quantity).toFixed(2)} грн`);
+
+            return details.join("\n");
+          })
+          .join("\n\n");
+
         const orderMessage = `
 🛒 <b>Нове замовлення</b>
 
@@ -236,20 +338,16 @@ export async function POST(req: NextRequest) {
             ? "Криптовалюта"
             : "Повна оплата при отриманні"
         }
-🧾 <b>Сума:</b> ${finalAmount.toFixed(2)} грн
+🧾 <b>Загальна сума:</b> ${finalAmount.toFixed(2)} грн
 ${discountAmount > 0 ? `🎁 <b>Знижка:</b> -${discountAmount.toFixed(2)} грн (промокод)\n` : ""}
+
 📦 <b>Товари:</b>
-${normalizedItems
-  .map(
-    (item, i) => {
-      const sizePart = item.size && item.size !== "undefined" && item.size !== "null" ? ` | ${item.size}` : "";
-      const colorPart = item.color ? ` (${item.color})` : "";
-      return `${i + 1}. ${item.product_name}${colorPart}${sizePart} | x${item.quantity} | ${(item.price * item.quantity).toFixed(2)} грн`;
-    }
-  )
-  .join("\n")}
+
+${itemsMessage}
 
 🆔 <b>ID замовлення:</b> ${savedOrder.id}
+
+🔗 <a href="${adminOrderUrl}">Переглянути замовлення в адмінці</a>
         `;
 
         await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {

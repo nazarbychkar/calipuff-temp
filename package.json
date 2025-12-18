@@ -19,6 +19,7 @@
     "migrate:deploy": "prisma migrate deploy",
     "migrate:custom": "ts-node scripts/migrate.ts",
     "seed": "ts-node scripts/seed.ts",
+    "add-blog-posts": "ts-node --project tsconfig.scripts.json scripts/add-blog-posts.ts",
     "check-vitals": "echo 'Run lighthouse audit after deployment'"
   },
   "dependencies": {

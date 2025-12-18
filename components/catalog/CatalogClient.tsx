@@ -181,9 +181,13 @@ export default function CatalogClient({
           <div className="mt-6 flex justify-center">
             <button
               onClick={() => setVisibleCount((prev) => prev + 12)}
-              className="cursor-pointer px-6 py-3 bg-stone-900 text-stone-100"
+              className="cursor-pointer px-6 py-3 bg-stone-900 hover:bg-stone-800 transition-colors"
+              style={{ 
+                color: '#ffffff',
+                backgroundColor: '#0c0a09'
+              }}
             >
-              Показати ще
+              <span className="text-white" style={{ color: '#ffffff' }}>Показати ще</span>
             </button>
           </div>
         )}
