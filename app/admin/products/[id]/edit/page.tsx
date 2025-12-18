@@ -64,7 +64,7 @@ export default function EditProductPage() {
     { id: number; name: string }[]
   >([]);
   const [subcategoryOptions, setSubcategoryOptions] = useState<
-    { id: number; name: string; category_id: number }[]
+    { id: number; name: string; parent_category_id: number }[]
   >([]);
 
   const [availableColors, setAvailableColors] = useState<
@@ -429,15 +429,11 @@ export default function EditProductPage() {
                       className="w-full border rounded px-3 py-2 text-sm dark:bg-gray-800 dark:text-white"
                     >
                       <option value="">Виберіть підкатегорію</option>
-                      {subcategoryOptions
-                        .filter(
-                          (sub) => sub.category_id === formData.categoryId
-                        )
-                        .map((sub) => (
-                          <option key={sub.id} value={sub.id}>
-                            {sub.name}
-                          </option>
-                        ))}
+                      {subcategoryOptions.map((sub) => (
+                        <option key={sub.id} value={sub.id}>
+                          {sub.name}
+                        </option>
+                      ))}
                     </select>
                   </>
                 )}
