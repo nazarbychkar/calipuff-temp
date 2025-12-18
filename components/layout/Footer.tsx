@@ -113,7 +113,7 @@ export default function Footer() {
         </div>
 
         <div className="flex flex-col gap-8">
-          <div className="flex justify-start gap-6 group cursor-pointer">
+          {/* <div className="flex justify-start gap-6 group cursor-pointer">
             <div
               className={`w-20 h-20 md:w-26 md:h-26 rounded-full border-2 flex items-center justify-center transition-all duration-300 group-hover:scale-105 ${
                 "border-stone-300/60 group-hover:border-stone-400"
@@ -148,7 +148,7 @@ export default function Footer() {
             >
               Instagram
             </Link>
-          </div>
+          </div> */}
 
           <div className="flex justify-start gap-6 group cursor-pointer">
             <div
@@ -188,7 +188,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-10">
+        {/* <div className="flex flex-col gap-10">
           <div className="space-y-4">
             <h3
               className="font-['Montserrat'] text-lg md:text-2xl font-semibold mb-4"
@@ -210,7 +210,7 @@ export default function Footer() {
               {BRAND.contact.phone}
             </a>
           </div>
-        </div>
+        </div> */}
 
         <div className="flex flex-col gap-4">
           <h3
@@ -324,7 +324,7 @@ export default function Footer() {
               </div>
             </div>
 
-            <div className="flex justify-start gap-4 md:gap-6">
+            {/* <div className="flex justify-start gap-4 md:gap-6">
               <div className="w-40 h-8 md:w-56 md:h-11 flex flex-col justify-start my-auto">
                 <span
                   className="font-['Montserrat'] text-lg md:text-2xl font-semibold"
@@ -346,7 +346,7 @@ export default function Footer() {
                   {BRAND.contact.phone}
                 </a>
               </div>
-            </div>
+            </div> */}
           </div>
 
           <Link
@@ -476,7 +476,7 @@ export default function Footer() {
               </Link>
             </div>
 
-            <div className="flex justify-start gap-4 md:gap-6">
+            {/* <div className="flex justify-start gap-4 md:gap-6">
               <div
                 className={`w-15 h-15 md:w-26 md:h-26 rounded-full border-2 flex items-center justify-center transition-all duration-300 hover:scale-105 ${
                   "border-stone-300/60"
@@ -507,7 +507,7 @@ export default function Footer() {
               >
                 Instagram
               </Link>
-            </div>
+            </div> */}
 
             <div className="flex justify-start gap-4 md:gap-6">
               <div

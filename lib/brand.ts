@@ -19,14 +19,14 @@ export const BRAND = {
   },
   contact: {
     showroom: "cali aroma devices Wave Lab, Київ, вул. Костянтинівська, 21",
-    email: "hello@calishops.com",
+    email: "b2bcalishops@gmail.com",
     phone: "+380 67 555 44 33",
     schedule: "Щодня 11:00–21:00",
   },
   socials: {
     instagram: "https://www.instagram.com/calishops.com/",
     tiktok: "https://www.tiktok.com/@calishops.com",
-    telegram: "https://t.me/calishops.com",
+    telegram: "https://t.me/aromadevice",
   },
   catalogCTA: "До каталогу смаків",
 };
