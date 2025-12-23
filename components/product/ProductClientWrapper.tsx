@@ -28,6 +28,7 @@ interface ProductClientWrapperProps {
     isPopular?: boolean;
     isRecommended?: boolean;
     hasStrongEffect?: boolean;
+    isAvailable?: boolean;
     // Category for similar products
     category?: { name: string } | null;
   };

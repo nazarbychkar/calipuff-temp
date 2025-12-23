@@ -69,6 +69,7 @@ interface ProductClientProps {
     isPopular?: boolean;
     isRecommended?: boolean;
     hasStrongEffect?: boolean;
+    isAvailable?: boolean;
     // Category for similar products
     category?: { name: string } | null;
   };
@@ -536,8 +537,15 @@ export default function ProductClient({ product: initialProduct }: ProductClient
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4 border-b-2 border-gray-300">
             {/* Availability Status */}
             {(() => {
+              // First check if product itself is available
+              const productIsAvailable = product.isAvailable !== false;
+              
+              // Then check colors if product is available
               const hasAvailableColors = product.colors?.some(c => c.isAvailable !== false);
-              const isAvailable = !product.colors || product.colors.length === 0 || hasAvailableColors;
+              const colorsAvailable = !product.colors || product.colors.length === 0 || hasAvailableColors;
+              
+              // Product is available only if both product and colors are available
+              const isAvailable = productIsAvailable && colorsAvailable;
               
               return (
                 <div className="flex items-center gap-2">
@@ -815,10 +823,15 @@ export default function ProductClient({ product: initialProduct }: ProductClient
 
           {/* Add to Cart Button */}
           {(() => {
+            // Check if product itself is available
+            const productIsAvailable = product?.isAvailable !== false;
+            
             const selectedColorData = product?.colors?.find(c => c.label === selectedColor);
             const isSelectedColorAvailable = !selectedColor || !selectedColorData || selectedColorData.isAvailable !== false;
             const hasColors = product?.colors && product.colors.length > 0;
-            const canAddToCart = !hasColors || (selectedColor && isSelectedColorAvailable);
+            
+            // Product must be available AND (no colors OR selected color is available)
+            const canAddToCart = productIsAvailable && (!hasColors || (selectedColor && isSelectedColorAvailable));
             
             return (
           <button
