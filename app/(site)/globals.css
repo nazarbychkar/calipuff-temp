@@ -62,6 +62,12 @@ select {
   color: inherit;
 }
 
+/* Override for buttons that need white text */
+button.btn-white-text,
+button.btn-white-text * {
+  color: #ffffff !important;
+}
+
 /* Ensure all text elements use Inter by default */
 * {
   font-family: inherit;
