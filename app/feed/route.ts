@@ -51,9 +51,6 @@ export async function GET() {
         const imageUrl = post.imageUrl 
           ? (post.imageUrl.startsWith('http') ? post.imageUrl : `${baseUrl}${post.imageUrl}`)
           : `${baseUrl}/images/hero-bg.png`;
-        const content = post.content 
-          ? post.content.replace(/<[^>]*>/g, '').substring(0, 500)
-          : (post.excerpt || post.title);
         
         return `    <item>
       <title><![CDATA[${post.title}]]></title>

@@ -80,15 +80,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       hasStrongEffect: product.hasStrongEffect,
     });
 
-    // Generate H1 title for page (more SEO-friendly than title tag)
-    const h1Title = generateH1Title({
-      name: product.name,
-      category: product.category,
-      subcategory: product.subcategory,
-      cbdContentMg: product.cbdContentMg,
-      thcContentMg: product.thcContentMg,
-      effect: product.effect,
-    });
+    // H1 title is generated in ProductServer component
 
     return {
       title: seoTitle,
