@@ -1,12 +1,45 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
+import { BRAND } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Блог | Calishops",
-  description: "Останні новини та статті від Calishops",
+  title: `Блог про CBD, HHC, THC канабіс та коноплі | ${BRAND.name}`,
+  description: `Читайте останні статті про CBD канабіс, HHC, THC, TAC вейпи, легальні коноплі в Україні, екстракти та канабіноїди. Корисна інформація про вейпи, дудки та картриджі від ${BRAND.name}.`,
+  keywords: [
+    "CBD блог",
+    "HHC блог",
+    "THC блог",
+    "канабіс блог",
+    "коноплі блог",
+    "CBD статті",
+    "HHC статті",
+    "легальний канабіс",
+    "коноплі без ТГК",
+    "CBD Україна",
+    "вейп статті",
+    "дудка статті",
+    BRAND.name,
+  ],
+  openGraph: {
+    type: "website",
+    title: `Блог про CBD, HHC, THC канабіс | ${BRAND.name}`,
+    description: `Останні статті про CBD канабіс, HHC, THC вейпи, легальні коноплі в Україні від ${BRAND.name}.`,
+    url: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://calishops.com'}/blog`,
+    siteName: BRAND.name,
+    locale: "uk_UA",
+    alternateLocale: ["ru_RU"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `Блог про CBD канабіс | ${BRAND.name}`,
+    description: `Останні статті про CBD, HHC, THC канабіс та коноплі в Україні.`,
+  },
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://calishops.com'}/blog`,
+  },
 };
 
 interface BlogPost {

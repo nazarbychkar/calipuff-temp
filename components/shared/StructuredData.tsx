@@ -3,7 +3,7 @@ import { BRAND } from "@/lib/brand";
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://calipuff.ua';
 
 interface StructuredDataProps {
-  type?: 'organization' | 'website' | 'product' | 'breadcrumb' | 'faq' | 'reviews';
+  type?: 'organization' | 'website' | 'product' | 'breadcrumb' | 'faq' | 'reviews' | 'article';
   product?: {
     name: string;
     description: string;
@@ -11,14 +11,49 @@ interface StructuredDataProps {
     image?: string;
     sku?: string;
     availability?: string;
+    cbdContentMg?: number;
+    thcContentMg?: number | null;
+    effect?: string | null;
+    deviceType?: string | null;
+    composition?: string | null;
+    manufacturer?: string | null;
+    category?: string | null;
   };
   breadcrumbs?: Array<{ name: string; url: string }>;
+  reviews?: Array<{
+    author: string;
+    rating: number;
+    comment: string;
+    date: string;
+  }>;
+  aggregateRating?: {
+    ratingValue: string;
+    reviewCount: string;
+  };
+  faq?: Array<{
+    question: string;
+    answer: string;
+  }>;
+  article?: {
+    headline: string;
+    description: string;
+    image: string;
+    datePublished: string;
+    dateModified: string;
+    author: string;
+    publisher: string;
+    url?: string;
+  };
 }
 
 export default function StructuredData({ 
   type = 'organization',
   product,
-  breadcrumbs 
+  breadcrumbs,
+  reviews,
+  aggregateRating,
+  faq,
+  article
 }: StructuredDataProps) {
   const getStructuredData = () => {
     switch (type) {
@@ -104,6 +139,81 @@ export default function StructuredData({
 
       case 'product':
         if (!product) return null;
+        
+        // Build additional properties
+        const additionalProperties: Record<string, any> = {};
+        
+        // Add cannabinoid content
+        if (product.cbdContentMg && product.cbdContentMg > 0) {
+          additionalProperties["additionalProperty"] = [
+            {
+              "@type": "PropertyValue",
+              "name": "CBD Content",
+              "value": `${product.cbdContentMg} мг`,
+              "valueReference": {
+                "@type": "QuantitativeValue",
+                "value": product.cbdContentMg,
+                "unitCode": "MGM"
+              }
+            }
+          ];
+        }
+        
+        if (product.thcContentMg !== null && product.thcContentMg !== undefined) {
+          if (!additionalProperties["additionalProperty"]) {
+            additionalProperties["additionalProperty"] = [];
+          }
+          additionalProperties["additionalProperty"].push({
+            "@type": "PropertyValue",
+            "name": "THC Content",
+            "value": `${product.thcContentMg} мг`,
+            "valueReference": {
+              "@type": "QuantitativeValue",
+              "value": product.thcContentMg,
+              "unitCode": "MGM"
+            }
+          });
+        }
+        
+        // Add effect
+        if (product.effect) {
+          if (!additionalProperties["additionalProperty"]) {
+            additionalProperties["additionalProperty"] = [];
+          }
+          additionalProperties["additionalProperty"].push({
+            "@type": "PropertyValue",
+            "name": "Effect",
+            "value": product.effect
+          });
+        }
+        
+        // Add device type
+        if (product.deviceType) {
+          if (!additionalProperties["additionalProperty"]) {
+            additionalProperties["additionalProperty"] = [];
+          }
+          additionalProperties["additionalProperty"].push({
+            "@type": "PropertyValue",
+            "name": "Device Type",
+            "value": product.deviceType
+          });
+        }
+        
+        // Add composition
+        if (product.composition) {
+          if (!additionalProperties["additionalProperty"]) {
+            additionalProperties["additionalProperty"] = [];
+          }
+          additionalProperties["additionalProperty"].push({
+            "@type": "PropertyValue",
+            "name": "Composition",
+            "value": product.composition
+          });
+        }
+        
+        // Build category
+        const categoryValue = product.category || "Ароматичні девайси та аксесуари";
+        
         return {
           "@context": "https://schema.org",
           "@type": "Product",
@@ -160,21 +270,45 @@ export default function StructuredData({
           },
           "brand": {
             "@type": "Brand",
-            "name": BRAND.name,
+            "name": product.manufacturer || BRAND.name,
             "logo": `${baseUrl}/images/light-theme/calipuff-logo-header-light.svg`
           },
           "manufacturer": {
             "@type": "Organization",
-            "name": BRAND.name
+            "name": product.manufacturer || BRAND.name
           },
-          "category": "Ароматичні девайси та аксесуари",
-          "aggregateRating": {
+          "category": categoryValue,
+          "aggregateRating": aggregateRating ? {
+            "@type": "AggregateRating",
+            "ratingValue": aggregateRating.ratingValue,
+            "reviewCount": aggregateRating.reviewCount,
+            "bestRating": "5",
+            "worstRating": "1"
+          } : {
             "@type": "AggregateRating",
             "ratingValue": "5",
             "reviewCount": "5",
             "bestRating": "5",
             "worstRating": "1"
-          }
+          },
+          ...(reviews && reviews.length > 0 ? {
+            "review": reviews.map(review => ({
+              "@type": "Review",
+              "author": {
+                "@type": "Person",
+                "name": review.author
+              },
+              "datePublished": review.date,
+              "reviewBody": review.comment,
+              "reviewRating": {
+                "@type": "Rating",
+                "ratingValue": review.rating.toString(),
+                "bestRating": "5",
+                "worstRating": "1"
+              }
+            }))
+          } : {}),
+          ...additionalProperties
         };
 
       case 'breadcrumb':
@@ -191,6 +325,21 @@ export default function StructuredData({
         };
 
       case 'faq':
+        if (faq && faq.length > 0) {
+          return {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": faq.map(item => ({
+              "@type": "Question",
+              "name": item.question,
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": item.answer
+              }
+            }))
+          };
+        }
+        // Default FAQ if none provided
         return {
           "@context": "https://schema.org",
           "@type": "FAQPage",
@@ -270,6 +419,39 @@ export default function StructuredData({
               "reviewBody": "Чудовий сервіс та швидка доставка. Лімітовані серії завжди унікальні. Дякую за таку якість!"
             }
           ]
+        };
+
+      case 'article':
+        if (!article) return null;
+        return {
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          "headline": article.headline,
+          "description": article.description,
+          "image": [article.image],
+          "datePublished": article.datePublished,
+          "dateModified": article.dateModified,
+          "author": {
+            "@type": "Organization",
+            "name": article.author,
+            "url": baseUrl
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": article.publisher,
+            "logo": {
+              "@type": "ImageObject",
+              "url": `${baseUrl}/images/light-theme/calipuff-logo-header-light.svg`
+            },
+            "url": baseUrl
+          },
+          ...(article.url ? {
+            "mainEntityOfPage": {
+              "@type": "WebPage",
+              "@id": article.url
+            },
+            "url": article.url
+          } : {})
         };
 
       default:

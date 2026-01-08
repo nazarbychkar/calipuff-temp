@@ -220,6 +220,45 @@ export default function Footer() {
             Навігація
           </h3>
           <Link
+            href="/"
+            className="font-['Poppins'] text-sm md:text-lg transition-all duration-300 hover:translate-x-1 inline-block w-fit"
+            style={{ color: "rgba(28, 25, 23, 0.7)" }}
+            onMouseEnter={(e) => {
+                  e.currentTarget.style.color = "rgba(28, 25, 23, 1)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = "rgba(28, 25, 23, 0.7)";
+            }}
+          >
+            Головна
+          </Link>
+          <Link
+            href="/catalog"
+            className="font-['Poppins'] text-sm md:text-lg transition-all duration-300 hover:translate-x-1 inline-block w-fit"
+            style={{ color: "rgba(28, 25, 23, 0.7)" }}
+            onMouseEnter={(e) => {
+                  e.currentTarget.style.color = "rgba(28, 25, 23, 1)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = "rgba(28, 25, 23, 0.7)";
+            }}
+          >
+            Каталог CBD вейпів та канабісу
+          </Link>
+          <Link
+            href="/blog"
+            className="font-['Poppins'] text-sm md:text-lg transition-all duration-300 hover:translate-x-1 inline-block w-fit"
+            style={{ color: "rgba(28, 25, 23, 0.7)" }}
+            onMouseEnter={(e) => {
+                  e.currentTarget.style.color = "rgba(28, 25, 23, 1)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = "rgba(28, 25, 23, 0.7)";
+            }}
+          >
+            Блог про CBD канабіс
+          </Link>
+          <Link
             href="/#about"
             className="font-['Poppins'] text-sm md:text-lg transition-all duration-300 hover:translate-x-1 inline-block w-fit"
             style={{ color: "rgba(28, 25, 23, 0.7)" }}
@@ -375,6 +414,45 @@ export default function Footer() {
           </span>
           <div className="flex justify-around gap-4 md:gap-6 flex-wrap">
             <Link
+              href="/"
+              className="font-['Poppins'] text-sm md:text-lg transition-colors duration-300"
+              style={{ color: "rgba(28, 25, 23, 0.7)" }}
+              onMouseEnter={(e) => {
+                  e.currentTarget.style.color = "rgba(28, 25, 23, 1)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = "rgba(28, 25, 23, 0.7)";
+              }}
+            >
+              Головна
+            </Link>
+            <Link
+              href="/catalog"
+              className="font-['Poppins'] text-sm md:text-lg transition-colors duration-300"
+              style={{ color: "rgba(28, 25, 23, 0.7)" }}
+              onMouseEnter={(e) => {
+                  e.currentTarget.style.color = "rgba(28, 25, 23, 1)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = "rgba(28, 25, 23, 0.7)";
+              }}
+            >
+              Каталог CBD вейпів
+            </Link>
+            <Link
+              href="/blog"
+              className="font-['Poppins'] text-sm md:text-lg transition-colors duration-300"
+              style={{ color: "rgba(28, 25, 23, 0.7)" }}
+              onMouseEnter={(e) => {
+                  e.currentTarget.style.color = "rgba(28, 25, 23, 1)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = "rgba(28, 25, 23, 0.7)";
+              }}
+            >
+              Блог про CBD канабіс
+            </Link>
+            <Link
               href="/#about"
               className="font-['Poppins'] text-sm md:text-lg transition-colors duration-300"
               style={{ color: "rgba(28, 25, 23, 0.7)" }}
@@ -437,7 +515,7 @@ export default function Footer() {
                 e.currentTarget.style.color = "rgba(28, 25, 23, 0.7)";
               }}
             >
-              Політика повернення та доставки
+              Політика конфіденційності
             </Link>
           </div>
         </div>

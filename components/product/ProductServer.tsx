@@ -80,6 +80,24 @@ export default async function ProductServer({ id }: ProductServerProps) {
     { name: product.name, url: `${baseUrl}/product/${id}` },
   ];
 
+  // Fetch reviews for structured data
+  let reviews: Array<{ author_name: string; rating: number; comment: string | null; created_at: Date }> = [];
+  try {
+    const { prisma } = await import("@/lib/sql");
+    reviews = await prisma.review.findMany({
+      where: { product_id: product.id },
+      orderBy: { created_at: "desc" },
+      take: 10,
+    });
+  } catch (error) {
+    console.error("Error fetching reviews for structured data:", error);
+  }
+
+  // Calculate average rating
+  const averageRating = reviews.length > 0
+    ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
+    : 5; // Default to 5 if no reviews
+
   return (
     <>
       <StructuredData
@@ -91,9 +109,47 @@ export default async function ProductServer({ id }: ProductServerProps) {
           image: fullImageUrl,
           sku: id.toString(),
           availability: product.isAvailable !== false ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+          cbdContentMg: product.cbdContentMg,
+          thcContentMg: product.thcContentMg,
+          effect: product.effect,
+          deviceType: product.deviceType,
+          composition: product.composition,
+          manufacturer: product.manufacturer,
+          category: product.category?.name,
+        }}
+        reviews={reviews.map(r => ({
+          author: r.author_name,
+          rating: r.rating,
+          comment: r.comment || "",
+          date: r.created_at.toISOString(),
+        }))}
+        aggregateRating={{
+          ratingValue: averageRating.toFixed(1),
+          reviewCount: reviews.length.toString(),
         }}
       />
       <StructuredData type="breadcrumb" breadcrumbs={breadcrumbs} />
+      <StructuredData
+        type="faq"
+        faq={[
+          {
+            question: `Що таке ${product.name}?`,
+            answer: `${product.name} - це ${product.cbdContentMg && product.cbdContentMg > 0 ? `CBD канабіс вейп з ${product.cbdContentMg} мг канабідіолу` : 'вейп'}${product.effect ? ` з ефектом ${product.effect}` : ''}. ${!product.thcContentMg || product.thcContentMg === 0 ? 'Легальний продукт без ТГК, сертифікований та безпечний для використання в Україні.' : ''}`,
+          },
+          {
+            question: `Як використовувати ${product.name}?`,
+            answer: `${product.name} можна використовувати як звичайний вейп. ${product.inhalationCount ? `Орієнтовна кількість затяжок: ${product.inhalationCount}.` : ''} ${product.effect ? `Ефект: ${product.effect}.` : ''}`,
+          },
+          {
+            question: `Чи легальний ${product.name} в Україні?`,
+            answer: `Так, ${product.name} легальний в Україні. ${!product.thcContentMg || product.thcContentMg === 0 ? 'Продукт не містить ТГК (0.0% THC) та відповідає вимогам українського законодавства. Всі продукти сертифіковані та проходять лабораторні тести.' : 'Продукт відповідає вимогам українського законодавства.'}`,
+          },
+          {
+            question: `Яка доставка для ${product.name}?`,
+            answer: `Доставка ${product.name} здійснюється по всій Україні через Нову Пошту. Вартість доставки залежить від розміру та ваги товару. Детальніше про умови доставки можна дізнатися при оформленні замовлення.`,
+          },
+        ]}
+      />
       <ProductClientWrapper product={product} />
     </>
   );

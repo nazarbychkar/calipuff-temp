@@ -160,7 +160,25 @@ export default function RootLayout({
         <meta name="twitter:domain" content="calishops.com" />
         
         {/* Schema.org additional markup */}
-        <link rel="alternate" type="application/rss+xml" title={`${BRAND.name} RSS Feed`} href={`${baseUrl}/feed.xml`} />
+        <link rel="alternate" type="application/rss+xml" title={`${BRAND.name} RSS Feed`} href={`${baseUrl}/feed`} />
+        
+        {/* Preconnect to improve loading speed */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        
+        {/* DNS Prefetch for external resources */}
+        <link rel="dns-prefetch" href="https://www.google.com" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        
+        {/* Preload critical resources */}
+        <link rel="preload" href="/images/hero-bg.png" as="image" type="image/png" />
+        
+        {/* Additional SEO improvements */}
+        <meta name="application-name" content={BRAND.name} />
+        <meta name="apple-mobile-web-app-title" content={BRAND.name} />
+        <meta name="theme-color" content="#FFA500" />
+        <meta name="msapplication-TileColor" content="#FFA500" />
+        <meta name="msapplication-config" content="/browserconfig.xml" />
 
         {/* Favicon and App Icons */}
         <link
@@ -187,6 +205,54 @@ export default function RootLayout({
           href="/images/light-theme/cali-logo-header-light.svg"
           as="image"
         />
+        <link rel="preload" href="/images/hero-bg.png" as="image" type="image/png" />
+        
+        {/* Prefetch important pages for better performance */}
+        <link rel="prefetch" href="/catalog" />
+        <link rel="prefetch" href="/blog" />
+        
+        {/* Additional SEO meta tags */}
+        <meta name="author" content={BRAND.name} />
+        <meta name="copyright" content={BRAND.name} />
+        <meta name="classification" content="CBD магазин, HHC, THC вейпи, канабіс, коноплі Україна" />
+        <meta name="subject" content="Легальні CBD, HHC, THC та TAC вейпи в Україні" />
+        <meta name="topic" content="CBD канабіс, коноплі без ТГК, легальний канабіс" />
+        <meta name="summary" content={`${BRAND.name} - магазин легальних CBD канабісу, HHC, THC та TAC вейпів в Україні`} />
+        <meta name="abstract" content="Легальні коноплі та канабіс без ТГК в Україні. CBD, HHC, THC вейпи з сертифікацією." />
+        <meta name="designer" content={BRAND.name} />
+        <meta name="reply-to" content={BRAND.contact.email} />
+        <meta name="owner" content={BRAND.name} />
+        <meta name="identifier-URL" content={baseUrl} />
+        <meta name="google" content="notranslate" />
+        
+        {/* Additional Open Graph for better social sharing */}
+        <meta property="og:email" content={BRAND.contact.email} />
+        <meta property="og:phone_number" content={BRAND.contact.phone} />
+        <meta property="og:latitude" content="50.4501" />
+        <meta property="og:longitude" content="30.5234" />
+        <meta property="og:street-address" content="вул. Костянтинівська, 21" />
+        <meta property="og:locality" content="Київ" />
+        <meta property="og:region" content="Київська область" />
+        <meta property="og:postal-code" content="01001" />
+        <meta property="og:country-name" content="Україна" />
+        
+        {/* Article specific tags */}
+        <meta property="article:author" content={BRAND.name} />
+        <meta property="article:publisher" content={BRAND.name} />
+        <meta property="article:section" content="CBD канабіс, HHC, THC вейпи" />
+        <meta property="article:tag" content="CBD канабіс" />
+        <meta property="article:tag" content="HHC вейпи" />
+        <meta property="article:tag" content="THC вейпи" />
+        <meta property="article:tag" content="коноплі Україна" />
+        <meta property="article:tag" content="легальний канабіс" />
+        
+        {/* Business/Product tags */}
+        <meta property="product:brand" content={BRAND.name} />
+        <meta property="product:availability" content="in stock" />
+        <meta property="product:condition" content="new" />
+        <meta property="product:price:currency" content="UAH" />
+        <meta property="product:retailer" content={BRAND.name} />
+        <meta property="product:retailer_category" content="CBD магазин" />
         {/* Conditional preload: image for mobile, video for desktop */}
         <link
           rel="preload"

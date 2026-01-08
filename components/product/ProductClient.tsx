@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useBasket } from "@/lib/BasketProvider";
 import Image from "next/image";
+import Link from "next/link";
 import Alert from "@/components/shared/Alert";
 import { getFirstProductImage, getImageUrl } from "@/lib/getFirstProductImage";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -445,7 +446,7 @@ export default function ProductClient({ product: initialProduct }: ProductClient
                       <div className="absolute inset-0 overflow-visible">
                         <Image
                           src={getImageUrl(item.url)}
-                          alt={`${product.name} - зображення ${i + 1}`}
+                          alt={`${product.name}${product.cbdContentMg && product.cbdContentMg > 0 ? ' CBD канабіс' : ''}${product.effect ? ` - ефект ${product.effect}` : ''} - фото ${i + 1}`}
                           fill
                           priority={i === activeImageIndex}
                           quality={i === activeImageIndex ? 90 : 80}
@@ -528,10 +529,54 @@ export default function ProductClient({ product: initialProduct }: ProductClient
 
         {/* Info Section */}
         <div className="flex flex-col gap-6 md:gap-8 px-4 md:px-0 w-full lg:w-1/2">
-          {/* Product Name */}
-          <div className={`text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight transition-opacity duration-300 ${isLoading ? 'opacity-50' : 'opacity-100'}`}>
-            {product.name}
-          </div>
+          {/* Product Name - H1 for SEO */}
+          <h1 className={`text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight transition-opacity duration-300 ${isLoading ? 'opacity-50' : 'opacity-100'}`}>
+            {(() => {
+              // Generate SEO-optimized H1
+              const cannabinoidTypes: string[] = [];
+              const nameLower = product.name.toLowerCase();
+              
+              if (nameLower.includes("cbd") || product.cbdContentMg && product.cbdContentMg > 0) {
+                cannabinoidTypes.push("CBD");
+              }
+              if (nameLower.includes("tac") || nameLower.includes("тас")) {
+                cannabinoidTypes.push("TAC");
+              }
+              if (nameLower.includes("hhc")) {
+                cannabinoidTypes.push("HHC");
+              }
+              
+              // Extract flavor
+              const flavors = ["Amnesia", "OG Kush", "Gelato", "Lemon Haze", "Pineapple Express", "Blueberry", "Strawberry", "Mango", "Watermelon"];
+              const foundFlavor = flavors.find(f => nameLower.includes(f.toLowerCase()));
+              
+              const parts: string[] = [];
+              
+              if (foundFlavor) {
+                parts.push(foundFlavor);
+              } else {
+                parts.push(product.name);
+              }
+              
+              if (cannabinoidTypes.includes("CBD")) {
+                parts.push("CBD");
+                if (!nameLower.includes("канабіс") && !nameLower.includes("коноплі")) {
+                  parts.push("канабіс");
+                }
+              } else if (cannabinoidTypes.includes("TAC")) {
+                parts.push("TAC");
+                if (!nameLower.includes("канабіс")) {
+                  parts.push("канабіс");
+                }
+              }
+              
+              if (product.effect && !parts.some(p => p === product.effect)) {
+                parts.push(`(${product.effect})`);
+              }
+              
+              return foundFlavor ? parts.join(" ") : product.name;
+            })()}
+          </h1>
 
           {/* Availability Status & Price Row */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4 border-b-2 border-gray-300">
@@ -940,24 +985,63 @@ export default function ProductClient({ product: initialProduct }: ProductClient
 
       {/* Sections */}
       <div className="max-w-[1920px] w-full mx-auto px-4 md:px-8 lg:px-12 py-8 md:py-12">
-        {/* Section 1: Огляд товару */}
+        {/* Section 1: Огляд товару - SEO optimized */}
         <section id="overview" className="scroll-mt-24 mb-12 md:mb-16">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
-            Огляд товару
+            Опис та характеристики {product.name}
+            {product.cbdContentMg && product.cbdContentMg > 0 ? ' - CBD канабіс' : ''}
           </h2>
           {product.description ? (
-            <div className="text-sm md:text-base text-gray-800 leading-relaxed">
-                {product.description}
+            <div className="text-sm md:text-base text-gray-800 leading-relaxed space-y-4">
+                <p>{product.description}</p>
+                {/* SEO-optimized additional content */}
+                {product.cbdContentMg && product.cbdContentMg > 0 && (
+                  <p>
+                    <strong>{product.name}</strong> - це CBD канабіс вейп з {product.cbdContentMg} мг канабідіолу.
+                    {!product.thcContentMg || product.thcContentMg === 0 ? (
+                      <> Продукт не містить ТГК (0.0% THC) та є легальним в Україні. Екстракт виготовлений з технічних конопель, сертифікований та безпечний для використання.</>
+                    ) : (
+                      <> Легальний продукт з сертифікацією та лабораторними тестами.</>
+                    )}
+                  </p>
+                )}
+                {product.effect && (
+                  <p>
+                    <strong>Ефект:</strong> {product.effect}. {product.hasStrongEffect ? 'Потужний ефект для досвідчених користувачів.' : 'М\'який та приємний ефект.'}
+                  </p>
+                )}
+                {product.composition && (
+                  <p>
+                    <strong>Склад:</strong> {product.composition}
+                  </p>
+                )}
             </div>
           ) : (
-            <p className="text-gray-600">Опис товару відсутній.</p>
+            <div className="text-sm md:text-base text-gray-800 leading-relaxed space-y-4">
+              <p>
+                <strong>{product.name}</strong>
+                {product.cbdContentMg && product.cbdContentMg > 0 ? (
+                  <> - це CBD канабіс вейп з {product.cbdContentMg} мг канабідіолу з екстракту технічних конопель.</>
+                ) : (
+                  <> - це якісний вейп продукт.</>
+                )}
+                {!product.thcContentMg || product.thcContentMg === 0 ? (
+                  <> Легальний продукт без ТГК (0.0% THC), сертифікований та безпечний для використання в Україні.</>
+                ) : ''}
+              </p>
+              {product.effect && (
+                <p>
+                  <strong>Ефект:</strong> {product.effect}
+                </p>
+              )}
+            </div>
           )}
         </section>
 
-        {/* Section 2: Характеристики */}
+        {/* Section 2: Характеристики - SEO optimized */}
         <section id="specifications" className="scroll-mt-24 mb-12 md:mb-16">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
-            Характеристики
+            Технічні характеристики {product.cbdContentMg && product.cbdContentMg > 0 ? 'CBD канабіс' : ''} {product.name}
           </h2>
           {(product.effect || product.inhalationCount || product.volume || 
             product.composition || product.deviceType || product.manufacturer ||
@@ -1024,47 +1108,110 @@ export default function ProductClient({ product: initialProduct }: ProductClient
           </h2>
           <div className="space-y-6 text-sm md:text-base text-gray-800">
             <div>
-              <h3 className="font-semibold text-gray-900 mb-2">Доставка</h3>
+              <h3 className="font-semibold text-gray-900 mb-2">Доставка CBD вейпів та канабіс продуктів</h3>
               <p className="text-gray-700">
-                Доставка здійснюється по всій Україні через Нову Пошту та інші служби доставки. 
-                Терміни доставки: 1-3 робочі дні. Вартість доставки розраховується при оформленні замовлення.
+                Доставка CBD канабісу, HHC, THC та TAC вейпів здійснюється по всій Україні через Нову Пошту та інші служби доставки. 
+                Легальні коноплі та канабіс продукти доставляються швидко та безпечно. Терміни доставки: 1-3 робочі дні. Вартість доставки розраховується при оформленні замовлення.
               </p>
             </div>
             <div>
-              <h3 className="font-semibold text-gray-900 mb-2">Оплата</h3>
+              <h3 className="font-semibold text-gray-900 mb-2">Оплата CBD вейпів та канабісу</h3>
               <p className="text-gray-700">
                 Приймаємо оплату готівкою при отриманні, банківськими картками онлайн, 
-                а також через платіжні системи. Всі платежі захищені.
+                а також через платіжні системи. Всі платежі захищені. Купити CBD канабіс, HHC та THC вейпи можна зручним для вас способом.
               </p>
             </div>
             <div>
-              <h3 className="font-semibold text-gray-900 mb-2">Гарантія та повернення</h3>
+              <h3 className="font-semibold text-gray-900 mb-2">Гарантія та повернення CBD продуктів</h3>
               <p className="text-gray-700">
-                Ми гарантуємо якість всіх товарів. У разі виявлення дефектів або невідповідності 
-                товару опису, ви можете повернути товар протягом 14 днів з моменту отримання.
+                Ми гарантуємо якість всіх CBD вейпів та канабіс продуктів. Всі продукти сертифіковані та проходять лабораторні тести. 
+                У разі виявлення дефектів або невідповідності товару опису, ви можете повернути товар протягом 14 днів з моменту отримання.
               </p>
             </div>
             <div>
-              <h3 className="font-semibold text-gray-900 mb-2">Контакти</h3>
+              <h3 className="font-semibold text-gray-900 mb-2">Контакти для консультації про CBD канабіс</h3>
               <p className="text-gray-700">
-                Якщо у вас виникли питання, зверніться до нашого менеджера через Telegram 
-                або інші канали зв&apos;язку, вказані на сайті.
+                Якщо у вас виникли питання про CBD канабіс, HHC, THC вейпи, легальні коноплі або інші продукти, зверніться до нашого менеджера через Telegram 
+                або інші канали зв&apos;язку, вказані на сайті. Ми допоможемо вибрати найкращий CBD вейп або канабіс продукт для вас.
               </p>
             </div>
         </div>
         </section>
 
-        {/* Section 4: Відгуки */}
+        {/* Section 4: Відгуки - SEO optimized */}
         <section id="reviews" className="scroll-mt-24 mb-12 md:mb-16">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
+            Відгуки про {product.name}
+            {product.cbdContentMg && product.cbdContentMg > 0 ? ' CBD канабіс' : ''}
+          </h2>
+          <p className="text-base text-gray-600 mb-6">
+            Читайте відгуки клієнтів про наші CBD вейпи та канабіс продукти. 
+            {product.cbdContentMg && product.cbdContentMg > 0 ? ' Всі CBD канабіс вейпи проходять лабораторні тести та мають сертифікацію.' : ''}
+            Легальні коноплі в Україні без ТГК - це наша гарантія якості.
+          </p>
           <ProductReviews productId={product.id} />
         </section>
 
-        {/* Section 5: Схожі товари */}
+        {/* Section 5: Схожі товари - SEO optimized with internal linking */}
         <section id="similar" className="scroll-mt-24 mb-12 md:mb-16">
           <SimilarProducts 
             productId={product.id} 
             categoryName={product.category?.name}
           />
+          {/* SEO-optimized internal link to category */}
+          {product.category?.name && (
+            <div className="mt-8 text-center">
+              <p className="text-gray-600 mb-4">
+                Переглянути більше {product.category.name.toLowerCase()} CBD вейпів та канабіс продуктів:
+              </p>
+              <Link
+                href={`/catalog?category=${encodeURIComponent(product.category.name)}`}
+                className="inline-block text-base md:text-lg font-semibold text-[#FFA500] hover:text-[#ff8c00] transition-colors underline"
+              >
+                Всі {product.category.name} CBD канабіс продукти →
+              </Link>
+            </div>
+          )}
+        </section>
+
+        {/* Section 6: SEO Content Block */}
+        <section className="scroll-mt-24 mb-12 md:mb-16 bg-gray-50 p-6 md:p-8 rounded-lg">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
+            {product.cbdContentMg && product.cbdContentMg > 0 ? 'Чому купити CBD канабіс вейп?' : 'Чому обрати наші вейпи?'}
+          </h2>
+          <div className="space-y-4 text-base md:text-lg text-gray-800 leading-relaxed">
+            {product.cbdContentMg && product.cbdContentMg > 0 && (
+              <>
+                <p>
+                  <strong>{product.name}</strong> - це якісний CBD канабіс вейп з {product.cbdContentMg} мг канабідіолу з екстракту технічних конопель. 
+                  Легальний канабіс в Україні без ТГК (0.0% THC), сертифікований та безпечний для використання.
+                </p>
+                <p>
+                  CBD коноплі та канабіску з екстрактом відмінно підходять для релаксації та покращення настрою. 
+                  Всі наші CBD вейпи проходять лабораторні тести та мають сертифікацію якості.
+                </p>
+                <p>
+                  Легальні коноплі в Україні без ТГК - це безпечний спосіб насолодитися перевагами канабіноїдів без психоактивних ефектів. 
+                  Екстракт конопель виготовляється з технічних конопель, які дозволені законодавством України.
+                </p>
+              </>
+            )}
+            {!product.cbdContentMg && (
+              <p>
+                <strong>{product.name}</strong> - це якісний вейп продукт від {BRAND.name}. 
+                Всі наші продукти сертифіковані та проходять контроль якості. 
+                Широкий вибір смаків та ефектів для кожного смаку.
+              </p>
+            )}
+            <p>
+              Купити {product.name} можна з доставкою по всій Україні. Нова Пошта, кур'єрська доставка та інші зручні способи доставки. 
+              Легальний канабіс та коноплі в Україні - це наш пріоритет.
+            </p>
+            <p>
+              <strong>Важливо:</strong> Всі наші продукти призначені для осіб старше 18 років. 
+              {product.cbdContentMg && product.cbdContentMg > 0 && ' CBD канабіс та коноплі без ТГК - це легальні продукти в Україні.'}
+            </p>
+          </div>
         </section>
       </div>
 

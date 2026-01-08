@@ -79,16 +79,18 @@ export default function HeroClient({
             <Link
               href={buttonLink}
               className="px-12 py-5 rounded-full bg-white text-black font-bold text-base sm:text-lg tracking-wide uppercase text-center hover:bg-gray-100 transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105"
+              aria-label="Перейти до каталогу CBD канабісу та конопель"
             >
               {buttonText}
             </Link>
 
-            <button
-              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="px-12 py-5 rounded-full border-2 border-white text-white font-bold text-base sm:text-lg tracking-wide uppercase hover:bg-white hover:text-black transition-all duration-300"
+            <Link
+              href="/catalog"
+              className="px-12 py-5 rounded-full border-2 border-white text-white font-bold text-base sm:text-lg tracking-wide uppercase hover:bg-white hover:text-black transition-all duration-300 text-center"
+              aria-label="Переглянути каталог CBD вейпів та канабіс продуктів"
             >
-              До каталогу смаків
-            </button>
+              До каталогу CBD вейпів та канабісу
+            </Link>
           </div>
         </div>
       </div>

@@ -20,10 +20,10 @@ export default function YouMightLike() {
   return (
     <section className="max-w-[1920px] w-full mx-auto px-4 md:px-8 lg:px-12 py-12 md:py-16">
       <div className="flex flex-col gap-8 md:gap-12">
-        {/* Title */}
-        <div className="text-3xl md:text-5xl lg:text-6xl font-bold text-gray-900 text-center md:text-left">
-          Вам може сподобатися
-        </div>
+        {/* Title - SEO optimized */}
+        <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold text-gray-900 text-center md:text-left">
+          CBD вейпи та канабіс продукти, які можуть вам сподобатися
+        </h2>
 
         {/* Products list - Mobile Optimized */}
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
@@ -54,7 +54,7 @@ export default function YouMightLike() {
                         product.first_media,
                         "https://placehold.co/432x613"
                       )}
-                      alt={product.name}
+                      alt={`${product.name}${product.name.toLowerCase().includes('cbd') || product.name.toLowerCase().includes('каннаб') ? ' CBD канабіс' : ''} - купити вейп в Україні`}
                       width={400}
                       height={600}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
@@ -87,13 +87,14 @@ export default function YouMightLike() {
           })}
         </div>
 
-        {/* More products button */}
+        {/* More products button - SEO optimized */}
         <div className="flex justify-center mt-4">
           <Link
             href="/catalog"
             className="inline-flex items-center justify-center px-8 py-4 rounded-lg font-semibold text-base md:text-lg uppercase tracking-wide bg-[#FFA500] text-white hover:bg-[#ff8c00] transition-all duration-200 hover:scale-105 hover:shadow-xl"
+            aria-label="Переглянути каталог CBD вейпів та канабіс продуктів"
           >
-            Переглянути всі товари
+            Переглянути всі CBD вейпи та канабіс продукти в каталозі
           </Link>
         </div>
       </div>

@@ -81,13 +81,18 @@ export default function CatalogClient({
             <div>
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">
               {subcategory
-                  ? subcategory
+                  ? `${subcategory} - CBD канабіс та коноплі`
                 : category
-                  ? category
-                : "Усі товари"}
+                  ? `${category} - CBD вейпи та канабіс продукти`
+                : "CBD канабіс та коноплі - Каталог товарів"}
               </h1>
               {subcategory && category && (
                 <p className="text-sm text-gray-500 mt-1">{category}</p>
+              )}
+              {!subcategory && !category && (
+                <p className="text-base text-gray-600 mt-2 max-w-3xl">
+                  Широкий вибір легальних CBD, HHC, THC та TAC вейпів в Україні. Всі продукти без ТГК, сертифіковані. Легальний канабіс та коноплі з екстрактом. Доставка по Україні.
+                </p>
               )}
             </div>
           </div>
@@ -132,7 +137,7 @@ export default function CatalogClient({
                       product.first_media,
                       "https://placehold.co/432x613"
                     )}
-                    alt={product.name}
+                    alt={`${product.name}${product.name.toLowerCase().includes('cbd') || product.name.toLowerCase().includes('каннаб') ? ' CBD канабіс' : ''} - купити вейп в Україні`}
                     className="object-cover transition-transform duration-300 group-hover:scale-105"
                     fill
                     sizes="(max-width: 420px) 45vw, (max-width: 640px) 45vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"

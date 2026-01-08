@@ -55,12 +55,37 @@ async function getSubcategories() {
   }
 }
 
+async function getBlogPosts() {
+  try {
+    const posts = await prisma.blogPost.findMany({
+      where: {
+        published: true,
+      },
+      select: {
+        id: true,
+        slug: true,
+        updated_at: true,
+        publishedAt: true,
+        created_at: true,
+      },
+      orderBy: {
+        publishedAt: 'desc',
+      },
+    });
+    return posts;
+  } catch (error) {
+    console.error("Error fetching blog posts for sitemap:", error);
+    return [];
+  }
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://calishops.com';
-  const [products, categories, subcategories] = await Promise.all([
+  const [products, categories, subcategories, blogPosts] = await Promise.all([
     getProducts(),
     getCategories(),
     getSubcategories(),
+    getBlogPosts(),
   ]);
 
   const now = new Date();
@@ -78,6 +103,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: now,
       changeFrequency: 'daily',
       priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/blog`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.8,
     },
     {
       url: `${baseUrl}/privacy-policy`,
@@ -124,5 +155,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     };
   });
 
-  return [...staticPages, ...categoryPages, ...subcategoryPages, ...productPages];
+  // Blog post pages
+  const blogPages = blogPosts.map((post) => ({
+    url: `${baseUrl}/blog/${post.slug}`,
+    lastModified: post.publishedAt ? new Date(post.publishedAt) : (post.updated_at || new Date(post.created_at) || now),
+    changeFrequency: 'monthly' as const,
+    priority: 0.6,
+  }));
+
+  return [...staticPages, ...categoryPages, ...subcategoryPages, ...productPages, ...blogPages];
 }

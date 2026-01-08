@@ -131,9 +131,6 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
     <div className="w-full">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
         <div>
-          <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-            Відгуки ({reviews.length})
-          </h3>
           {reviews.length > 0 && (
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-1">
