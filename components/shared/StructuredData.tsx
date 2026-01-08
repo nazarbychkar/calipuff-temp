@@ -141,7 +141,18 @@ export default function StructuredData({
         if (!product) return null;
         
         // Build additional properties
-        const additionalProperties: Record<string, unknown> = {};
+        interface PropertyValue {
+          "@type": string;
+          "name": string;
+          "value": string;
+          "valueReference"?: {
+            "@type": string;
+            "value": number;
+            "unitCode": string;
+          };
+        }
+        
+        const additionalProperties: { additionalProperty?: PropertyValue[] } = {};
         
         // Add cannabinoid content
         if (product.cbdContentMg && product.cbdContentMg > 0) {

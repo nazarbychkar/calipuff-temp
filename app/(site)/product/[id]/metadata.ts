@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { prisma } from "@/lib/sql";
 import { BRAND } from "@/lib/brand";
-import { generateSEOKeywords, generateSEOTitle, generateSEODescription, generateH1Title } from "@/lib/seo-keywords";
+import { generateSEOKeywords, generateSEOTitle, generateSEODescription } from "@/lib/seo-keywords";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://calishops.com';
 
