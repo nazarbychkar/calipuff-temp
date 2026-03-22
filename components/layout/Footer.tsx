@@ -633,35 +633,8 @@ export default function Footer() {
           className="block text-center font-['Poppins'] text-xs md:text-sm tracking-wide"
           style={{ color: "rgba(28, 25, 23, 0.55)" }}
         >
-          {BRAND.name} © 2025 · All rights reserved
+          {BRAND.name} © 2026 · All rights reserved
         </span>
-      </div>
-
-      {/* Centered developer credit */}
-      <div className="mt-8 mb-6 flex flex-col lg:flex-row items-center gap-3 lg:gap-6 justify-center relative z-10">
-        <Link
-          href="https://telebots.site/"
-          target="_blank"
-          className="font-['Poppins'] px-6 py-3 rounded-full border-2 transition-all duration-300 text-sm md:text-base tracking-wide hover:scale-105 relative overflow-hidden group"
-          style={{
-            borderColor: "rgba(168, 162, 158, 0.4)",
-            color: "rgba(28, 25, 23, 0.7)",
-            background: "rgba(245, 245, 244, 0.4)",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = "rgba(168, 162, 158, 0.6)";
-            e.currentTarget.style.color = "rgba(28, 25, 23, 0.9)";
-            e.currentTarget.style.background = "rgba(245, 245, 244, 0.5)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.borderColor = "rgba(168, 162, 158, 0.4)";
-            e.currentTarget.style.color = "rgba(28, 25, 23, 0.7)";
-            e.currentTarget.style.background = "rgba(245, 245, 244, 0.4)";
-          }}
-        >
-          <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          <span className="relative z-10">Telebots | Розробка сайтів</span>
-        </Link>
       </div>
 
       {/* Bottom wave decoration */}
